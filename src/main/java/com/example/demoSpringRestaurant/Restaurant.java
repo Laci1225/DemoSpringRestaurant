@@ -11,7 +11,6 @@ import org.springframework.context.annotation.ComponentScan;
 
 @Entity
 @Table
-//@ComponentScan("repository")
 public class Restaurant {
     @Id
     @SequenceGenerator(name = "restaurant", sequenceName = "restaurant_sequence", allocationSize = 1)

@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.List;
 
-@ComponentScan("com.example.demoSpringRestaurant")
+@ComponentScan({"repository","com.example.demoSpringRestaurant"})
 //@ComponentScan("restaurant")
 @Configuration
 public class RestaurantConfig {

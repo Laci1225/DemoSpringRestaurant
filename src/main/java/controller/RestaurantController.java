@@ -1,5 +1,7 @@
-package com.example.demoSpringRestaurant;
+package controller;
 
+import com.example.demoSpringRestaurant.Restaurant;
+import com.example.demoSpringRestaurant.RestaurantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.bind.annotation.*;
@@ -8,7 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(path = "hello")
-//@ComponentScan("service")
+@ComponentScan("com.example.demoSpringRestaurant")
 public class RestaurantController {
 
     private final RestaurantService service;
