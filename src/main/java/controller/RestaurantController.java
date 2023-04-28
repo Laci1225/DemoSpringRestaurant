@@ -27,17 +27,32 @@ public class RestaurantController {
     }
 
     @PostMapping
-    public Restaurant addRestaurant(@RequestBody Restaurant restaurant){
+    public Restaurant addRestaurant(@RequestBody Restaurant restaurant) {
         return service.addRestaurant(restaurant);
     }
+
     @DeleteMapping(path = "{restaurantId}")
-    public void removeRestaurant(@PathVariable("restaurantId") Long id){
+    public void removeRestaurant(@PathVariable("restaurantId") Long id) {
         service.removeRestaurant(id);
     }
 
     @GetMapping("owner")
-    public Map<String,List<String>> getRestaurantsByOwner(){
+    public Map<String, List<String>> getRestaurantsByOwner() {
         return service.getRestaurantsByOwner();
+    }
+
+    @PutMapping(path = "{restaurantId}")
+    public void updateRestaurant(
+            @PathVariable("restaurantId") Long id,
+            @RequestParam(required = false) String owner,
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String address,
+            @RequestParam(required = false) String email,
+            @RequestParam(required = false) String phoneNumber,
+            @RequestParam(required = false) Integer numberOfTables,
+            @RequestParam(required = false) Boolean isVegan,
+            @RequestParam(required = false) Boolean canDeliver) {
+        service.updateRestaurant(id,owner,name,address,email,phoneNumber,numberOfTables,isVegan,canDeliver);
     }
 
 }

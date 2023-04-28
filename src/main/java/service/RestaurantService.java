@@ -2,6 +2,7 @@ package service;
 
 import com.example.demoSpringRestaurant.Restaurant;
 import com.example.demoSpringRestaurant.RestaurantRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Service;
@@ -38,8 +39,8 @@ public class RestaurantService {
         repository.deleteById(id);
     }
 
-    public Map<String,List<String>> getRestaurantsByOwner() {
-        var a = repository.getRestaurantsByOwner();
+    public Map<String, List<String>> getRestaurantsByOwner() {
+        /*var a = repository.getRestaurantsByOwner();
         List<Map<String, String>> restaurants = new ArrayList<>();
         for (var s : a) {
             Map<String, String> temp = new HashMap<>();
@@ -52,6 +53,38 @@ public class RestaurantService {
                         Collectors.mapping(restaurant -> restaurant.get("name"), Collectors.toList())));
         restaurantsByOwner.forEach((owner, restaurantList) ->
                 System.out.println(owner + " owns: " + String.join(", ", restaurantList)));
-        return restaurantsByOwner;
+        return restaurantsByOwner;*/
+        if (repository.getRestaurantsByOwner().isPresent())
+            return repository.getRestaurantsByOwner().get().stream()
+                    .map(s -> s.split(","))
+                    .collect(Collectors.groupingBy(
+                            arr -> arr[0],
+                            Collectors.mapping(arr -> arr[1], Collectors.toList())));
+        else
+            throw new IllegalStateException();
+    }
+
+
+    @Transactional
+    public void updateRestaurant(Long id, String owner, String name, String address, String email, String phoneNumber, Integer numberOfTables, Boolean isVegan, Boolean canDeliver) {
+        var restaurant = repository.findById(id);
+        if (restaurant.isPresent()) {
+            if (owner != null)
+                restaurant.get().setOwner(owner);
+            if (name != null)
+                restaurant.get().setName(name);
+            if (address != null)
+                restaurant.get().setAddress(address);
+            if (email != null)
+                restaurant.get().setEmail(email);
+            if (phoneNumber != null)
+                restaurant.get().setPhoneNumber(phoneNumber);
+            if (numberOfTables != null)
+                restaurant.get().setNumberOfTables(numberOfTables);
+            if (isVegan != null)
+                restaurant.get().setVegan(isVegan);
+            if (canDeliver != null)
+                restaurant.get().setCanDeliver(canDeliver);
+        }
     }
 }

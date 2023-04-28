@@ -8,15 +8,16 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 //@ComponentScan("restaurant")
 @ComponentScan({"config"})//,"com.example.demoSpringRestaurant"})
 //@ComponentScan("controller")
 @Repository
-public interface RestaurantRepository extends JpaRepository<Restaurant,Long> {
-    @Override
+public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
+
     void deleteById(Long id);
 
     @Query("SELECT r1.owner, r2.name FROM Restaurant r1 JOIN Restaurant r2 ON r1.id = r2.id ORDER BY r1.owner")
-    List<String> getRestaurantsByOwner();
+    Optional<List<String>> getRestaurantsByOwner();
 }
