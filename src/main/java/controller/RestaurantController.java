@@ -40,6 +40,10 @@ public class RestaurantController {
     public Map<String, List<String>> getRestaurantsByOwner() {
         return service.getRestaurantsByOwner();
     }
+    @GetMapping("vegan")
+    public List<Restaurant> getVeganRestaurants(){
+        return service.getVeganRestaurants();
+    }
 
     @PutMapping(path = "{restaurantId}")
     public void updateRestaurant(

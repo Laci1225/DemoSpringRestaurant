@@ -20,4 +20,7 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
 
     @Query("SELECT r1.owner, r2.name FROM Restaurant r1 JOIN Restaurant r2 ON r1.id = r2.id ORDER BY r1.owner")
     Optional<List<String>> getRestaurantsByOwner();
+
+    @Query("SELECT r FROM Restaurant r where r.isVegan =true ")
+    Optional<List<Restaurant>> getRestaurantsByIsVegan();
 }

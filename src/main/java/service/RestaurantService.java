@@ -87,4 +87,12 @@ public class RestaurantService {
                 restaurant.get().setCanDeliver(canDeliver);
         }
     }
+
+    public List<Restaurant> getVeganRestaurants() {
+        if (repository.getRestaurantsByOwner().isPresent())
+            return repository.getRestaurantsByIsVegan().get();
+        else
+            throw new IllegalStateException();
+
+    }
 }
