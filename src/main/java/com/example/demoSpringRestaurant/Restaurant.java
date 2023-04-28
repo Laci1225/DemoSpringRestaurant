@@ -8,6 +8,7 @@ import jakarta.validation.constraints.Null;
 import org.hibernate.validator.constraints.UniqueElements;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Entity
 @Table
@@ -25,17 +26,17 @@ public class Restaurant {
     @Email
     private String email;
     @Nullable
-    private String phoneNumber;
+    private String phoneNumber = null;
     @Nullable
-    private Integer numberOfTables;
+    private Integer numberOfTables = null;
     @Nullable
-    private Boolean isVegan;
+    private Boolean isVegan = false;
     @NotNull
     private Boolean canDeliver;
 
     public Restaurant(){}
 
-    public Restaurant(String name, String owner, String address, String email, String phoneNumber, Integer numberOfTables, Boolean isVegan, Boolean canDeliver) {
+        public Restaurant(String name, String owner, String address, String email, String phoneNumber, Integer numberOfTables, Boolean isVegan, Boolean canDeliver) {
         this.name = name;
         this.owner = owner;
         this.address = address;

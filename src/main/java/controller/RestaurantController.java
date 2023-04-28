@@ -24,4 +24,10 @@ public class RestaurantController {
     public List<Restaurant> getStudent() {
         return service.getRestaurants();
     }
+
+    @PostMapping
+    public Restaurant addRestaurant(@RequestBody Restaurant restaurant){
+        return service.addRestaurant(restaurant);
+    }
+
 }
