@@ -1,12 +1,14 @@
-package com.example.demoSpringRestaurant;
+package service;
 
+import com.example.demoSpringRestaurant.Restaurant;
+import com.example.demoSpringRestaurant.RestaurantRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-//@ComponentScan({"repository"})//,"repository"})
+@ComponentScan({"com.example.demoSpringRestaurant"})//,"repository"})
 @Service
 public class RestaurantService {
 

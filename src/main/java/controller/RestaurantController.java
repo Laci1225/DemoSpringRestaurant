@@ -1,7 +1,7 @@
 package controller;
 
 import com.example.demoSpringRestaurant.Restaurant;
-import com.example.demoSpringRestaurant.RestaurantService;
+import service.RestaurantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.bind.annotation.*;
