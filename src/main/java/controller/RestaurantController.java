@@ -7,6 +7,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(path = "hello")
@@ -28,6 +29,15 @@ public class RestaurantController {
     @PostMapping
     public Restaurant addRestaurant(@RequestBody Restaurant restaurant){
         return service.addRestaurant(restaurant);
+    }
+    @DeleteMapping(path = "{restaurantId}")
+    public void removeRestaurant(@PathVariable("restaurantId") Long id){
+        service.removeRestaurant(id);
+    }
+
+    @GetMapping("owner")
+    public Map<String,List<String>> getRestaurantsByOwner(){
+        return service.getRestaurantsByOwner();
     }
 
 }
