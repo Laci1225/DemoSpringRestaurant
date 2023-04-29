@@ -1,14 +1,12 @@
-package com.example.demoSpringRestaurant;
+package com.example.demoSpringRestaurant.model;
 
-import controller.RestaurantController;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 
-public class RestaurantCretionDto {
+public class RestaurantCreationDto {
 
 
-    private Long id;
     @NotNull
     private String name;
     @NotNull
@@ -26,10 +24,10 @@ public class RestaurantCretionDto {
     @NotNull
     private Boolean canDeliver;
 
-    public RestaurantCretionDto() {
+    public RestaurantCreationDto() {
     }
 
-    public RestaurantCretionDto(String name, String owner, String address, String email, String phoneNumber, Integer numberOfTables, Boolean isVegan, Boolean canDeliver) {
+    public RestaurantCreationDto(String name, String owner, String address, String email, String phoneNumber, Integer numberOfTables, Boolean isVegan, Boolean canDeliver) {
         this.name = name;
         this.owner = owner;
         this.address = address;
@@ -38,13 +36,6 @@ public class RestaurantCretionDto {
         this.numberOfTables = numberOfTables;
         this.isVegan = isVegan;
         this.canDeliver = canDeliver;
-    }
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
     public String getName() {
         return name;
