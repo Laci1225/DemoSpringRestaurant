@@ -1,14 +1,11 @@
 package service;
 
-import com.example.demoSpringRestaurant.Restaurant;
-import com.example.demoSpringRestaurant.RestaurantRepository;
+import com.example.demoSpringRestaurant.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -19,20 +16,22 @@ public class RestaurantService {
 
     public final RestaurantRepository repository;
     //public final Restaurant restaurant;
+    public final RestaurantMapper restaurantMapper;
 
     @Autowired
-    public RestaurantService(RestaurantRepository repository) {//, Restaurant restaurant) {
+    public RestaurantService(RestaurantRepository repository, RestaurantMapper restaurantMapper) {//, Restaurant restaurant) {
         //this.restaurant = new Restaurant();
         this.repository = repository;
+        this.restaurantMapper = restaurantMapper;
     }
 
 
-    public List<Restaurant> getRestaurants() {
-        return repository.findAll();
+    public List<RestaurantDto> getRestaurants() {
+        return repository.findAll().stream().map(restaurantMapper::fromEntityToRestaurantDto).toList();
     }
 
-    public Restaurant addRestaurant(Restaurant restaurant) {
-        return repository.save(restaurant);
+    public Restaurant addRestaurant(RestaurantCretionDto restaurantCretionDto) {
+       return repository.save(restaurantMapper.fromRestaurantCreationDtoToEntity(restaurantCretionDto));
     }
 
     public void removeRestaurant(Long id) {
@@ -88,9 +87,10 @@ public class RestaurantService {
         }
     }
 
-    public List<Restaurant> getVeganRestaurants() {
+    public List<RestaurantDto> getVeganRestaurants() {
         if (repository.getRestaurantsByOwner().isPresent())
-            return repository.getRestaurantsByIsVegan().get();
+            return repository.getRestaurantsByIsVegan().get().
+                    stream().map(restaurantMapper::fromEntityToRestaurantDto).toList();
         else
             throw new IllegalStateException();
 

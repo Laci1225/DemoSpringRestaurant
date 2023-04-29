@@ -1,6 +1,8 @@
 package controller;
 
 import com.example.demoSpringRestaurant.Restaurant;
+import com.example.demoSpringRestaurant.RestaurantCretionDto;
+import com.example.demoSpringRestaurant.RestaurantDto;
 import service.RestaurantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
@@ -22,13 +24,13 @@ public class RestaurantController {
     }
 
     @GetMapping
-    public List<Restaurant> getStudent() {
+    public List<RestaurantDto> getStudent() {
         return service.getRestaurants();
     }
 
     @PostMapping
-    public Restaurant addRestaurant(@RequestBody Restaurant restaurant) {
-        return service.addRestaurant(restaurant);
+    public Restaurant addRestaurant(@RequestBody RestaurantCretionDto restaurant) {
+       return service.addRestaurant(restaurant);
     }
 
     @DeleteMapping(path = "{restaurantId}")
@@ -41,7 +43,7 @@ public class RestaurantController {
         return service.getRestaurantsByOwner();
     }
     @GetMapping("vegan")
-    public List<Restaurant> getVeganRestaurants(){
+    public List<RestaurantDto> getVeganRestaurants(){
         return service.getVeganRestaurants();
     }
 
