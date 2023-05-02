@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@ComponentScan({"com.example.demoSpringRestaurant"})//,"com.example.demoSpringRestaurant.repository"})
+//@ComponentScan({"com.example.demoSpringRestaurant"})//,"com.example.demoSpringRestaurant.repository"})
 @Service
 public class RestaurantService {
 

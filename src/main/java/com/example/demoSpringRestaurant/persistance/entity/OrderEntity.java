@@ -20,9 +20,11 @@ public class OrderEntity {
 
     private MealType Meal;
     private DrinkType Drink;
-    private double price = getFoodPrice(Meal) + getDrinkPrice(Drink);
+    @Transient
+    private double price;// = getFoodPrice(Meal) + getDrinkPrice(Drink);
 
     private double getDrinkPrice(DrinkType drinkType) {
+        if (drinkType == null) return 0;
         return switch (drinkType) {
             case COLA -> 3.1;
             case WATER -> 1.0;
@@ -32,6 +34,7 @@ public class OrderEntity {
     }
 
     private double getFoodPrice(MealType mealType) {
+        if (mealType == null) return 0;
         return switch (mealType) {
             case RICEANDFISH -> 10.1;
             case FISHANDCHIPS -> 12.1;
@@ -63,7 +66,7 @@ public class OrderEntity {
     }
 
     public MealType getMeal() {
-        return Meal;
+        return Meal ;
     }
 
     public void setMeal(MealType meal) {
@@ -79,7 +82,7 @@ public class OrderEntity {
     }
 
     public double getPrice() {
-        return price;
+        return getFoodPrice(getMeal())+getDrinkPrice(getDrink());
     }
 
     /*public void setPrice(double price) {
