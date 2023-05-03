@@ -3,6 +3,7 @@ package com.example.demoSpringRestaurant.service;
 import com.example.demoSpringRestaurant.model.RestaurantCreationDto;
 import com.example.demoSpringRestaurant.model.RestaurantDto;
 import com.example.demoSpringRestaurant.model.RestaurantUpdateDto;
+import com.example.demoSpringRestaurant.persistance.entity.OrderEntity;
 import com.example.demoSpringRestaurant.persistance.repository.RestaurantRepository;
 import com.example.demoSpringRestaurant.persistance.entity.RestaurantEntity;
 import jakarta.transaction.Transactional;
@@ -78,4 +79,9 @@ public class RestaurantService {
         }
     }
 
+    public List<OrderEntity> getOrdersByRestaurantId(Long id) {
+        if (!repository.existsById(id))
+            throw new IllegalStateException("Restaurant not found");
+       return repository.getOrdersByRestaurantId(id);
+    }
 }

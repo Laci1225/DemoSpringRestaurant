@@ -1,6 +1,7 @@
 package com.example.demoSpringRestaurant.controller;
 
 import com.example.demoSpringRestaurant.model.RestaurantUpdateDto;
+import com.example.demoSpringRestaurant.persistance.entity.OrderEntity;
 import com.example.demoSpringRestaurant.persistance.entity.RestaurantEntity;
 import com.example.demoSpringRestaurant.model.RestaurantCreationDto;
 import com.example.demoSpringRestaurant.model.RestaurantDto;
@@ -25,6 +26,10 @@ public class RestaurantController {
         this.service = service;
     }
 
+    @GetMapping(path ="{restaurantId}")
+    public List<OrderEntity> getOrdersByRestaurantId(@PathVariable("restaurantId") Long id) {
+        return service.getOrdersByRestaurantId(id);
+    }
     @GetMapping
     public List<RestaurantDto> getRestaurant() {
         return service.getRestaurants();

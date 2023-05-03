@@ -1,6 +1,8 @@
 package com.example.demoSpringRestaurant.persistance.repository;
 
+import com.example.demoSpringRestaurant.persistance.entity.OrderEntity;
 import com.example.demoSpringRestaurant.persistance.entity.RestaurantEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -26,4 +28,7 @@ public interface RestaurantRepository extends JpaRepository<RestaurantEntity, Lo
 
     @Query("SELECT r FROM RestaurantEntity r where r.isVegan = :isVegan")
     Optional<List<RestaurantEntity>> findAllWithFilters(@Param("isVegan") boolean isVegan);
+
+    @Query("select o from OrderEntity o where o.restaurantId = :orderId")
+    List<OrderEntity> getOrdersByRestaurantId(@Param("orderId") Long id);
 }
