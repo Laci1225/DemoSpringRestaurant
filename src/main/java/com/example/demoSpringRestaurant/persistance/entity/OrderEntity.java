@@ -2,13 +2,16 @@ package com.example.demoSpringRestaurant.persistance.entity;
 
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+
+import java.time.LocalDate;
 
 @Entity
 @Table
 public class OrderEntity {
     @Id
-    @SequenceGenerator(name = "order",sequenceName = "order_sequence",initialValue = 1)
-    @GeneratedValue(generator = "order_sequence",strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = "order", sequenceName = "order_sequence", initialValue = 1)
+    @GeneratedValue(generator = "order_sequence", strategy = GenerationType.SEQUENCE)
     private Long id;
 
     //@NotNull
@@ -22,7 +25,30 @@ public class OrderEntity {
     @Enumerated(EnumType.STRING)
     private DrinkType Drink;
     @Transient
-    private double price;// = getFoodPrice(Meal) + getDrinkPrice(Drink);
+    private double price;
+
+    private String deliveryAddress;
+
+    @Transient
+    private LocalDate createDate;
+
+
+    private OrderStatus orderStatus = OrderStatus.SENT;
+
+    enum OrderStatus {
+        SENT,
+        APPROVED,
+        SHIPPING,
+        SHIPPED;
+
+        public OrderStatus getNextStatus() {
+            return switch (this) {
+                case SENT -> APPROVED;
+                case APPROVED -> SHIPPING;
+                case SHIPPING, SHIPPED -> SHIPPED;
+            };
+        }
+    }
 
     enum DrinkType {
         COLA, WATER, JUICE, LEMONADE, TEA
@@ -37,7 +63,7 @@ public class OrderEntity {
         return switch (drinkType) {
             case COLA -> 3.1;
             case WATER -> 1.0;
-            case JUICE,LEMONADE -> 2.6;
+            case JUICE, LEMONADE -> 2.6;
             case TEA -> 1.1;
         };
     }
@@ -52,22 +78,15 @@ public class OrderEntity {
         };
     }
 
-    public OrderEntity(Long id, Long restaurantId, MealType meal, DrinkType drink, double price) {
-        this.id = id;
-        this.restaurantId = restaurantId;
+    public OrderEntity(MealType meal, DrinkType drink, double price) {
         Meal = meal;
         Drink = drink;
         this.price = price;
     }
 
-    public OrderEntity(Long restaurantId, MealType meal, DrinkType drink, double price) {
-        this.restaurantId = restaurantId;
-        Meal = meal;
-        Drink = drink;
-        this.price = price;
-    }
     public OrderEntity() {
     }
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -77,7 +96,7 @@ public class OrderEntity {
     }
 
     public MealType getMeal() {
-        return Meal ;
+        return Meal;
     }
 
     public void setMeal(MealType meal) {
@@ -93,12 +112,32 @@ public class OrderEntity {
     }
 
     public double getPrice() {
-        return getFoodPrice(getMeal())+getDrinkPrice(getDrink());
+        return getFoodPrice(getMeal()) + getDrinkPrice(getDrink());
     }
 
     /*public void setPrice(double price) {
         this.price = price;
     }*/
+    public String getDeliveryAddress() {
+        return deliveryAddress;
+    }
+
+    public void setDeliveryAddress(String deliveryAddress) {
+        this.deliveryAddress = deliveryAddress;
+    }
+
+    public LocalDate getCreateDate() {
+        return LocalDate.now();
+    }
+
+    public OrderStatus getOrderStatus() {
+        return orderStatus;
+    }
+
+    public void setOrderStatus(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus.getNextStatus();
+    }
+
     public Long getRestaurantId() {
         return restaurantId;
     }

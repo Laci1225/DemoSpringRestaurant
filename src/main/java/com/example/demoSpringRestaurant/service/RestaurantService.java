@@ -40,7 +40,7 @@ public class RestaurantService {
     }
 
     public void removeRestaurant(Long id) {
-        var orders= restaurantRepository.getOrdersByRestaurantId(id);
+        var orders = orderRepository.getOrdersByRestaurantId(id);
         orderRepository.deleteAll(orders);
         restaurantRepository.deleteById(id);
     }
@@ -82,9 +82,4 @@ public class RestaurantService {
         }
     }
 
-    public List<OrderEntity> getOrdersByRestaurantId(Long id) {
-        if (!restaurantRepository.existsById(id))
-            throw new IllegalStateException("Restaurant not found");
-       return restaurantRepository.getOrdersByRestaurantId(id);
-    }
 }

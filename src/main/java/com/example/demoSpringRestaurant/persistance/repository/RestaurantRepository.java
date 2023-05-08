@@ -21,7 +21,4 @@ public interface RestaurantRepository extends JpaRepository<RestaurantEntity, Lo
     @Query("SELECT r FROM RestaurantEntity r where r.isVegan = :isVegan")
     Optional<List<RestaurantEntity>> findAllWithFilters(@Param("isVegan") boolean isVegan);
 
-    @Query("select o from OrderEntity o where o.restaurantId = :orderId")
-    List<OrderEntity> getOrdersByRestaurantId(@Param("orderId") Long id);
-
 }

@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("order")
+//@RequestMapping("order")
 public class OrderController {
-    OrderService orderService;
+  /*  OrderService orderService;
 
     @Autowired
     public OrderController(OrderService orderService) {
@@ -26,5 +26,5 @@ public class OrderController {
     @PostMapping
     public OrderEntity addOrder(@RequestBody OrderEntity orderEntity) {
         return orderService.addOrder(orderEntity);
-    }
+    }*/
 }

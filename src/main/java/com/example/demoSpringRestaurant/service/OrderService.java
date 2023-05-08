@@ -12,6 +12,7 @@ import java.util.List;
 public class OrderService {
     private final OrderRepository orderRepository;
     private final RestaurantRepository restaurantRepository;
+
     @Autowired
     public OrderService(OrderRepository orderRepository, RestaurantRepository restaurantRepository) {
         this.orderRepository = orderRepository;
@@ -19,14 +20,29 @@ public class OrderService {
     }
 
 
-    public List<OrderEntity> getOrders() {
-       return orderRepository.findAll();
+    public List<OrderEntity> getOrders(Long id) {
+        var restaurant = restaurantRepository.findById(id);
+        if (restaurant.isEmpty())
+            throw new IllegalStateException("Restaurant not found");
+        if (restaurant.get().getId() == null)
+            throw new IllegalStateException("RestaurantId not found");
+        return orderRepository.findAllById(restaurant.get().getId());
     }
-    public OrderEntity addOrder(OrderEntity orderEntity) {
+
+    public OrderEntity addOrder(Long id, OrderEntity orderEntity) {
+        orderEntity.setRestaurantId(id);
+
         if (orderEntity.getRestaurantId() == null)
             throw new IllegalStateException("RestaurantId not found");
         if (!restaurantRepository.existsById(orderEntity.getRestaurantId()))
             throw new IllegalStateException("Restaurant not found");
+
         return orderRepository.save(orderEntity);
+    }
+
+    public List<OrderEntity> getOrdersByRestaurantId(Long id) {
+        if (!restaurantRepository.existsById(id))
+            throw new IllegalStateException("Restaurant not found");
+        return orderRepository.getOrdersByRestaurantId(id);
     }
 }
