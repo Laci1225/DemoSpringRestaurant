@@ -37,6 +37,7 @@ public class RestaurantCreationDto {
         this.isVegan = isVegan;
         this.canDeliver = canDeliver;
     }
+
     public String getName() {
         return name;
     }

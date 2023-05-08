@@ -1,5 +1,8 @@
 package com.example.demoSpringRestaurant.service;
 
+import com.example.demoSpringRestaurant.mapper.OrderMapper;
+import com.example.demoSpringRestaurant.model.OrderCreationDto;
+import com.example.demoSpringRestaurant.model.OrderDto;
 import com.example.demoSpringRestaurant.persistance.entity.OrderEntity;
 import com.example.demoSpringRestaurant.persistance.repository.OrderRepository;
 import com.example.demoSpringRestaurant.persistance.repository.RestaurantRepository;
@@ -12,37 +15,36 @@ import java.util.List;
 public class OrderService {
     private final OrderRepository orderRepository;
     private final RestaurantRepository restaurantRepository;
+    private final OrderMapper orderMapper;
 
     @Autowired
-    public OrderService(OrderRepository orderRepository, RestaurantRepository restaurantRepository) {
+    public OrderService(OrderRepository orderRepository, RestaurantRepository restaurantRepository, OrderMapper orderMapper) {
         this.orderRepository = orderRepository;
         this.restaurantRepository = restaurantRepository;
+        this.orderMapper = orderMapper;
     }
 
+    public OrderEntity addOrder(Long id, OrderCreationDto orderCreationDto) {
+        orderCreationDto.setRestaurantId(id);
 
-    public List<OrderEntity> getOrders(Long id) {
-        var restaurant = restaurantRepository.findById(id);
-        if (restaurant.isEmpty())
-            throw new IllegalStateException("Restaurant not found");
-        if (restaurant.get().getId() == null)
+        if (orderCreationDto.getRestaurantId() == null)
             throw new IllegalStateException("RestaurantId not found");
-        return orderRepository.findAllById(restaurant.get().getId());
-    }
-
-    public OrderEntity addOrder(Long id, OrderEntity orderEntity) {
-        orderEntity.setRestaurantId(id);
-
-        if (orderEntity.getRestaurantId() == null)
-            throw new IllegalStateException("RestaurantId not found");
-        if (!restaurantRepository.existsById(orderEntity.getRestaurantId()))
+        if (!restaurantRepository.existsById(orderCreationDto.getRestaurantId()))
             throw new IllegalStateException("Restaurant not found");
 
-        return orderRepository.save(orderEntity);
+        return orderRepository.save(orderMapper.fromOrderCreationDtoToEntity(orderCreationDto));
     }
 
-    public List<OrderEntity> getOrdersByRestaurantId(Long id) {
+    public List<OrderDto> getOrdersByRestaurantId(Long id) {
         if (!restaurantRepository.existsById(id))
             throw new IllegalStateException("Restaurant not found");
-        return orderRepository.getOrdersByRestaurantId(id);
+        return orderRepository.getOrdersByRestaurantId(id)
+                .stream().map(orderMapper::fromEntityToOrderDto).toList();
+    }
+
+    public void removeOrder(Long restaurantId, Long orderId) {
+        if (!restaurantRepository.existsById(restaurantId))
+            throw new IllegalStateException("Restaurant not found");
+        orderRepository.deleteById(orderId);
     }
 }

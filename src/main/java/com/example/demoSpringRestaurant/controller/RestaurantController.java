@@ -1,10 +1,8 @@
 package com.example.demoSpringRestaurant.controller;
 
-import com.example.demoSpringRestaurant.model.RestaurantUpdateDto;
+import com.example.demoSpringRestaurant.model.*;
 import com.example.demoSpringRestaurant.persistance.entity.OrderEntity;
 import com.example.demoSpringRestaurant.persistance.entity.RestaurantEntity;
-import com.example.demoSpringRestaurant.model.RestaurantCreationDto;
-import com.example.demoSpringRestaurant.model.RestaurantDto;
 import com.example.demoSpringRestaurant.service.OrderService;
 import com.example.demoSpringRestaurant.service.RestaurantService;
 import jakarta.validation.Valid;
@@ -16,7 +14,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping(path = "restaurants")
-//@ComponentScan("com.example.demoSpringRestaurant")
 public class RestaurantController {
 
     private final RestaurantService restaurantService;
@@ -35,7 +32,7 @@ public class RestaurantController {
 
     @PostMapping
     public RestaurantEntity addRestaurant(@RequestBody RestaurantCreationDto restaurant) {
-       return restaurantService.addRestaurant(restaurant);
+        return restaurantService.addRestaurant(restaurant);
     }
 
     @DeleteMapping(path = "{restaurantId}")
@@ -52,22 +49,26 @@ public class RestaurantController {
     public void updateRestaurant(
             @PathVariable("restaurantId") Long id,
             @Valid @RequestBody RestaurantUpdateDto restaurantUpdateDto) {
-        restaurantService.updateRestaurant(id,restaurantUpdateDto);
+        restaurantService.updateRestaurant(id, restaurantUpdateDto);
     }
 
-    @GetMapping(path ="{restaurantId}")
-    public List<OrderEntity> getOrdersByRestaurantId(@PathVariable("restaurantId") Long id) {
+
+
+
+    @GetMapping(path = "{restaurantId}/orders")
+    public List<OrderDto> getOrdersByRestaurantId(@PathVariable("restaurantId") Long id) {
         return orderService.getOrdersByRestaurantId(id);
     }
-
-    @GetMapping(path ="{restaurantId}/orders")
-    public List<OrderEntity> getOrders(@PathVariable("restaurantId") Long id) {
-        return orderService.getOrders(id);
+    @PostMapping(path = "{restaurantId}/orders")
+    public OrderEntity addOrder(@PathVariable("restaurantId") Long id,
+                                     @RequestBody OrderCreationDto orderCreationDto) {
+        return orderService.addOrder(id, orderCreationDto);
+    }
+    @DeleteMapping(path = "{restaurantId}/orders/{orderId}")
+    public void removeOrder(@PathVariable("restaurantId") Long restaurantId,
+                            @PathVariable("orderId") Long orderId) {
+        orderService.removeOrder(restaurantId,orderId);
     }
 
-    @PostMapping(path ="{restaurantId}/orders")
-    public OrderEntity addOrder(@PathVariable("restaurantId") Long id,@RequestBody OrderEntity orderEntity) {
-        return orderService.addOrder(id,orderEntity);
-    }
 
 }

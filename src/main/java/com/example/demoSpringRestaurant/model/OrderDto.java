@@ -1,29 +1,21 @@
-package com.example.demoSpringRestaurant.persistance.entity;
+package com.example.demoSpringRestaurant.model;
 
+import com.example.demoSpringRestaurant.persistance.entity.OrderEntity;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 
-@Entity
-@Table
-public class OrderEntity {
-    @Id
-    @SequenceGenerator(name = "order", sequenceName = "order_sequence", initialValue = 1)
-    @GeneratedValue(generator = "order_sequence", strategy = GenerationType.SEQUENCE)
+public class OrderDto {
+
     private Long id;
 
-    //@NotNull
     private Long restaurantId;
 
-    @Enumerated(EnumType.STRING)
-    @Nullable
-    private MealType Meal;
+    private OrderEntity.MealType Meal;
 
-    @Nullable
     @Enumerated(EnumType.STRING)
-    private DrinkType Drink;
+    private OrderEntity.DrinkType Drink;
     @Transient
     private double price;
 
@@ -32,11 +24,10 @@ public class OrderEntity {
     @Transient
     private LocalDate createDate;
 
-    @Enumerated(EnumType.STRING)
-    @NotNull
-    private OrderStatus orderStatus = OrderStatus.SENT;
 
-    public enum OrderStatus {
+    private OrderEntity.OrderStatus orderStatus = OrderEntity.OrderStatus.SENT;
+
+    enum OrderStatus {
         SENT,
         APPROVED,
         SHIPPING,
@@ -51,7 +42,7 @@ public class OrderEntity {
         }
     }
 
-    public enum DrinkType {
+    enum DrinkType {
         COLA, WATER, JUICE, LEMONADE, TEA
     }
 
@@ -59,7 +50,7 @@ public class OrderEntity {
         RICEANDFISH, FISHANDCHIPS, CHICKENANDRICE, CHICKENANDFISH
     }
 
-    private double getDrinkPrice(DrinkType drinkType) {
+    private double getDrinkPrice(OrderEntity.DrinkType drinkType) {
         if (drinkType == null) return 0;
         return switch (drinkType) {
             case COLA -> 3.1;
@@ -69,7 +60,7 @@ public class OrderEntity {
         };
     }
 
-    private double getFoodPrice(MealType mealType) {
+    private double getFoodPrice(OrderEntity.MealType mealType) {
         if (mealType == null) return 0;
         return switch (mealType) {
             case RICEANDFISH -> 10.1;
@@ -79,13 +70,13 @@ public class OrderEntity {
         };
     }
 
-    public OrderEntity(MealType meal, DrinkType drink, double price) {
+    public OrderDto(OrderEntity.MealType meal, OrderEntity.DrinkType drink, double price) {
         Meal = meal;
         Drink = drink;
         this.price = price;
     }
 
-    public OrderEntity() {
+    public OrderDto() {
     }
 
     public void setId(Long id) {
@@ -96,19 +87,19 @@ public class OrderEntity {
         return id;
     }
 
-    public MealType getMeal() {
+    public OrderEntity.MealType getMeal() {
         return Meal;
     }
 
-    public void setMeal(MealType meal) {
+    public void setMeal(OrderEntity.MealType meal) {
         Meal = meal;
     }
 
-    public DrinkType getDrink() {
+    public OrderEntity.DrinkType getDrink() {
         return Drink;
     }
 
-    public void setDrink(DrinkType drink) {
+    public void setDrink(OrderEntity.DrinkType drink) {
         Drink = drink;
     }
 
@@ -131,11 +122,11 @@ public class OrderEntity {
         return LocalDate.now();
     }
 
-    public OrderStatus getOrderStatus() {
+    public OrderEntity.OrderStatus getOrderStatus() {
         return orderStatus;
     }
 
-    public void setOrderStatus(OrderStatus orderStatus) {
+    public void setOrderStatus(OrderEntity.OrderStatus orderStatus) {
         this.orderStatus = orderStatus.getNextStatus();
     }
 
