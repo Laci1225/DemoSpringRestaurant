@@ -4,42 +4,45 @@ import com.example.demoSpringRestaurant.model.RestaurantCreationDto;
 import com.example.demoSpringRestaurant.model.RestaurantDto;
 import com.example.demoSpringRestaurant.model.RestaurantUpdateDto;
 import com.example.demoSpringRestaurant.persistance.entity.OrderEntity;
+import com.example.demoSpringRestaurant.persistance.repository.OrderRepository;
 import com.example.demoSpringRestaurant.persistance.repository.RestaurantRepository;
 import com.example.demoSpringRestaurant.persistance.entity.RestaurantEntity;
 import jakarta.transaction.Transactional;
 import com.example.demoSpringRestaurant.mapper.RestaurantMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-//@ComponentScan({"com.example.demoSpringRestaurant"})//,"com.example.demoSpringRestaurant.repository"})
 @Service
 public class RestaurantService {
 
-    public final RestaurantRepository repository;
+    public final RestaurantRepository restaurantRepository;
+    public final OrderRepository orderRepository;
     public final RestaurantMapper restaurantMapper;
 
     @Autowired
-    public RestaurantService(RestaurantRepository repository, RestaurantMapper restaurantMapper) {
-        this.repository = repository;
+    public RestaurantService(RestaurantRepository restaurantRepository, OrderRepository orderRepository, RestaurantMapper restaurantMapper) {
+        this.restaurantRepository = restaurantRepository;
+        this.orderRepository = orderRepository;
         this.restaurantMapper = restaurantMapper;
     }
 
 
     public List<RestaurantDto> getRestaurants() {
-        return repository.findAll().stream().map(restaurantMapper::fromEntityToRestaurantDto).toList();
+        return restaurantRepository.findAll().stream().map(restaurantMapper::fromEntityToRestaurantDto).toList();
     }
 
     public RestaurantEntity addRestaurant(RestaurantCreationDto restaurantCreationDto) {
-        return repository.save(restaurantMapper.fromRestaurantCreationDtoToEntity(restaurantCreationDto));
+        return restaurantRepository.save(restaurantMapper.fromRestaurantCreationDtoToEntity(restaurantCreationDto));
     }
 
     public void removeRestaurant(Long id) {
-        repository.deleteById(id);
+        var orders= restaurantRepository.getOrdersByRestaurantId(id);
+        orderRepository.deleteAll(orders);
+        restaurantRepository.deleteById(id);
     }
 
     public Map<String, List<String>> getRestaurantsByOwner() {
@@ -57,8 +60,8 @@ public class RestaurantService {
         restaurantsByOwner.forEach((owner, restaurantList) ->
                 System.out.println(owner + " owns: " + String.join(", ", restaurantList)));
         return restaurantsByOwner;*/
-        if (repository.getRestaurantsByOwner().isPresent())
-            return repository.getRestaurantsByOwner().get().stream()
+        if (restaurantRepository.getRestaurantsByOwner().isPresent())
+            return restaurantRepository.getRestaurantsByOwner().get().stream()
                     .map(s -> s.split(","))
                     .collect(Collectors.groupingBy(
                             arr -> arr[0],
@@ -71,17 +74,17 @@ public class RestaurantService {
     @Transactional
     public void updateRestaurant(Long id, RestaurantUpdateDto restaurantUpdateDto) {
         //var restaurant = repository.findById(id).stream().map(restaurantMapper::fromEntityToRestaurantDto).findFirst();
-        if (repository.existsById(id)) {
+        if (restaurantRepository.existsById(id)) {
             var updatedEntity = restaurantMapper.fromRestaurantUpdateDtoToEntity(restaurantUpdateDto);
             updatedEntity.setId(id);
             //repository.save(restaurantMapper.fromRestaurantDtoToEntity(restaurant.get()));
-            repository.save(updatedEntity);
+            restaurantRepository.save(updatedEntity);
         }
     }
 
     public List<OrderEntity> getOrdersByRestaurantId(Long id) {
-        if (!repository.existsById(id))
+        if (!restaurantRepository.existsById(id))
             throw new IllegalStateException("Restaurant not found");
-       return repository.getOrdersByRestaurantId(id);
+       return restaurantRepository.getOrdersByRestaurantId(id);
     }
 }
