@@ -56,7 +56,7 @@ public class RestaurantController {
 
 
     @GetMapping(path = "{restaurantId}/orders")
-    public List<OrderDto> getOrdersByRestaurantId(@PathVariable("restaurantId") Long id) {
+    public Map<RestaurantEntity, List<OrderDto>> getOrdersByRestaurantId(@PathVariable("restaurantId") Long id) {
         return orderService.getOrdersByRestaurantId(id);
     }
     @PostMapping(path = "{restaurantId}/orders")
@@ -69,6 +69,12 @@ public class RestaurantController {
                             @PathVariable("orderId") Long orderId) {
         orderService.removeOrder(restaurantId,orderId);
     }
+
+    /*@GetMapping(path = "{restaurantId}/orders/{orderId}")
+    public void setNextState(@PathVariable("restaurantId") Long restaurantId,
+                             @PathVariable("orderId") Long orderId){
+        orderService.setNextState(restaurantId,orderId);
+    }*/
 
 
 }

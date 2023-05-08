@@ -127,7 +127,7 @@ public class OrderCreationDto {
     }
 
     public void setOrderStatus(OrderEntity.OrderStatus orderStatus) {
-        this.orderStatus = orderStatus.getNextStatus();
+        this.orderStatus = orderStatus;
     }
 
     public Long getRestaurantId() {
