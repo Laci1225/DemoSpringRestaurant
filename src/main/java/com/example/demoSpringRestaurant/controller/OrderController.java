@@ -1,30 +1,54 @@
 package com.example.demoSpringRestaurant.controller;
 
-import com.example.demoSpringRestaurant.model.RestaurantDto;
+import com.example.demoSpringRestaurant.exception.EntityNotFoundException;
+import com.example.demoSpringRestaurant.facade.RestaurantOrderFacade;
+import com.example.demoSpringRestaurant.model.OrderCreationDto;
+import com.example.demoSpringRestaurant.model.OrderDto;
 import com.example.demoSpringRestaurant.persistance.entity.OrderEntity;
 import com.example.demoSpringRestaurant.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
 @RestController
-//@RequestMapping("order")
 public class OrderController {
-  /*  OrderService orderService;
+    OrderService orderService;
+    RestaurantOrderFacade restaurantOrderFacade;
 
     @Autowired
-    public OrderController(OrderService orderService) {
+    public OrderController(OrderService orderService, RestaurantOrderFacade restaurantOrderFacade) {
         this.orderService = orderService;
+        this.restaurantOrderFacade = restaurantOrderFacade;
     }
 
-    @GetMapping
-    public List<OrderEntity> getOrders() {
-        return orderService.getOrders();
+    @GetMapping(path = "orders/{restaurantId}")
+    public List<OrderDto> getOrdersByRestaurantId(@PathVariable("restaurantId") Long id) {
+        return restaurantOrderFacade.getOrdersByRestaurantId(id);
     }
 
-    @PostMapping
-    public OrderEntity addOrder(@RequestBody OrderEntity orderEntity) {
-        return orderService.addOrder(orderEntity);
-    }*/
+    @PostMapping(path = "orders/{restaurantId}")
+    public OrderEntity addOrder(@RequestBody OrderCreationDto orderCreationDto, @PathVariable("restaurantId") Long restaurantId) {
+        return restaurantOrderFacade.addOrder(orderCreationDto, restaurantId);
+    }
+
+    @DeleteMapping(path = "orders/{orderId}")
+    public OrderDto removeOrder(@PathVariable("orderId") Long orderId) {
+        try {
+            return orderService.removeOrder(orderId);
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        }
+    }
+
+    @PostMapping(path = "orders/{orderId}/next-state")
+    public OrderDto setNextState(@PathVariable("orderId") Long orderId) {
+        try {
+            return orderService.setNextState(orderId);
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        }
+    }
 }

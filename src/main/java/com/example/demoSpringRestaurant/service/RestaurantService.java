@@ -3,8 +3,6 @@ package com.example.demoSpringRestaurant.service;
 import com.example.demoSpringRestaurant.model.RestaurantCreationDto;
 import com.example.demoSpringRestaurant.model.RestaurantDto;
 import com.example.demoSpringRestaurant.model.RestaurantUpdateDto;
-import com.example.demoSpringRestaurant.persistance.entity.OrderEntity;
-import com.example.demoSpringRestaurant.persistance.repository.OrderRepository;
 import com.example.demoSpringRestaurant.persistance.repository.RestaurantRepository;
 import com.example.demoSpringRestaurant.persistance.entity.RestaurantEntity;
 import jakarta.transaction.Transactional;
@@ -20,29 +18,22 @@ import java.util.stream.Collectors;
 public class RestaurantService {
 
     public final RestaurantRepository restaurantRepository;
-    public final OrderRepository orderRepository;
     public final RestaurantMapper restaurantMapper;
 
     @Autowired
-    public RestaurantService(RestaurantRepository restaurantRepository, OrderRepository orderRepository, RestaurantMapper restaurantMapper) {
+    public RestaurantService(RestaurantRepository restaurantRepository, RestaurantMapper restaurantMapper) {
         this.restaurantRepository = restaurantRepository;
-        this.orderRepository = orderRepository;
         this.restaurantMapper = restaurantMapper;
     }
 
-
     public List<RestaurantDto> getRestaurants() {
-        return restaurantRepository.findAll().stream().map(restaurantMapper::fromEntityToRestaurantDto).toList();
+        return restaurantRepository.findAll().stream()
+                .map(restaurantMapper::fromEntityToRestaurantDto).toList();
     }
 
     public RestaurantEntity addRestaurant(RestaurantCreationDto restaurantCreationDto) {
-        return restaurantRepository.save(restaurantMapper.fromRestaurantCreationDtoToEntity(restaurantCreationDto));
-    }
-
-    public void removeRestaurant(Long id) {
-        var orders = orderRepository.findAllByRestaurantId(id);
-        orderRepository.deleteAll(orders);
-        restaurantRepository.deleteById(id);
+        return restaurantRepository.save(restaurantMapper.
+                fromRestaurantCreationDtoToEntity(restaurantCreationDto));
     }
 
     public Map<String, List<String>> getRestaurantsByOwner() {

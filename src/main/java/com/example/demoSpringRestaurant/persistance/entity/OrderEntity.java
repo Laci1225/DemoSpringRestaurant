@@ -1,14 +1,20 @@
 package com.example.demoSpringRestaurant.persistance.entity;
 
+import com.example.demoSpringRestaurant.constant.DrinkType;
+import com.example.demoSpringRestaurant.constant.MealType;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import com.example.demoSpringRestaurant.constant.OrderStatus;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table
+@Data
+@NoArgsConstructor
 public class OrderEntity {
     @Id
     @SequenceGenerator(name = "order", sequenceName = "order_sequence", initialValue = 1)
@@ -32,19 +38,12 @@ public class OrderEntity {
     private String deliveryAddress;
 
     @Transient
-    private LocalDate createDate;
+    private LocalDateTime createDate;
 
     @Enumerated(EnumType.STRING)
     @NotNull
     private OrderStatus orderStatus = OrderStatus.SENT;
 
-    public enum DrinkType {
-        COLA, WATER, JUICE, LEMONADE, TEA
-    }
-
-    public enum MealType {
-        RICEANDFISH, FISHANDCHIPS, CHICKENANDRICE, CHICKENANDFISH
-    }
 
     private double getDrinkPrice(DrinkType drinkType) {
         if (drinkType == null) return 0;
@@ -66,71 +65,13 @@ public class OrderEntity {
         };
     }
 
-    public OrderEntity(MealType meal, DrinkType drink, double price) {
-        Meal = meal;
-        Drink = drink;
-        this.price = price;
-    }
-
-    public OrderEntity() {
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public MealType getMeal() {
-        return Meal;
-    }
-
-    public void setMeal(MealType meal) {
-        Meal = meal;
-    }
-
-    public DrinkType getDrink() {
-        return Drink;
-    }
-
-    public void setDrink(DrinkType drink) {
-        Drink = drink;
-    }
-
     public double getPrice() {
         return getFoodPrice(getMeal()) + getDrinkPrice(getDrink());
     }
 
-    /*public void setPrice(double price) {
-        this.price = price;
-    }*/
-    public String getDeliveryAddress() {
-        return deliveryAddress;
+
+    public LocalDateTime getCreateDate() {
+        return LocalDateTime.now();
     }
 
-    public void setDeliveryAddress(String deliveryAddress) {
-        this.deliveryAddress = deliveryAddress;
-    }
-
-    public LocalDate getCreateDate() {
-        return LocalDate.now();
-    }
-
-    public OrderStatus getOrderStatus() {
-        return orderStatus;
-    }
-
-    public void setOrderStatus(OrderStatus orderStatus) {
-        this.orderStatus = orderStatus;
-    }
-
-    /*public Long getRestaurantId() {
-        return restaurantId;
-    }
-
-    public void setRestaurantId(Long restaurantId) {
-        this.restaurantId = restaurantId;
-    }*/
 }

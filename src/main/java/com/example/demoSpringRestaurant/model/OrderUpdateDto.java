@@ -1,44 +1,41 @@
 package com.example.demoSpringRestaurant.model;
 
-import com.example.demoSpringRestaurant.persistance.entity.OrderEntity;
+import com.example.demoSpringRestaurant.constant.DrinkType;
+import com.example.demoSpringRestaurant.constant.MealType;
+import com.example.demoSpringRestaurant.persistance.entity.RestaurantEntity;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotNull;
 import com.example.demoSpringRestaurant.constant.OrderStatus;
+import lombok.Data;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
+@Data
 public class OrderUpdateDto {
 
-    //@NotNull
-    private Long restaurantId;
-
-    private OrderEntity.MealType Meal;
-
+    @ManyToOne
+    private RestaurantEntity restaurant;
+    @Nullable
     @Enumerated(EnumType.STRING)
-    private OrderEntity.DrinkType Drink;
+    private MealType Meal;
+    @Nullable
+    @Enumerated(EnumType.STRING)
+    private DrinkType Drink;
     @Transient
     private double price;
-
     private String deliveryAddress;
-
     @Transient
-    private LocalDate createDate;
-
+    private LocalDateTime createDate;
     @Enumerated(EnumType.STRING)
     @NotNull
     private OrderStatus orderStatus = OrderStatus.SENT;
 
-    enum DrinkType {
-        COLA, WATER, JUICE, LEMONADE, TEA
-    }
 
-    public enum MealType {
-        RICEANDFISH, FISHANDCHIPS, CHICKENANDRICE, CHICKENANDFISH
-    }
-
-    private double getDrinkPrice(OrderEntity.DrinkType drinkType) {
+    private double getDrinkPrice(DrinkType drinkType) {
         if (drinkType == null) return 0;
         return switch (drinkType) {
             case COLA -> 3.1;
@@ -48,7 +45,7 @@ public class OrderUpdateDto {
         };
     }
 
-    private double getFoodPrice(OrderEntity.MealType mealType) {
+    private double getFoodPrice(MealType mealType) {
         if (mealType == null) return 0;
         return switch (mealType) {
             case RICEANDFISH -> 10.1;
@@ -58,64 +55,19 @@ public class OrderUpdateDto {
         };
     }
 
-    public OrderUpdateDto(OrderEntity.MealType meal, OrderEntity.DrinkType drink, double price) {
+    public OrderUpdateDto(MealType meal, DrinkType drink, double price) {
         Meal = meal;
         Drink = drink;
         this.price = price;
-    }
-
-    public OrderUpdateDto() {
-    }
-
-    public OrderEntity.MealType getMeal() {
-        return Meal;
-    }
-
-    public void setMeal(OrderEntity.MealType meal) {
-        Meal = meal;
-    }
-
-    public OrderEntity.DrinkType getDrink() {
-        return Drink;
-    }
-
-    public void setDrink(OrderEntity.DrinkType drink) {
-        Drink = drink;
     }
 
     public double getPrice() {
         return getFoodPrice(getMeal()) + getDrinkPrice(getDrink());
     }
 
-    /*public void setPrice(double price) {
-        this.price = price;
-    }*/
-    public String getDeliveryAddress() {
-        return deliveryAddress;
+    public LocalDateTime getCreateDate() {
+        return LocalDateTime.now();
     }
 
-    public void setDeliveryAddress(String deliveryAddress) {
-        this.deliveryAddress = deliveryAddress;
-    }
-
-    public LocalDate getCreateDate() {
-        return LocalDate.now();
-    }
-
-    public OrderStatus getOrderStatus() {
-        return orderStatus;
-    }
-
-    public void setOrderStatus(OrderStatus orderStatus) {
-        this.orderStatus = orderStatus;
-    }
-
-    public Long getRestaurantId() {
-        return restaurantId;
-    }
-
-    public void setRestaurantId(Long restaurantId) {
-        this.restaurantId = restaurantId;
-    }
 }
 
