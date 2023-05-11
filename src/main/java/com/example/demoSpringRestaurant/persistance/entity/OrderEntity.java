@@ -3,6 +3,7 @@ package com.example.demoSpringRestaurant.persistance.entity;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import com.example.demoSpringRestaurant.constant.OrderStatus;
 
 import java.time.LocalDate;
 
@@ -15,7 +16,8 @@ public class OrderEntity {
     private Long id;
 
     //@NotNull
-    private Long restaurantId;
+    @ManyToOne
+    private RestaurantEntity restaurant;
 
     @Enumerated(EnumType.STRING)
     @Nullable
@@ -35,21 +37,6 @@ public class OrderEntity {
     @Enumerated(EnumType.STRING)
     @NotNull
     private OrderStatus orderStatus = OrderStatus.SENT;
-
-    public enum OrderStatus {
-        SENT,
-        APPROVED,
-        SHIPPING,
-        SHIPPED;
-
-        public OrderStatus getNextStatus() {
-            return switch (this) {
-                case SENT -> APPROVED;
-                case APPROVED -> SHIPPING;
-                case SHIPPING, SHIPPED -> SHIPPED;
-            };
-        }
-    }
 
     public enum DrinkType {
         COLA, WATER, JUICE, LEMONADE, TEA
@@ -136,14 +123,14 @@ public class OrderEntity {
     }
 
     public void setOrderStatus(OrderStatus orderStatus) {
-        this.orderStatus = orderStatus.getNextStatus();
+        this.orderStatus = orderStatus;
     }
 
-    public Long getRestaurantId() {
+    /*public Long getRestaurantId() {
         return restaurantId;
     }
 
     public void setRestaurantId(Long restaurantId) {
         this.restaurantId = restaurantId;
-    }
+    }*/
 }

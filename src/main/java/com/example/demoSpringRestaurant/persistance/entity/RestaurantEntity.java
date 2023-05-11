@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 
+import java.util.List;
+
 @Entity
 @Table
 public class RestaurantEntity {
@@ -28,6 +30,9 @@ public class RestaurantEntity {
     private Boolean isVegan = false;
     @NotNull
     private Boolean canDeliver;
+
+    @OneToMany
+    private List<OrderEntity> orderEntity;
 
     public RestaurantEntity(){}
 

@@ -1,5 +1,7 @@
 package com.example.demoSpringRestaurant.service;
 
+import com.example.demoSpringRestaurant.constant.OrderStatus;
+import com.example.demoSpringRestaurant.exception.EntityNotFoundException;
 import com.example.demoSpringRestaurant.mapper.OrderMapper;
 import com.example.demoSpringRestaurant.model.OrderCreationDto;
 import com.example.demoSpringRestaurant.model.OrderDto;
@@ -32,11 +34,10 @@ public class OrderService {
     public OrderEntity addOrder(Long id, OrderCreationDto orderCreationDto) {
         orderCreationDto.setRestaurantId(id);
 
-        if (orderCreationDto.getRestaurantId() == null)
-            throw new IllegalStateException("RestaurantId not found");
         if (!restaurantRepository.existsById(orderCreationDto.getRestaurantId()))
             throw new IllegalStateException("Restaurant not found");
-
+        orderCreationDto.setOrderStatus(OrderStatus.SENT);
+        System.out.println("aaaaaaaaaaaaaaaaaa" +orderCreationDto.getOrderStatus());
         return orderRepository.save(orderMapper.fromOrderCreationDtoToEntity(orderCreationDto));
     }
 
@@ -44,7 +45,7 @@ public class OrderService {
         if (restaurantRepository.findById(id).isPresent()) {
             Map<RestaurantEntity, List<OrderDto>> restaurantEntityOrderListMap = new HashMap<>();
             var restaurant = restaurantRepository.findById(id).get();
-            var orders = orderRepository.getOrdersByRestaurantId(id)
+            var orders = orderRepository.findAllByRestaurantId(id)
                     .stream().map(orderMapper::fromEntityToOrderDto).toList();
             restaurantEntityOrderListMap.put(restaurant, orders);
             return restaurantEntityOrderListMap;
@@ -56,19 +57,23 @@ public class OrderService {
                 .stream().map(orderMapper::fromEntityToOrderDto).toList();*/
     }
 
-    public void removeOrder(Long restaurantId, Long orderId) {
+    public void removeOrder(Long restaurantId, Long orderId) throws EntityNotFoundException {
         if (!restaurantRepository.existsById(restaurantId))
-            throw new IllegalStateException("Restaurant not found");
+            throw new EntityNotFoundException("Restaurant not found");
         orderRepository.deleteById(orderId);
     }
 
-    /*public void setNextState(Long restaurantId, Long orderId) {
+    public void setNextState(Long restaurantId, Long orderId) {
         if (!restaurantRepository.existsById(restaurantId))
             throw new IllegalStateException("Restaurant not found");
-        var order = orderRepository.findById(orderId);
-        if (order.isPresent()) {
-            if (order.get().getRestaurantId().equals(restaurantId))
-                order.get().setOrderStatus(order.get().getOrderStatus().getNextStatus());
+        var orderOptional = orderRepository.findById(orderId);
+        if (orderOptional.isPresent()) {
+            var order = orderOptional.get();
+            //if (order.getRestaurantId().equals(restaurantId)) {
+                order.setOrderStatus(order.getOrderStatus().getNextStatus());
+                orderRepository.save(order);
+            //}
         }
-    }*/
+
+    }
 }

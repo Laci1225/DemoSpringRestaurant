@@ -1,5 +1,5 @@
 package com.example.demoSpringRestaurant.model;
-
+import com.example.demoSpringRestaurant.constant.OrderStatus;
 import com.example.demoSpringRestaurant.persistance.entity.OrderEntity;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
@@ -25,22 +25,7 @@ public class OrderDto {
     private LocalDate createDate;
 
 
-    private OrderEntity.OrderStatus orderStatus = OrderEntity.OrderStatus.SENT;
-
-    enum OrderStatus {
-        SENT,
-        APPROVED,
-        SHIPPING,
-        SHIPPED;
-
-        public OrderStatus getNextStatus() {
-            return switch (this) {
-                case SENT -> APPROVED;
-                case APPROVED -> SHIPPING;
-                case SHIPPING, SHIPPED -> SHIPPED;
-            };
-        }
-    }
+    private OrderStatus orderStatus = OrderStatus.SENT;
 
     enum DrinkType {
         COLA, WATER, JUICE, LEMONADE, TEA
@@ -122,12 +107,12 @@ public class OrderDto {
         return LocalDate.now();
     }
 
-    public OrderEntity.OrderStatus getOrderStatus() {
+    public OrderStatus getOrderStatus() {
         return orderStatus;
     }
 
-    public void setOrderStatus(OrderEntity.OrderStatus orderStatus) {
-        this.orderStatus = orderStatus.getNextStatus();
+    public void setOrderStatus(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
     }
 
     public Long getRestaurantId() {

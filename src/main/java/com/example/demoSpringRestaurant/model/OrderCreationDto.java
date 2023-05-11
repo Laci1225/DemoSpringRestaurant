@@ -1,11 +1,8 @@
 package com.example.demoSpringRestaurant.model;
 
+import com.example.demoSpringRestaurant.constant.OrderStatus;
 import com.example.demoSpringRestaurant.persistance.entity.OrderEntity;
 import jakarta.annotation.Nullable;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Transient;
-import jakarta.validation.constraints.NegativeOrZero;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
@@ -16,39 +13,27 @@ public class OrderCreationDto {
     private Long restaurantId;
 
     @Nullable
-    @Enumerated(EnumType.STRING)
     private OrderEntity.MealType Meal;
 
-    @Enumerated(EnumType.STRING)
     @Nullable
     private OrderEntity.DrinkType Drink;
-    @Transient
     private double price;
 
     @NotNull
     private String deliveryAddress;
 
-    @Transient
     private LocalDate createDate;
 
-    @Enumerated(EnumType.STRING)
-    @NotNull
-    private OrderEntity.OrderStatus orderStatus = OrderEntity.OrderStatus.SENT;
-
-    enum OrderStatus {
-        SENT,
-        APPROVED,
-        SHIPPING,
-        SHIPPED;
-
-        public OrderStatus getNextStatus() {
-            return switch (this) {
-                case SENT -> APPROVED;
-                case APPROVED -> SHIPPING;
-                case SHIPPING, SHIPPED -> SHIPPED;
-            };
-        }
+    public OrderStatus getOrderStatus() {
+        return orderStatus;
     }
+
+    public void setOrderStatus(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
+    }
+
+    @NotNull
+    private OrderStatus orderStatus = OrderStatus.SENT;
 
     enum DrinkType {
         COLA, WATER, JUICE, LEMONADE, TEA
@@ -120,14 +105,6 @@ public class OrderCreationDto {
 
     public LocalDate getCreateDate() {
         return LocalDate.now();
-    }
-
-    public OrderEntity.OrderStatus getOrderStatus() {
-        return orderStatus;
-    }
-
-    public void setOrderStatus(OrderEntity.OrderStatus orderStatus) {
-        this.orderStatus = orderStatus;
     }
 
     public Long getRestaurantId() {

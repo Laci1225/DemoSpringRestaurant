@@ -40,7 +40,7 @@ public class RestaurantService {
     }
 
     public void removeRestaurant(Long id) {
-        var orders = orderRepository.getOrdersByRestaurantId(id);
+        var orders = orderRepository.findAllByRestaurantId(id);
         orderRepository.deleteAll(orders);
         restaurantRepository.deleteById(id);
     }

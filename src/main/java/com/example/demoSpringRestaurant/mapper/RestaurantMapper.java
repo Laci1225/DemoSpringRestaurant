@@ -6,7 +6,7 @@ import com.example.demoSpringRestaurant.model.RestaurantUpdateDto;
 import com.example.demoSpringRestaurant.persistance.entity.RestaurantEntity;
 import org.mapstruct.Mapper;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring",uses = {OrderMapper.class})
 public interface RestaurantMapper {
     RestaurantEntity fromRestaurantDtoToEntity(RestaurantDto restaurantDto);
     RestaurantDto fromEntityToRestaurantDto(RestaurantEntity restaurantEntity);

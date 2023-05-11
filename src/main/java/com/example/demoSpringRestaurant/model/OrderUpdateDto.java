@@ -5,6 +5,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotNull;
+import com.example.demoSpringRestaurant.constant.OrderStatus;
 
 import java.time.LocalDate;
 
@@ -27,22 +28,7 @@ public class OrderUpdateDto {
 
     @Enumerated(EnumType.STRING)
     @NotNull
-    private OrderEntity.OrderStatus orderStatus = OrderEntity.OrderStatus.SENT;
-
-    enum OrderStatus {
-        SENT,
-        APPROVED,
-        SHIPPING,
-        SHIPPED;
-
-        public OrderStatus getNextStatus() {
-            return switch (this) {
-                case SENT -> APPROVED;
-                case APPROVED -> SHIPPING;
-                case SHIPPING, SHIPPED -> SHIPPED;
-            };
-        }
-    }
+    private OrderStatus orderStatus = OrderStatus.SENT;
 
     enum DrinkType {
         COLA, WATER, JUICE, LEMONADE, TEA
@@ -116,12 +102,12 @@ public class OrderUpdateDto {
         return LocalDate.now();
     }
 
-    public OrderEntity.OrderStatus getOrderStatus() {
+    public OrderStatus getOrderStatus() {
         return orderStatus;
     }
 
-    public void setOrderStatus(OrderEntity.OrderStatus orderStatus) {
-        this.orderStatus = orderStatus.getNextStatus();
+    public void setOrderStatus(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
     }
 
     public Long getRestaurantId() {

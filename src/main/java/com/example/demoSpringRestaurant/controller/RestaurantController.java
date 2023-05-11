@@ -1,5 +1,6 @@
 package com.example.demoSpringRestaurant.controller;
 
+import com.example.demoSpringRestaurant.exception.EntityNotFoundException;
 import com.example.demoSpringRestaurant.model.*;
 import com.example.demoSpringRestaurant.persistance.entity.OrderEntity;
 import com.example.demoSpringRestaurant.persistance.entity.RestaurantEntity;
@@ -7,7 +8,9 @@ import com.example.demoSpringRestaurant.service.OrderService;
 import com.example.demoSpringRestaurant.service.RestaurantService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Map;
@@ -66,15 +69,19 @@ public class RestaurantController {
     }
     @DeleteMapping(path = "{restaurantId}/orders/{orderId}")
     public void removeOrder(@PathVariable("restaurantId") Long restaurantId,
-                            @PathVariable("orderId") Long orderId) {
-        orderService.removeOrder(restaurantId,orderId);
+                            @PathVariable("orderId") Long orderId){
+        try {
+            orderService.removeOrder(restaurantId,orderId);
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,e.getMessage(),e);
+        }
     }
 
-    /*@GetMapping(path = "{restaurantId}/orders/{orderId}")
+    @PostMapping(path = "{restaurantId}/orders/{orderId}/next-state")
     public void setNextState(@PathVariable("restaurantId") Long restaurantId,
                              @PathVariable("orderId") Long orderId){
         orderService.setNextState(restaurantId,orderId);
-    }*/
+    }
 
 
 }
