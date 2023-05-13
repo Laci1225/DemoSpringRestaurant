@@ -27,14 +27,15 @@ public class OrderEntity {
 
     @Enumerated(EnumType.STRING)
     @Nullable
-    private MealType Meal;
+    private MealType mealType;
 
     @Nullable
     @Enumerated(EnumType.STRING)
-    private DrinkType Drink;
+    private DrinkType drinkType;
     @Transient
     private double price;
 
+    @NotNull
     private String deliveryAddress;
 
     @Transient
@@ -55,7 +56,7 @@ public class OrderEntity {
         };
     }
 
-    private double getFoodPrice(MealType mealType) {
+    private double getMealPrice(MealType mealType) {
         if (mealType == null) return 0;
         return switch (mealType) {
             case RICEANDFISH -> 10.1;
@@ -66,7 +67,7 @@ public class OrderEntity {
     }
 
     public double getPrice() {
-        return getFoodPrice(getMeal()) + getDrinkPrice(getDrink());
+        return  getMealPrice(getMealType()) + getDrinkPrice(getDrinkType());
     }
 
 

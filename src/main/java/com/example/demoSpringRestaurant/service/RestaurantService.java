@@ -1,10 +1,10 @@
 package com.example.demoSpringRestaurant.service;
 
+import com.example.demoSpringRestaurant.exception.EntityNotFoundException;
 import com.example.demoSpringRestaurant.model.RestaurantCreationDto;
 import com.example.demoSpringRestaurant.model.RestaurantDto;
 import com.example.demoSpringRestaurant.model.RestaurantUpdateDto;
 import com.example.demoSpringRestaurant.persistance.repository.RestaurantRepository;
-import com.example.demoSpringRestaurant.persistance.entity.RestaurantEntity;
 import jakarta.transaction.Transactional;
 import com.example.demoSpringRestaurant.mapper.RestaurantMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,9 +31,10 @@ public class RestaurantService {
                 .map(restaurantMapper::fromEntityToRestaurantDto).toList();
     }
 
-    public RestaurantEntity addRestaurant(RestaurantCreationDto restaurantCreationDto) {
-        return restaurantRepository.save(restaurantMapper.
+    public RestaurantCreationDto addRestaurant(RestaurantCreationDto restaurantCreationDto) {
+        restaurantRepository.save(restaurantMapper.
                 fromRestaurantCreationDtoToEntity(restaurantCreationDto));
+        return restaurantCreationDto;
     }
 
     public Map<String, List<String>> getRestaurantsByOwner() {
@@ -62,7 +63,7 @@ public class RestaurantService {
     }
 
 
-    @Transactional
+    //@Transactional
     public void updateRestaurant(Long id, RestaurantUpdateDto restaurantUpdateDto) {
         //var restaurant = repository.findById(id).stream().map(restaurantMapper::fromEntityToRestaurantDto).findFirst();
         if (restaurantRepository.existsById(id)) {
@@ -72,5 +73,40 @@ public class RestaurantService {
             restaurantRepository.save(updatedEntity);
         }
     }
+    public RestaurantDto updateParametersInRestaurant(Long id, RestaurantDto restaurantDto) throws EntityNotFoundException {
+        var restaurantOptional = restaurantRepository.findById(id)
+                .stream().map(restaurantMapper::fromEntityToRestaurantDto).findFirst();
+        if (restaurantOptional.isPresent()) {
+            var restaurant = restaurantOptional.get();
+            restaurant.setId(restaurant.getId());
+            if (restaurantDto.getName() != null) {
+                restaurant.setName(restaurantDto.getName());
+            }
+            if (restaurantDto.getOwner() != null) {
+                restaurant.setOwner(restaurantDto.getOwner());
+            }
+            if (restaurantDto.getEmail() != null) {
+                restaurant.setEmail(restaurantDto.getEmail());
+            }
+            if (restaurantDto.getAddress() != null) {
+                restaurant.setAddress(restaurantDto.getAddress());
+            }
+            if (restaurantDto.getPhoneNumber() != null) {
+                restaurant.setPhoneNumber(restaurantDto.getPhoneNumber());
+            }
+            if (restaurantDto.getCanDeliver() != null) {
+                restaurant.setCanDeliver(restaurantDto.getCanDeliver());
+            }
+            if (restaurantDto.getNumberOfTables() != null) {
+                restaurant.setNumberOfTables(restaurantDto.getNumberOfTables());
+            }
+            if (restaurantDto.getIsVegan() != null) {
+                restaurant.setIsVegan(restaurantDto.getIsVegan());
+            }
+            restaurantRepository.save(restaurantMapper.fromRestaurantDtoToEntity(restaurant));
+            return restaurant;
+        }
+        else throw new EntityNotFoundException("Restaurant not found");
 
+    }
 }

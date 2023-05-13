@@ -11,22 +11,25 @@ import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotNull;
 import com.example.demoSpringRestaurant.constant.OrderStatus;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Data
+@RequiredArgsConstructor
 public class OrderUpdateDto {
 
     @ManyToOne
     private RestaurantEntity restaurant;
     @Nullable
     @Enumerated(EnumType.STRING)
-    private MealType Meal;
+    private MealType mealType;
     @Nullable
     @Enumerated(EnumType.STRING)
-    private DrinkType Drink;
+    private DrinkType drinkType;
     @Transient
     private double price;
+    @NotNull
     private String deliveryAddress;
     @Transient
     private LocalDateTime createDate;
@@ -45,7 +48,7 @@ public class OrderUpdateDto {
         };
     }
 
-    private double getFoodPrice(MealType mealType) {
+    private double getMealPrice(MealType mealType) {
         if (mealType == null) return 0;
         return switch (mealType) {
             case RICEANDFISH -> 10.1;
@@ -55,14 +58,8 @@ public class OrderUpdateDto {
         };
     }
 
-    public OrderUpdateDto(MealType meal, DrinkType drink, double price) {
-        Meal = meal;
-        Drink = drink;
-        this.price = price;
-    }
-
     public double getPrice() {
-        return getFoodPrice(getMeal()) + getDrinkPrice(getDrink());
+        return getMealPrice(getMealType()) + getDrinkPrice(getDrinkType());
     }
 
     public LocalDateTime getCreateDate() {

@@ -3,7 +3,6 @@ package com.example.demoSpringRestaurant.facade;
 import com.example.demoSpringRestaurant.mapper.OrderMapper;
 import com.example.demoSpringRestaurant.model.OrderCreationDto;
 import com.example.demoSpringRestaurant.model.OrderDto;
-import com.example.demoSpringRestaurant.persistance.entity.OrderEntity;
 import com.example.demoSpringRestaurant.persistance.repository.OrderRepository;
 import com.example.demoSpringRestaurant.persistance.repository.RestaurantRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,21 +32,21 @@ public class RestaurantOrderFacade {
             throw new IllegalStateException();
     }
 
-    public OrderEntity addOrder(OrderCreationDto orderCreationDto, Long restaurantId) {
+    public OrderCreationDto addOrder(OrderCreationDto orderCreationDto, Long restaurantId) {
 
         var restaurant = restaurantRepository.findById(restaurantId);
         if (restaurant.isPresent()) {
             orderCreationDto.setRestaurant(restaurant.get());
+            orderRepository.save(orderMapper.fromOrderCreationDtoToEntity(orderCreationDto));
+            return orderCreationDto;
         } else
             throw new IllegalStateException("Restaurant not found");
-        return orderRepository.save(orderMapper.fromOrderCreationDtoToEntity(orderCreationDto));
     }
 
     public void removeRestaurant(Long restaurantId) {
-        restaurantRepository.deleteById(restaurantId);
-       /* var orders = orderRepository.findAllByRestaurantId(id);
+        var orders = orderRepository.findAllByRestaurantId(restaurantId);
         orderRepository.deleteAll(orders);
-        restaurantRepository.deleteById(id);*/
+        restaurantRepository.deleteById(restaurantId);
     }
 
     //create order

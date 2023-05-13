@@ -11,10 +11,12 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Data
+@RequiredArgsConstructor
 public class OrderCreationDto {
 
     @ManyToOne
@@ -22,11 +24,11 @@ public class OrderCreationDto {
 
     @Nullable
     @Enumerated(EnumType.STRING)
-    private MealType Meal;
+    private MealType mealType;
 
     @Nullable
     @Enumerated(EnumType.STRING)
-    private DrinkType Drink;
+    private DrinkType drinkType;
     @Transient
     private double price;
 
@@ -49,7 +51,7 @@ public class OrderCreationDto {
         };
     }
 
-    private double getFoodPrice(MealType mealType) {
+    private double getMealPrice(MealType mealType) {
         if (mealType == null) return 0;
         return switch (mealType) {
             case RICEANDFISH -> 10.1;
@@ -58,15 +60,8 @@ public class OrderCreationDto {
             case CHICKENANDRICE -> 15.1;
         };
     }
-
-    public OrderCreationDto(MealType meal, DrinkType drink, double price) {
-        Meal = meal;
-        Drink = drink;
-        this.price = price;
-    }
-
     public double getPrice() {
-        return getFoodPrice(getMeal()) + getDrinkPrice(getDrink());
+        return  getMealPrice(getMealType()) + getDrinkPrice(getDrinkType());
     }
 
     public LocalDateTime getCreateDate() {

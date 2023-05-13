@@ -5,19 +5,21 @@ import com.example.demoSpringRestaurant.constant.OrderStatus;
 import com.example.demoSpringRestaurant.persistance.entity.RestaurantEntity;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Data
+@RequiredArgsConstructor
 public class OrderDto {
 
     private Long id;
     @ManyToOne
     private RestaurantEntity restaurant;
 
-    private MealType Meal;
+    private MealType mealType;
 
-    private DrinkType Drink;
+    private DrinkType drinkType;
     private double price;
 
     private String deliveryAddress;
@@ -36,7 +38,7 @@ public class OrderDto {
         };
     }
 
-    private double getFoodPrice(MealType mealType) {
+    private double getMealPrice(MealType mealType) {
         if (mealType == null) return 0;
         return switch (mealType) {
             case RICEANDFISH -> 10.1;
@@ -46,14 +48,8 @@ public class OrderDto {
         };
     }
 
-    public OrderDto(MealType meal, DrinkType drink, double price) {
-        Meal = meal;
-        Drink = drink;
-        this.price = price;
-    }
-
     public double getPrice() {
-        return getFoodPrice(getMeal()) + getDrinkPrice(getDrink());
+        return getMealPrice(getMealType()) + getDrinkPrice(getDrinkType());
     }
 
     public LocalDateTime getCreateDate() {

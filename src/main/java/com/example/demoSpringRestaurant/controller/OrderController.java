@@ -4,10 +4,10 @@ import com.example.demoSpringRestaurant.exception.EntityNotFoundException;
 import com.example.demoSpringRestaurant.facade.RestaurantOrderFacade;
 import com.example.demoSpringRestaurant.model.OrderCreationDto;
 import com.example.demoSpringRestaurant.model.OrderDto;
-import com.example.demoSpringRestaurant.persistance.entity.OrderEntity;
 import com.example.demoSpringRestaurant.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -30,8 +30,10 @@ public class OrderController {
     }
 
     @PostMapping(path = "orders/{restaurantId}")
-    public OrderEntity addOrder(@RequestBody OrderCreationDto orderCreationDto, @PathVariable("restaurantId") Long restaurantId) {
-        return restaurantOrderFacade.addOrder(orderCreationDto, restaurantId);
+    public ResponseEntity<OrderCreationDto> addOrder(@RequestBody OrderCreationDto orderCreationDto, @PathVariable("restaurantId") Long restaurantId) {
+        var a = restaurantOrderFacade.addOrder(orderCreationDto, restaurantId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(a);
+        //return restaurantOrderFacade.addOrder(orderCreationDto, restaurantId);
     }
 
     @DeleteMapping(path = "orders/{orderId}")

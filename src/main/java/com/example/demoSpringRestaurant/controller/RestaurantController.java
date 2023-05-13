@@ -1,12 +1,15 @@
 package com.example.demoSpringRestaurant.controller;
 
+import com.example.demoSpringRestaurant.exception.EntityNotFoundException;
 import com.example.demoSpringRestaurant.facade.RestaurantOrderFacade;
 import com.example.demoSpringRestaurant.model.*;
-import com.example.demoSpringRestaurant.persistance.entity.RestaurantEntity;
 import com.example.demoSpringRestaurant.service.RestaurantService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Map;
@@ -30,8 +33,9 @@ public class RestaurantController {
     }
 
     @PostMapping
-    public RestaurantEntity addRestaurant(@RequestBody RestaurantCreationDto restaurant) {
-        return restaurantService.addRestaurant(restaurant);
+    public ResponseEntity<RestaurantCreationDto> addRestaurant(@RequestBody RestaurantCreationDto restaurant) {
+        var a = restaurantService.addRestaurant(restaurant);
+        return ResponseEntity.status(HttpStatus.CREATED).body(a);
     }
 
     @DeleteMapping(path = "{restaurantId}")
@@ -50,4 +54,15 @@ public class RestaurantController {
             @Valid @RequestBody RestaurantUpdateDto restaurantUpdateDto) {
         restaurantService.updateRestaurant(id, restaurantUpdateDto);
     }
+    @PatchMapping(path = "{restaurantId}")
+    public RestaurantDto updateParametersInRestaurant(
+            @PathVariable("restaurantId") Long id,
+            @RequestBody RestaurantDto restaurantDto) {
+        try {
+            return restaurantService.updateParametersInRestaurant(id,restaurantDto);
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,e.getMessage(),e);
+        }
+    }
+
 }
