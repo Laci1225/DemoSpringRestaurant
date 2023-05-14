@@ -33,9 +33,9 @@ public class RestaurantController {
     }
 
     @PostMapping
-    public ResponseEntity<RestaurantCreationDto> addRestaurant(@RequestBody RestaurantCreationDto restaurant) {
-        var a = restaurantService.addRestaurant(restaurant);
-        return ResponseEntity.status(HttpStatus.CREATED).body(a);
+    @ResponseStatus(HttpStatus.CREATED)
+    public RestaurantDto addRestaurant(@RequestBody RestaurantCreationDto restaurant) {
+        return restaurantService.addRestaurant(restaurant);
     }
 
     @DeleteMapping(path = "{restaurantId}")

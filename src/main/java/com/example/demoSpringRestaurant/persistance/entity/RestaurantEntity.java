@@ -4,13 +4,14 @@ import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 
 @Entity
 @Table
 @Data
+@AllArgsConstructor
+@Builder
 @NoArgsConstructor
 public class RestaurantEntity {
     @Id

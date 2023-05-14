@@ -5,24 +5,19 @@ import com.example.demoSpringRestaurant.model.OrderCreationDto;
 import com.example.demoSpringRestaurant.model.OrderDto;
 import com.example.demoSpringRestaurant.persistance.repository.OrderRepository;
 import com.example.demoSpringRestaurant.persistance.repository.RestaurantRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.demoSpringRestaurant.service.OrderService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class RestaurantOrderFacade {
+    private final OrderService orderService;
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
-
     private final RestaurantRepository restaurantRepository;
-
-    @Autowired
-    public RestaurantOrderFacade(OrderRepository orderRepository, OrderMapper orderMapper, RestaurantRepository restaurantRepository) {
-        this.orderRepository = orderRepository;
-        this.orderMapper = orderMapper;
-        this.restaurantRepository = restaurantRepository;
-    }
 
     public List<OrderDto> getOrdersByRestaurantId(Long restaurantId) {
         if (restaurantRepository.findById(restaurantId).isPresent()) {
@@ -33,14 +28,8 @@ public class RestaurantOrderFacade {
     }
 
     public OrderCreationDto addOrder(OrderCreationDto orderCreationDto, Long restaurantId) {
-
-        var restaurant = restaurantRepository.findById(restaurantId);
-        if (restaurant.isPresent()) {
-            orderCreationDto.setRestaurant(restaurant.get());
-            orderRepository.save(orderMapper.fromOrderCreationDtoToEntity(orderCreationDto));
-            return orderCreationDto;
-        } else
-            throw new IllegalStateException("Restaurant not found");
+        // TODO fix service and everything in this class
+        return orderService.addOrder(orderCreationDto,restaurantId);
     }
 
     public void removeRestaurant(Long restaurantId) {

@@ -3,6 +3,7 @@ package com.example.demoSpringRestaurant.model;
 import lombok.*;
 
 @Data
+@Builder
 public class RestaurantDto {
     private Long id;
     private String name;

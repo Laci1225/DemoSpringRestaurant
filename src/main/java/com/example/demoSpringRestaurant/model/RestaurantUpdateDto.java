@@ -11,7 +11,6 @@ public class RestaurantUpdateDto {
     private String name;
     @NotNull
     private String owner;
-
     private String address;
     @Email
     private String email;

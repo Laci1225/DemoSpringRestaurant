@@ -31,10 +31,10 @@ public class RestaurantService {
                 .map(restaurantMapper::fromEntityToRestaurantDto).toList();
     }
 
-    public RestaurantCreationDto addRestaurant(RestaurantCreationDto restaurantCreationDto) {
-        restaurantRepository.save(restaurantMapper.
+    public RestaurantDto addRestaurant(RestaurantCreationDto restaurantCreationDto) {
+        var restaurantEntity =restaurantRepository.save(restaurantMapper.
                 fromRestaurantCreationDtoToEntity(restaurantCreationDto));
-        return restaurantCreationDto;
+        return restaurantMapper.fromEntityToRestaurantDto(restaurantEntity);
     }
 
     public Map<String, List<String>> getRestaurantsByOwner() {

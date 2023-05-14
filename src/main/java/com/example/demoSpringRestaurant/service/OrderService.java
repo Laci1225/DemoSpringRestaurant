@@ -2,6 +2,7 @@ package com.example.demoSpringRestaurant.service;
 
 import com.example.demoSpringRestaurant.exception.EntityNotFoundException;
 import com.example.demoSpringRestaurant.mapper.OrderMapper;
+import com.example.demoSpringRestaurant.model.OrderCreationDto;
 import com.example.demoSpringRestaurant.model.OrderDto;
 import com.example.demoSpringRestaurant.persistance.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,5 +40,17 @@ public class OrderService {
         } else
             throw new EntityNotFoundException("Order not found");
 
+    }
+    public OrderCreationDto addOrder(OrderCreationDto orderCreationDto, Long restaurantId) {
+
+        // TODO fix service
+        return orderCreationDto;
+        /*var restaurant = restaurantRepository.findById(restaurantId);
+        if (restaurant.isPresent()) {
+            orderCreationDto.setRestaurant(restaurant.get());
+            orderRepository.save(orderMapper.fromOrderCreationDtoToEntity(orderCreationDto));
+            return orderCreationDto;
+        } else
+            throw new IllegalStateException("Restaurant not found");*/
     }
 }
