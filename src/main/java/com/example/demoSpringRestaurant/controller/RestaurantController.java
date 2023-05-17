@@ -7,7 +7,6 @@ import com.example.demoSpringRestaurant.service.RestaurantService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -49,19 +48,24 @@ public class RestaurantController {
     }
 
     @PutMapping(path = "{restaurantId}")
-    public void updateRestaurant(
+    public RestaurantDto updateRestaurant(
             @PathVariable("restaurantId") Long id,
             @Valid @RequestBody RestaurantUpdateDto restaurantUpdateDto) {
-        restaurantService.updateRestaurant(id, restaurantUpdateDto);
+        try {
+            return restaurantService.updateRestaurant(id, restaurantUpdateDto);
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        }
     }
+
     @PatchMapping(path = "{restaurantId}")
     public RestaurantDto updateParametersInRestaurant(
             @PathVariable("restaurantId") Long id,
             @RequestBody RestaurantDto restaurantDto) {
         try {
-            return restaurantService.updateParametersInRestaurant(id,restaurantDto);
+            return restaurantService.updateParametersInRestaurant(id, restaurantDto);
         } catch (EntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,e.getMessage(),e);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
     }
 

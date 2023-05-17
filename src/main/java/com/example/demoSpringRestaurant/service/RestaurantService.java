@@ -5,7 +5,6 @@ import com.example.demoSpringRestaurant.model.RestaurantCreationDto;
 import com.example.demoSpringRestaurant.model.RestaurantDto;
 import com.example.demoSpringRestaurant.model.RestaurantUpdateDto;
 import com.example.demoSpringRestaurant.persistance.repository.RestaurantRepository;
-import jakarta.transaction.Transactional;
 import com.example.demoSpringRestaurant.mapper.RestaurantMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -64,14 +63,16 @@ public class RestaurantService {
 
 
     //@Transactional
-    public void updateRestaurant(Long id, RestaurantUpdateDto restaurantUpdateDto) {
+    public RestaurantDto updateRestaurant(Long id, RestaurantUpdateDto restaurantUpdateDto) throws EntityNotFoundException {
         //var restaurant = repository.findById(id).stream().map(restaurantMapper::fromEntityToRestaurantDto).findFirst();
         if (restaurantRepository.existsById(id)) {
             var updatedEntity = restaurantMapper.fromRestaurantUpdateDtoToEntity(restaurantUpdateDto);
             updatedEntity.setId(id);
             //repository.save(restaurantMapper.fromRestaurantDtoToEntity(restaurant.get()));
             restaurantRepository.save(updatedEntity);
+            return restaurantMapper.fromEntityToRestaurantDto(updatedEntity);
         }
+        else throw new EntityNotFoundException("Entity doesn't exist");
     }
     public RestaurantDto updateParametersInRestaurant(Long id, RestaurantDto restaurantDto) throws EntityNotFoundException {
         var restaurantOptional = restaurantRepository.findById(id)
