@@ -104,5 +104,4 @@ public class RestaurantFixture {
                 .build());
          return list;
     }
-
 }

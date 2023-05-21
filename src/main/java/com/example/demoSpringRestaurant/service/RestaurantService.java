@@ -1,6 +1,7 @@
 package com.example.demoSpringRestaurant.service;
 
 import com.example.demoSpringRestaurant.exception.EntityNotFoundException;
+import com.example.demoSpringRestaurant.exception.RestaurantEntityNotFoundException;
 import com.example.demoSpringRestaurant.model.RestaurantCreationDto;
 import com.example.demoSpringRestaurant.model.RestaurantDto;
 import com.example.demoSpringRestaurant.model.RestaurantUpdateDto;
@@ -72,7 +73,7 @@ public class RestaurantService {
             restaurantRepository.save(updatedEntity);
             return restaurantMapper.fromEntityToRestaurantDto(updatedEntity);
         }
-        else throw new EntityNotFoundException("Entity doesn't exist");
+        else throw new RestaurantEntityNotFoundException("Entity doesn't exist");
     }
     public RestaurantDto updateParametersInRestaurant(Long id, RestaurantDto restaurantDto) throws EntityNotFoundException {
         var restaurantOptional = restaurantRepository.findById(id)
@@ -107,7 +108,7 @@ public class RestaurantService {
             restaurantRepository.save(restaurantMapper.fromRestaurantDtoToEntity(restaurant));
             return restaurant;
         }
-        else throw new EntityNotFoundException("Restaurant not found");
+        else throw new RestaurantEntityNotFoundException("Restaurant not found");
 
     }
 }

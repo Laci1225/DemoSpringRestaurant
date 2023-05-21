@@ -6,6 +6,7 @@ import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import com.example.demoSpringRestaurant.constant.OrderStatus;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,6 +17,8 @@ import java.time.LocalDateTime;
 @Table
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class OrderEntity {
     @Id
     @SequenceGenerator(name = "order", sequenceName = "order_sequence", initialValue = 1)

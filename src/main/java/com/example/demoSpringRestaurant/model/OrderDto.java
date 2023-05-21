@@ -4,14 +4,14 @@ import com.example.demoSpringRestaurant.constant.MealType;
 import com.example.demoSpringRestaurant.constant.OrderStatus;
 import com.example.demoSpringRestaurant.persistance.entity.RestaurantEntity;
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Data
-@RequiredArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class OrderDto {
 
     private Long id;

@@ -1,6 +1,7 @@
 package com.example.demoSpringRestaurant.service;
 
 import com.example.demoSpringRestaurant.exception.EntityNotFoundException;
+import com.example.demoSpringRestaurant.exception.OrderEntityNotFoundException;
 import com.example.demoSpringRestaurant.mapper.OrderMapper;
 import com.example.demoSpringRestaurant.model.OrderCreationDto;
 import com.example.demoSpringRestaurant.model.OrderDto;
@@ -26,21 +27,18 @@ public class OrderService {
             orderRepository.deleteById(orderId);
             return orderMapper.fromEntityToOrderDto(order.get());
         } else
-            throw new EntityNotFoundException("Order not found");
+            throw new OrderEntityNotFoundException("Order not found");
     }
 
     public OrderDto setNextState(Long orderId) throws EntityNotFoundException {
 
-        var orderOptional = orderRepository.findById(orderId);
-        if (orderOptional.isPresent()) {
-            var order = orderOptional.get();
-            order.setOrderStatus(order.getOrderStatus().getNextStatus());
-            orderRepository.save(order);
-            return orderMapper.fromEntityToOrderDto(order);
-        } else
-            throw new EntityNotFoundException("Order not found");
-
+        var order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new OrderEntityNotFoundException("Order not found"));
+        order.setOrderStatus(order.getOrderStatus().getNextStatus());
+        orderRepository.save(order);
+        return orderMapper.fromEntityToOrderDto(order);
     }
+
     public OrderCreationDto addOrder(OrderCreationDto orderCreationDto, Long restaurantId) {
 
         // TODO fix service
