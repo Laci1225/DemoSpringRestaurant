@@ -67,8 +67,4 @@ class OrderServiceTest {
         verify(orderRepository, times(1)).save(any(OrderEntity.class));
         verifyNoMoreInteractions(orderRepository);
     }
-
-    @Test
-    void addOrderShouldCreateOneOrder() {
-    }
 }

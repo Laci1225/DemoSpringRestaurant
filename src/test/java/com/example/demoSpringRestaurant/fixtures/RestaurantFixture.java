@@ -32,6 +32,7 @@ public class RestaurantFixture {
                 .canDeliver(CAN_DELIVER)
                 .build();
     }
+
     public static RestaurantUpdateDto getRestaurantUpdateDto() {
         return RestaurantUpdateDto.builder()
                 .name(NAME)
@@ -61,6 +62,7 @@ public class RestaurantFixture {
             restaurantEntity.setId(1L);
         return restaurantEntity;
     }
+
     public static RestaurantDto getRestaurantDto() {
         return RestaurantDto.builder()
                 .id(1L)
@@ -74,8 +76,9 @@ public class RestaurantFixture {
                 .canDeliver(CAN_DELIVER)
                 .build();
     }
+
     public static List<RestaurantEntity> getRestaurantEntityList() {
-        var list = new ArrayList<RestaurantEntity>(){};
+        var list = new ArrayList<RestaurantEntity>();
         list.add(RestaurantEntity.builder()
                 .id(1L)
                 .name(NAME)
@@ -89,8 +92,9 @@ public class RestaurantFixture {
                 .build());
         return list;
     }
+
     public static List<RestaurantDto> getRestaurantDtoList() {
-        var list = new ArrayList<RestaurantDto>(){};
+        var list = new ArrayList<RestaurantDto>();
         list.add(RestaurantDto.builder()
                 .id(1L)
                 .name(NAME)
@@ -102,6 +106,6 @@ public class RestaurantFixture {
                 .isVegan(IS_VEGAN)
                 .canDeliver(CAN_DELIVER)
                 .build());
-         return list;
+        return list;
     }
 }
