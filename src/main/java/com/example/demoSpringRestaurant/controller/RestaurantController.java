@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping(path = "restaurants")
@@ -41,11 +40,6 @@ public class RestaurantController {
         } catch (RestaurantEntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
-    }
-
-    @GetMapping("owner")
-    public Map<String, List<String>> getRestaurantsByOwner() {
-        return restaurantService.getRestaurantsByOwner();
     }
 
     @PutMapping(path = "{restaurantId}")

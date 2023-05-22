@@ -11,7 +11,8 @@ import java.util.Optional;
 @Repository
 public interface RestaurantRepository extends JpaRepository<RestaurantEntity, Long> {
 
-    @Query("SELECT r1.owner, r2.name FROM RestaurantEntity r1 JOIN RestaurantEntity r2 ON r1.id = r2.id ORDER BY r1.owner")
+    @Deprecated
+    @Query("SELECT r1.id,r1.owner, r2.name FROM RestaurantEntity r1 JOIN RestaurantEntity r2 ON r1.id = r2.id ORDER BY r1.owner")
     Optional<List<String>> getRestaurantsByOwner();
     List<RestaurantEntity> findAllByIsVeganTrue();
 }

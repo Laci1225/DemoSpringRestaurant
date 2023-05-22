@@ -11,8 +11,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -31,18 +29,6 @@ public class RestaurantService {
                 fromRestaurantCreationDtoToEntity(restaurantCreationDto));
         return restaurantMapper.fromEntityToRestaurantDto(restaurantEntity);
     }
-
-    public Map<String, List<String>> getRestaurantsByOwner() {
-        if (restaurantRepository.getRestaurantsByOwner().isPresent())
-            return restaurantRepository.getRestaurantsByOwner().get().stream()
-                    .map(s -> s.split(","))
-                    .collect(Collectors.groupingBy(
-                            arr -> arr[0],
-                            Collectors.mapping(arr -> arr[1], Collectors.toList())));
-        else
-            throw new IllegalStateException();
-    }
-
 
     //@Transactional
     public RestaurantDto updateRestaurant(Long id, RestaurantUpdateDto restaurantUpdateDto) throws EntityNotFoundException {

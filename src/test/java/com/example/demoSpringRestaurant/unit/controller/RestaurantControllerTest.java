@@ -22,10 +22,8 @@ import static org.mockito.Mockito.when;
 class RestaurantControllerTest {
     @InjectMocks
     private RestaurantController restaurantController;
-
     @Mock
     private RestaurantService restaurantService;
-
     @Mock
     private RestaurantOrderFacade restaurantOrderFacade;
 
@@ -62,10 +60,6 @@ class RestaurantControllerTest {
 
         assertThat(restaurantDto).usingRecursiveComparison()
                 .isEqualTo(RestaurantFixture.getRestaurantDto());
-    }
-
-    @Test
-    void getRestaurantsByOwner() {
     }
 
     @Test

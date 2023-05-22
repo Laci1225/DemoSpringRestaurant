@@ -111,10 +111,6 @@ public class RestaurantServiceTest {
     }
 
     @Test
-    void getRestaurantsByOwner() {
-    }
-
-    @Test
     void getVeganRestaurantShouldGetAllVeganRestaurant() {
         when(restaurantMapper.fromEntityToRestaurantDto(any(RestaurantEntity.class)))
                 .thenReturn(RestaurantFixture.getRestaurantDto());
