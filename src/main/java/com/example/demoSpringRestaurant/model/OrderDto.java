@@ -52,8 +52,4 @@ public class OrderDto {
     public double getPrice() {
         return getMealType().getValue() + getDrinkType().getValue();
     }
-
-    public LocalDateTime getCreateDate() {
-        return LocalDateTime.now();
-    }
 }

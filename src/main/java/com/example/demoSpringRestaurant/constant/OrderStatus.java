@@ -1,5 +1,8 @@
 package com.example.demoSpringRestaurant.constant;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
+
 public enum OrderStatus {
     SENT,
     APPROVED,
@@ -10,7 +13,8 @@ public enum OrderStatus {
         return switch (this) {
             case SENT -> APPROVED;
             case APPROVED -> SHIPPING;
-            case SHIPPING, SHIPPED -> SHIPPED;
+            case SHIPPING -> SHIPPED;
+            case SHIPPED -> throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         };
     }
 }

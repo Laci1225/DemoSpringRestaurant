@@ -38,7 +38,20 @@ public class OrderFixture {
                 .build();
     }
 
-    public static OrderDto getOrderDtoGetNextStatus() {
+    public static OrderEntity getOrderEntityGetActualStatus(OrderStatus fromStatus) {
+        return OrderEntity.builder()
+                .id(1L)
+                .restaurant(RESTAURANT_ENTITY)
+                .mealType(MEAL_TYPE)
+                .drinkType(DRINK_TYPE)
+                .price(PRICE)
+                .deliveryAddress(DELIVERY_ADDRESS)
+                .createDate(CREATE_DATE)
+                .orderStatus(fromStatus)
+                .build();
+    }
+
+    public static OrderDto getOrderDtoGetNextStatus(OrderStatus fromStatus) {
         return OrderDto.builder()
                 .id(1L)
                 .restaurant(RESTAURANT_ENTITY)
@@ -47,7 +60,7 @@ public class OrderFixture {
                 .price(PRICE)
                 .deliveryAddress(DELIVERY_ADDRESS)
                 .createDate(CREATE_DATE)
-                .orderStatus(ORDER_STATUS.getNextStatus())
+                .orderStatus(fromStatus.getNextStatus())
                 .build();
     }
 

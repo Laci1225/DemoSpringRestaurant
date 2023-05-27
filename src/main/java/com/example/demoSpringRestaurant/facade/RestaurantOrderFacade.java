@@ -6,8 +6,8 @@ import com.example.demoSpringRestaurant.mapper.RestaurantMapper;
 import com.example.demoSpringRestaurant.model.OrderCreationDto;
 import com.example.demoSpringRestaurant.model.OrderDto;
 import com.example.demoSpringRestaurant.model.RestaurantDto;
-import com.example.demoSpringRestaurant.persistance.repository.OrderRepository;
-import com.example.demoSpringRestaurant.persistance.repository.RestaurantRepository;
+import com.example.demoSpringRestaurant.service.OrderService;
+import com.example.demoSpringRestaurant.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,33 +18,35 @@ import java.util.List;
 public class RestaurantOrderFacade {
     private final OrderMapper orderMapper;
     private final RestaurantMapper restaurantMapper;
-    private final OrderRepository orderRepository;
-    private final RestaurantRepository restaurantRepository;
 
-    public List<OrderDto> getOrdersByRestaurantId(Long restaurantId) {
-        if (restaurantRepository.findById(restaurantId).isPresent()) {
-            return orderRepository.findAllByRestaurantId(restaurantId)
+    private final OrderService orderService;
+
+    private final RestaurantService restaurantService;
+
+    public List<OrderDto> getOrdersByRestaurantId(Long restaurantId) throws RestaurantEntityNotFoundException {
+        var restaurantEntity = restaurantService.findRestaurantById(restaurantId)
+                .orElseThrow(() -> new RestaurantEntityNotFoundException("Restaurant not found"));
+
+        return orderService.findAllRestaurantById(restaurantId)
                     .stream().map(orderMapper::fromEntityToOrderDto).toList();
-        } else
-            throw new IllegalStateException();
     }
 
     public OrderDto addOrder(OrderCreationDto orderCreationDto, Long restaurantId) throws RestaurantEntityNotFoundException {
-        // TODO fix service and everything in this class
-        var restaurant = restaurantRepository.findById(restaurantId)
+        var restaurantEntity = restaurantService.findRestaurantById(restaurantId)
                 .orElseThrow(() -> new RestaurantEntityNotFoundException("Restaurant not found"));
-        orderCreationDto.setRestaurant(restaurant);
+        orderCreationDto.setRestaurant(restaurantEntity);
         var orderEntity = orderMapper.fromOrderCreationDtoToEntity(orderCreationDto);
-        orderRepository.save(orderEntity);
+        orderService.saveOrder(orderEntity);
         return orderMapper.fromEntityToOrderDto(orderEntity);
     }
 
     public RestaurantDto removeRestaurant(Long restaurantId) throws RestaurantEntityNotFoundException {
-        var orders = orderRepository.findAllByRestaurantId(restaurantId);
-        orderRepository.deleteAll(orders);
-        var restaurantEntity = restaurantRepository.findById(restaurantId)
+        var orders = orderService.findAllRestaurantById(restaurantId);
+        orderService.deleteAllOrder(orders);
+        var restaurantEntity = restaurantService.findRestaurantById(restaurantId)
                 .orElseThrow(() -> new RestaurantEntityNotFoundException("Restaurant not found"));
-        restaurantRepository.delete(restaurantEntity);
+        restaurantService.removeRestaurant(restaurantEntity);
+
         return restaurantMapper.fromEntityToRestaurantDto(restaurantEntity);
     }
 }

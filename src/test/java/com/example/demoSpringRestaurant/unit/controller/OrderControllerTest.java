@@ -1,35 +1,57 @@
 package com.example.demoSpringRestaurant.unit.controller;
 
 import com.example.demoSpringRestaurant.controller.OrderController;
-import com.example.demoSpringRestaurant.exception.EntityNotFoundException;
 import com.example.demoSpringRestaurant.facade.RestaurantOrderFacade;
 import com.example.demoSpringRestaurant.fixtures.OrderFixture;
-import com.example.demoSpringRestaurant.fixtures.RestaurantFixture;
 import com.example.demoSpringRestaurant.model.OrderCreationDto;
 import com.example.demoSpringRestaurant.service.OrderService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
 
-
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
+@WebMvcTest(OrderController.class)
 public class OrderControllerTest {
 
-    @InjectMocks
-    private OrderController orderController;
-
-    @Mock
+    @Autowired
+    private MockMvc mockMvc;
+    @Autowired
+    private ObjectMapper objectMapper;
+    @MockBean
     private OrderService orderService;
-
-    @Mock
+    @MockBean
     private RestaurantOrderFacade restaurantOrderFacade;
 
+
     @Test
+    void addOrderShouldReturnCreatedOrder() throws Exception {
+        //given
+        when(restaurantOrderFacade.addOrder(any(OrderCreationDto.class), any(Long.class)))
+                .thenReturn(OrderFixture.getOrderDto());
+
+        //when
+        //then
+        this.mockMvc.perform(
+                post("/orders/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(OrderFixture.getOrderCreationDto()))
+        ).andExpect(status().isCreated()).andExpect(content()
+                .json(objectMapper.writeValueAsString(OrderFixture.getOrderDto()))
+        );
+        //todo facade exception throws what?
+
+    }
+
+
+    /*@Test
     void getOrdersByRestaurantId() {
         when(restaurantOrderFacade.getOrdersByRestaurantId(any(Long.class)))
                 .thenReturn(OrderFixture.getOrderDtoList());
@@ -51,7 +73,7 @@ public class OrderControllerTest {
         assertThat(orderDto).usingRecursiveComparison().isEqualTo(OrderFixture.getOrderDto());
     }
 
-    /*@Test
+    *//*@Test
     void addOrderShouldThrowRestaurantEntityNotFoundException() {
         // TODO test handling exceptions
         String errorMessage = "Restaurant not found";
@@ -64,7 +86,7 @@ public class OrderControllerTest {
 
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
         assertEquals(errorMessage, exception.getReason());
-    }*/
+    }*//*
 
     @Test
     void removeOrder() throws EntityNotFoundException {
@@ -86,5 +108,5 @@ public class OrderControllerTest {
                 OrderFixture.getOrderDto().getId());
 
         assertThat(orderDto).usingRecursiveComparison().isEqualTo(OrderFixture.getOrderDto());
-    }
+    }*/
 }

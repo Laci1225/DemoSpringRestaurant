@@ -1,6 +1,7 @@
 package com.example.demoSpringRestaurant.controller;
 
 import com.example.demoSpringRestaurant.exception.EntityNotFoundException;
+import com.example.demoSpringRestaurant.exception.RestaurantEntityNotFoundException;
 import com.example.demoSpringRestaurant.facade.RestaurantOrderFacade;
 import com.example.demoSpringRestaurant.model.OrderCreationDto;
 import com.example.demoSpringRestaurant.model.OrderDto;
@@ -20,7 +21,11 @@ public class OrderController {
 
     @GetMapping(path = "orders/{restaurantId}")
     public List<OrderDto> getOrdersByRestaurantId(@PathVariable("restaurantId") Long id) {
-        return restaurantOrderFacade.getOrdersByRestaurantId(id);
+        try {
+            return restaurantOrderFacade.getOrdersByRestaurantId(id);
+        } catch (RestaurantEntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        }
     }
 
     @ResponseStatus(HttpStatus.CREATED)

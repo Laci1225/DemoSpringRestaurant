@@ -5,12 +5,14 @@ import com.example.demoSpringRestaurant.exception.RestaurantEntityNotFoundExcept
 import com.example.demoSpringRestaurant.model.RestaurantCreationDto;
 import com.example.demoSpringRestaurant.model.RestaurantDto;
 import com.example.demoSpringRestaurant.model.RestaurantUpdateDto;
+import com.example.demoSpringRestaurant.persistance.entity.RestaurantEntity;
 import com.example.demoSpringRestaurant.persistance.repository.RestaurantRepository;
 import com.example.demoSpringRestaurant.mapper.RestaurantMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -78,5 +80,14 @@ public class RestaurantService {
     public List<RestaurantDto> getVeganRestaurant() {
         return restaurantRepository.findAllByIsVeganTrue()
                 .stream().map(restaurantMapper::fromEntityToRestaurantDto).toList();
+    }
+
+    public Optional<RestaurantEntity> findRestaurantById(Long restaurantId) {
+        return restaurantRepository.findById(restaurantId);
+    }
+
+    public void removeRestaurant(RestaurantEntity restaurantEntity) {
+        restaurantRepository.delete(restaurantEntity);
+
     }
 }
