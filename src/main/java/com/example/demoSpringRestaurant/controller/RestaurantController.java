@@ -1,31 +1,25 @@
 package com.example.demoSpringRestaurant.controller;
 
 import com.example.demoSpringRestaurant.exception.EntityNotFoundException;
+import com.example.demoSpringRestaurant.exception.RestaurantEntityNotFoundException;
 import com.example.demoSpringRestaurant.facade.RestaurantOrderFacade;
 import com.example.demoSpringRestaurant.model.*;
 import com.example.demoSpringRestaurant.service.RestaurantService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping(path = "restaurants")
+@AllArgsConstructor
 public class RestaurantController {
 
     private final RestaurantService restaurantService;
     private final RestaurantOrderFacade restaurantOrderFacade;
-
-    @Autowired
-    public RestaurantController(RestaurantService restaurantService, RestaurantOrderFacade restaurantOrderFacade) {
-        this.restaurantService = restaurantService;
-        this.restaurantOrderFacade = restaurantOrderFacade;
-    }
 
     @GetMapping
     public List<RestaurantDto> getRestaurant() {
@@ -38,31 +32,41 @@ public class RestaurantController {
         return restaurantService.addRestaurant(restaurant);
     }
 
+    @ResponseStatus(HttpStatus.ACCEPTED)
     @DeleteMapping(path = "{restaurantId}")
-    public void removeRestaurant(@PathVariable("restaurantId") Long restaurantId) {
-        restaurantOrderFacade.removeRestaurant(restaurantId);
-    }
-
-    @GetMapping("owner")
-    public Map<String, List<String>> getRestaurantsByOwner() {
-        return restaurantService.getRestaurantsByOwner();
+    public RestaurantDto removeRestaurant(@PathVariable("restaurantId") Long restaurantId) {
+        try {
+            return restaurantOrderFacade.removeRestaurant(restaurantId);
+        } catch (RestaurantEntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        }
     }
 
     @PutMapping(path = "{restaurantId}")
-    public void updateRestaurant(
+    public RestaurantDto updateRestaurant(
             @PathVariable("restaurantId") Long id,
             @Valid @RequestBody RestaurantUpdateDto restaurantUpdateDto) {
-        restaurantService.updateRestaurant(id, restaurantUpdateDto);
+        try {
+            return restaurantService.updateRestaurant(id, restaurantUpdateDto);
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        }
     }
+
     @PatchMapping(path = "{restaurantId}")
     public RestaurantDto updateParametersInRestaurant(
             @PathVariable("restaurantId") Long id,
-            @RequestBody RestaurantDto restaurantDto) {
+            @RequestBody RestaurantUpdateDto restaurantUpdateDto) {
         try {
-            return restaurantService.updateParametersInRestaurant(id,restaurantDto);
+            return restaurantService.updateParametersInRestaurant(id, restaurantUpdateDto);
         } catch (EntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,e.getMessage(),e);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
+    }
+
+    @GetMapping("vegan")
+    public List<RestaurantDto> getVeganRestaurants(){
+        return restaurantService.getVeganRestaurant();
     }
 
 }

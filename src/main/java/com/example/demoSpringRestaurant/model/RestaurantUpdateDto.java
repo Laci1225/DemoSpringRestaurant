@@ -3,9 +3,11 @@ package com.example.demoSpringRestaurant.model;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
 public class RestaurantUpdateDto {
     @NotNull
     private String name;

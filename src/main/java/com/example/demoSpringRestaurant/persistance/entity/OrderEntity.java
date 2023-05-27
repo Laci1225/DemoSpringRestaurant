@@ -6,6 +6,7 @@ import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import com.example.demoSpringRestaurant.constant.OrderStatus;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,6 +17,8 @@ import java.time.LocalDateTime;
 @Table
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class OrderEntity {
     @Id
     @SequenceGenerator(name = "order", sequenceName = "order_sequence", initialValue = 1)
@@ -47,7 +50,7 @@ public class OrderEntity {
     private OrderStatus orderStatus = OrderStatus.SENT;
 
 
-    private double getDrinkPrice(DrinkType drinkType) {
+    /*private double getDrinkPrice(DrinkType drinkType) {
         if (drinkType == null) return 0;
         return switch (drinkType) {
             case COLA -> 3.1;
@@ -55,9 +58,9 @@ public class OrderEntity {
             case JUICE, LEMONADE -> 2.6;
             case TEA -> 1.1;
         };
-    }
+    }*/
 
-    private double getMealPrice(MealType mealType) {
+    /*private double getMealPrice(MealType mealType) {
         if (mealType == null) return 0;
         return switch (mealType) {
             case RICEANDFISH -> 10.1;
@@ -65,12 +68,11 @@ public class OrderEntity {
             case CHICKENANDFISH -> 20.1;
             case CHICKENANDRICE -> 15.1;
         };
-    }
+    }*/
 
     public double getPrice() {
-        return  getMealPrice(getMealType()) + getDrinkPrice(getDrinkType());
+        return getMealType().getValue() + getDrinkType().getValue();
     }
-
 
     public LocalDateTime getCreateDate() {
         return LocalDateTime.now();

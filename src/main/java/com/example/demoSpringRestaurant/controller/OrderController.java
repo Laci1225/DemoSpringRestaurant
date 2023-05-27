@@ -1,39 +1,42 @@
 package com.example.demoSpringRestaurant.controller;
 
 import com.example.demoSpringRestaurant.exception.EntityNotFoundException;
+import com.example.demoSpringRestaurant.exception.RestaurantEntityNotFoundException;
 import com.example.demoSpringRestaurant.facade.RestaurantOrderFacade;
 import com.example.demoSpringRestaurant.model.OrderCreationDto;
 import com.example.demoSpringRestaurant.model.OrderDto;
 import com.example.demoSpringRestaurant.service.OrderService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
 @RestController
+@AllArgsConstructor
 public class OrderController {
     OrderService orderService;
     RestaurantOrderFacade restaurantOrderFacade;
 
-    @Autowired
-    public OrderController(OrderService orderService, RestaurantOrderFacade restaurantOrderFacade) {
-        this.orderService = orderService;
-        this.restaurantOrderFacade = restaurantOrderFacade;
-    }
-
     @GetMapping(path = "orders/{restaurantId}")
     public List<OrderDto> getOrdersByRestaurantId(@PathVariable("restaurantId") Long id) {
-        return restaurantOrderFacade.getOrdersByRestaurantId(id);
+        try {
+            return restaurantOrderFacade.getOrdersByRestaurantId(id);
+        } catch (RestaurantEntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        }
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(path = "orders/{restaurantId}")
-    public ResponseEntity<OrderCreationDto> addOrder(@RequestBody OrderCreationDto orderCreationDto, @PathVariable("restaurantId") Long restaurantId) {
-        var a = restaurantOrderFacade.addOrder(orderCreationDto, restaurantId);
-        return ResponseEntity.status(HttpStatus.CREATED).body(a);
-        //return restaurantOrderFacade.addOrder(orderCreationDto, restaurantId);
+    public OrderDto addOrder(@RequestBody OrderCreationDto orderCreationDto, @PathVariable("restaurantId") Long restaurantId) {
+        try {
+            return restaurantOrderFacade.addOrder(orderCreationDto, restaurantId);
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+
+        }
     }
 
     @DeleteMapping(path = "orders/{orderId}")

@@ -38,7 +38,7 @@ public class OrderUpdateDto {
     private OrderStatus orderStatus = OrderStatus.SENT;
 
 
-    private double getDrinkPrice(DrinkType drinkType) {
+    /*private double getDrinkPrice(DrinkType drinkType) {
         if (drinkType == null) return 0;
         return switch (drinkType) {
             case COLA -> 3.1;
@@ -56,15 +56,15 @@ public class OrderUpdateDto {
             case CHICKENANDFISH -> 20.1;
             case CHICKENANDRICE -> 15.1;
         };
-    }
+    }*/
 
     public double getPrice() {
-        return getMealPrice(getMealType()) + getDrinkPrice(getDrinkType());
+        return getMealType().getValue() + getDrinkType().getValue();
     }
 
     public LocalDateTime getCreateDate() {
         return LocalDateTime.now();
-    }
+    }//TODO test has problems with that
 
 }
 

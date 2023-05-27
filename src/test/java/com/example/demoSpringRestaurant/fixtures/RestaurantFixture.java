@@ -2,7 +2,11 @@ package com.example.demoSpringRestaurant.fixtures;
 
 import com.example.demoSpringRestaurant.model.RestaurantCreationDto;
 import com.example.demoSpringRestaurant.model.RestaurantDto;
+import com.example.demoSpringRestaurant.model.RestaurantUpdateDto;
 import com.example.demoSpringRestaurant.persistance.entity.RestaurantEntity;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class RestaurantFixture {
@@ -18,6 +22,19 @@ public class RestaurantFixture {
 
     public static RestaurantCreationDto getRestaurantCreationDto() {
         return RestaurantCreationDto.builder()
+                .name(NAME)
+                .owner(OWNER)
+                .address(ADDRESS)
+                .email(EMAIL)
+                .phoneNumber(PHONE_NUMBER)
+                .numberOfTables(NUMBER_OF_TABLES)
+                .isVegan(IS_VEGAN)
+                .canDeliver(CAN_DELIVER)
+                .build();
+    }
+
+    public static RestaurantUpdateDto getRestaurantUpdateDto() {
+        return RestaurantUpdateDto.builder()
                 .name(NAME)
                 .owner(OWNER)
                 .address(ADDRESS)
@@ -45,6 +62,7 @@ public class RestaurantFixture {
             restaurantEntity.setId(1L);
         return restaurantEntity;
     }
+
     public static RestaurantDto getRestaurantDto() {
         return RestaurantDto.builder()
                 .id(1L)
@@ -59,4 +77,35 @@ public class RestaurantFixture {
                 .build();
     }
 
+    public static List<RestaurantEntity> getRestaurantEntityList() {
+        var list = new ArrayList<RestaurantEntity>();
+        list.add(RestaurantEntity.builder()
+                .id(1L)
+                .name(NAME)
+                .owner(OWNER)
+                .address(ADDRESS)
+                .email(EMAIL)
+                .phoneNumber(PHONE_NUMBER)
+                .numberOfTables(NUMBER_OF_TABLES)
+                .isVegan(IS_VEGAN)
+                .canDeliver(CAN_DELIVER)
+                .build());
+        return list;
+    }
+
+    public static List<RestaurantDto> getRestaurantDtoList() {
+        var list = new ArrayList<RestaurantDto>();
+        list.add(RestaurantDto.builder()
+                .id(1L)
+                .name(NAME)
+                .owner(OWNER)
+                .address(ADDRESS)
+                .email(EMAIL)
+                .phoneNumber(PHONE_NUMBER)
+                .numberOfTables(NUMBER_OF_TABLES)
+                .isVegan(IS_VEGAN)
+                .canDeliver(CAN_DELIVER)
+                .build());
+        return list;
+    }
 }

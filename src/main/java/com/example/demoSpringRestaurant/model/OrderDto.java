@@ -4,14 +4,14 @@ import com.example.demoSpringRestaurant.constant.MealType;
 import com.example.demoSpringRestaurant.constant.OrderStatus;
 import com.example.demoSpringRestaurant.persistance.entity.RestaurantEntity;
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Data
-@RequiredArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class OrderDto {
 
     private Long id;
@@ -29,7 +29,7 @@ public class OrderDto {
 
     private OrderStatus orderStatus = OrderStatus.SENT;
 
-    private double getDrinkPrice(DrinkType drinkType) {
+    /*private double getDrinkPrice(DrinkType drinkType) {
         if (drinkType == null) return 0;
         return switch (drinkType) {
             case COLA -> 3.1;
@@ -47,13 +47,9 @@ public class OrderDto {
             case CHICKENANDFISH -> 20.1;
             case CHICKENANDRICE -> 15.1;
         };
-    }
+    }*/
 
     public double getPrice() {
-        return getMealPrice(getMealType()) + getDrinkPrice(getDrinkType());
-    }
-
-    public LocalDateTime getCreateDate() {
-        return LocalDateTime.now();
+        return getMealType().getValue() + getDrinkType().getValue();
     }
 }
