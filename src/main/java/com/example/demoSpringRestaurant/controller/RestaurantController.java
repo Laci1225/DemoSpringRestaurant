@@ -21,6 +21,7 @@ public class RestaurantController {
     private final RestaurantService restaurantService;
     private final RestaurantOrderFacade restaurantOrderFacade;
 
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping
     public List<RestaurantDto> getRestaurant() {
         return restaurantService.getRestaurants();

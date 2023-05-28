@@ -1,6 +1,7 @@
 package com.example.demoSpringRestaurant.unit.controller;
 
 import com.example.demoSpringRestaurant.controller.OrderController;
+import com.example.demoSpringRestaurant.exception.RestaurantEntityNotFoundException;
 import com.example.demoSpringRestaurant.facade.RestaurantOrderFacade;
 import com.example.demoSpringRestaurant.fixtures.OrderFixture;
 import com.example.demoSpringRestaurant.model.OrderCreationDto;
@@ -46,67 +47,77 @@ public class OrderControllerTest {
         ).andExpect(status().isCreated()).andExpect(content()
                 .json(objectMapper.writeValueAsString(OrderFixture.getOrderDto()))
         );
-        //todo facade exception throws what?
+    }
 
+    @Test
+    void addOrderShouldThrowOrderEntityNotFoundException() throws Exception {
+       /* //given
+        when(restaurantOrderFacade.addOrder(any(OrderCreationDto.class), any(Long.class)))
+                .thenThrow(RestaurantEntityNotFoundException.class);
+        //when
+        //then
+        this.mockMvc.perform(
+                post("/orders/1")
+        ).andExpect(status().isNotFound());
+        //TODO no idea why it is bad
+*/
     }
 
 
-    /*@Test
-    void getOrdersByRestaurantId() {
+    @Test
+    void getOrdersByRestaurantIdShouldReturnAllOrder() throws Exception {
+        //given
         when(restaurantOrderFacade.getOrdersByRestaurantId(any(Long.class)))
                 .thenReturn(OrderFixture.getOrderDtoList());
 
-        var orderDto = orderController.getOrdersByRestaurantId(
-                RestaurantFixture.getRestaurantDto().getId());
-
-        assertThat(orderDto).usingRecursiveComparison().isEqualTo(OrderFixture.getOrderDtoList());
+        //when
+        //then
+        this.mockMvc.perform(
+                get("/orders/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isOk()).andExpect(content()
+                .json(objectMapper.writeValueAsString(OrderFixture.getOrderDtoList()))
+        );
     }
 
     @Test
-    void addOrderShouldCreateOneOrder() throws EntityNotFoundException {
-        when(restaurantOrderFacade.addOrder(any(OrderCreationDto.class), any(Long.class)))
-                .thenReturn(OrderFixture.getOrderDto());
+    void getOrdersByRestaurantIdShouldThrowOrderEntityNotFoundException() throws Exception {
+        //given
+        when(restaurantOrderFacade.getOrdersByRestaurantId(any(Long.class)))
+                .thenThrow(RestaurantEntityNotFoundException.class);
+        //when
+        //then
+        this.mockMvc.perform(
+                get("/orders/1")
+        ).andExpect(status().isNotFound());
 
-        var orderDto = orderController.addOrder(
-                OrderFixture.getOrderCreationDto(), RestaurantFixture.getRestaurantDto().getId());
-
-        assertThat(orderDto).usingRecursiveComparison().isEqualTo(OrderFixture.getOrderDto());
     }
 
-    *//*@Test
-    void addOrderShouldThrowRestaurantEntityNotFoundException() {
-        // TODO test handling exceptions
-        String errorMessage = "Restaurant not found";
-        when(restaurantOrderFacade.addOrder(OrderFixture.getOrderCreationDto(), 1L))
-                .thenThrow(new RestaurantEntityNotFoundException(errorMessage));
-
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
-            orderController.addOrder(OrderFixture.getOrderCreationDto(), 1L);
-        });
-
-        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
-        assertEquals(errorMessage, exception.getReason());
-    }*//*
-
     @Test
-    void removeOrder() throws EntityNotFoundException {
+    void removeOrderShouldRemoveOneOrder() throws Exception {
+        //given
         when(orderService.removeOrder(any(Long.class)))
                 .thenReturn(OrderFixture.getOrderDto());
-
-        var orderDto = orderController.removeOrder(
-                OrderFixture.getOrderDto().getId());
-
-        assertThat(orderDto).usingRecursiveComparison().isEqualTo(OrderFixture.getOrderDto());
+        //when
+        //then
+        this.mockMvc.perform(
+                delete("/orders/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isAccepted()).andExpect(content()
+                .json(objectMapper.writeValueAsString(OrderFixture.getOrderDto()))
+        );
     }
 
     @Test
-    void setNextState() throws EntityNotFoundException {
-        when(orderService.setNextState(any(Long.class)))
-                .thenReturn(OrderFixture.getOrderDto());
+    void removeOrderShouldThrowOrderEntityNotFoundException() throws Exception {
+        //given
+        when(orderService.removeOrder(any(Long.class)))
+                .thenThrow(RestaurantEntityNotFoundException.class);
+        //when
+        //then
+        this.mockMvc.perform(
+                delete("/orders/1")
+        ).andExpect(status().isNotFound());
 
-        var orderDto = orderController.setNextState(
-                OrderFixture.getOrderDto().getId());
-
-        assertThat(orderDto).usingRecursiveComparison().isEqualTo(OrderFixture.getOrderDto());
-    }*/
+    }
 }

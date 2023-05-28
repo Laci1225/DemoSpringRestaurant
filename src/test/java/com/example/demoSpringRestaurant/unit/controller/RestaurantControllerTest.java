@@ -1,101 +1,118 @@
 package com.example.demoSpringRestaurant.unit.controller;
 
 import com.example.demoSpringRestaurant.controller.RestaurantController;
-import com.example.demoSpringRestaurant.exception.EntityNotFoundException;
 import com.example.demoSpringRestaurant.facade.RestaurantOrderFacade;
 import com.example.demoSpringRestaurant.fixtures.RestaurantFixture;
 import com.example.demoSpringRestaurant.model.RestaurantCreationDto;
 import com.example.demoSpringRestaurant.model.RestaurantUpdateDto;
 import com.example.demoSpringRestaurant.service.RestaurantService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
-@ExtendWith(MockitoExtension.class)
-class RestaurantControllerTest {
-    @InjectMocks
-    private RestaurantController restaurantController;
-    @Mock
+
+@WebMvcTest(RestaurantController.class)
+public class RestaurantControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+    @Autowired
+    private ObjectMapper objectMapper;
+    @MockBean
     private RestaurantService restaurantService;
-    @Mock
+    @MockBean
     private RestaurantOrderFacade restaurantOrderFacade;
 
+
     @Test
-    void getRestaurant() {
+    void getRestaurant() throws Exception {
         when(restaurantService.getRestaurants())
                 .thenReturn(RestaurantFixture.getRestaurantDtoList());
 
-        var restaurantDtoList = restaurantController.getRestaurant();
-
-        assertThat(restaurantDtoList).usingRecursiveComparison()
-                .isEqualTo(RestaurantFixture.getRestaurantEntityList());
+        this.mockMvc.perform(
+                get("/restaurants")
+                        .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isOk()).andExpect(content()
+                .json(objectMapper.writeValueAsString(RestaurantFixture.getRestaurantDtoList()))
+        );
     }
 
     @Test
-    void addRestaurant() {
+    void addRestaurant() throws Exception {
         when(restaurantService.addRestaurant(any(RestaurantCreationDto.class)))
                 .thenReturn(RestaurantFixture.getRestaurantDto());
 
-        var restaurantDto = restaurantController
-                .addRestaurant(RestaurantFixture.getRestaurantCreationDto());
-
-        assertThat(restaurantDto).usingRecursiveComparison()
-                .isEqualTo(RestaurantFixture.getRestaurantDto());
+        this.mockMvc.perform(
+                post("/restaurants")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(RestaurantFixture.getRestaurantCreationDto()))
+        ).andExpect(status().isCreated()).andExpect(content()
+                .json(objectMapper.writeValueAsString(RestaurantFixture.getRestaurantCreationDto()))
+        );
     }
 
-   /* @Test
-    void removeRestaurant() throws RestaurantEntityNotFoundException {
+    @Test
+    void removeRestaurant() throws Exception {
         when(restaurantOrderFacade.removeRestaurant(any(Long.class)))
                 .thenReturn(RestaurantFixture.getRestaurantDto());
 
-        var restaurantDto = restaurantController
-                .removeRestaurant(RestaurantFixture.getRestaurantDto().getId());
+        this.mockMvc.perform(
+                delete("/restaurants/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isAccepted()).andExpect(content()
+                .json(objectMapper.writeValueAsString(RestaurantFixture.getRestaurantCreationDto()))
+        );
 
-        assertThat(restaurantDto).usingRecursiveComparison()
-                .isEqualTo(RestaurantFixture.getRestaurantDto());
-    }*/
+    }
 
     @Test
-    void updateRestaurant() throws EntityNotFoundException {
+    void updateRestaurant() throws Exception {
         when(restaurantService.updateRestaurant(any(Long.class), any(RestaurantUpdateDto.class)))
                 .thenReturn(RestaurantFixture.getRestaurantDto());
 
-        var restaurantDto = restaurantController
-                .updateRestaurant(RestaurantFixture.getRestaurantDto().getId(),
-                        RestaurantFixture.getRestaurantUpdateDto());
-
-        assertThat(restaurantDto).usingRecursiveComparison()
-                .isEqualTo(RestaurantFixture.getRestaurantDto());
+        this.mockMvc.perform(
+                put("/restaurants/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(RestaurantFixture.getRestaurantUpdateDto()))
+        ).andExpect(status().isOk()).andExpect(content()
+                .json(objectMapper.writeValueAsString(RestaurantFixture.getRestaurantDto()))
+        );
     }
 
     @Test
-    void updateParametersInRestaurant() throws EntityNotFoundException {
+    void updateParametersInRestaurant() throws Exception {
         when(restaurantService.updateParametersInRestaurant(any(Long.class), any(RestaurantUpdateDto.class)))
                 .thenReturn(RestaurantFixture.getRestaurantDto());
 
-        var restaurantDto = restaurantController
-                .updateParametersInRestaurant(RestaurantFixture.getRestaurantDto().getId(),
-                        RestaurantFixture.getRestaurantUpdateDto());
+        this.mockMvc.perform(
+                patch("/restaurants/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(RestaurantFixture.getRestaurantUpdateDto()))
+        ).andExpect(status().isOk()).andExpect(content()
+                .json(objectMapper.writeValueAsString(RestaurantFixture.getRestaurantDto()))
+        );
 
-        assertThat(restaurantDto).usingRecursiveComparison()
-                .isEqualTo(RestaurantFixture.getRestaurantDto());
     }
 
     @Test
-    void getVeganRestaurants() {
+    void getVeganRestaurants() throws Exception {
         when(restaurantService.getVeganRestaurant())
                 .thenReturn(RestaurantFixture.getRestaurantDtoList());
-
-        var restaurantDtoList = restaurantController
-                .getVeganRestaurants();
-
-        assertThat(restaurantDtoList).usingRecursiveComparison()
-                .isEqualTo(RestaurantFixture.getRestaurantDtoList());
+        this.mockMvc.perform(
+                get("/restaurants/vegan")
+                        .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isOk()).andExpect(content()
+                .json(objectMapper.writeValueAsString(RestaurantFixture.getRestaurantDtoList()))
+        );
     }
 }

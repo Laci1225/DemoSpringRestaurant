@@ -19,6 +19,7 @@ public class OrderController {
     OrderService orderService;
     RestaurantOrderFacade restaurantOrderFacade;
 
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping(path = "orders/{restaurantId}")
     public List<OrderDto> getOrdersByRestaurantId(@PathVariable("restaurantId") Long id) {
         try {
@@ -35,10 +36,10 @@ public class OrderController {
             return restaurantOrderFacade.addOrder(orderCreationDto, restaurantId);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
-
         }
     }
 
+    @ResponseStatus(HttpStatus.ACCEPTED)
     @DeleteMapping(path = "orders/{orderId}")
     public OrderDto removeOrder(@PathVariable("orderId") Long orderId) {
         try {
