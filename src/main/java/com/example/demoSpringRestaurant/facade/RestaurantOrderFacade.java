@@ -6,14 +6,13 @@ import com.example.demoSpringRestaurant.mapper.RestaurantMapper;
 import com.example.demoSpringRestaurant.model.OrderCreationDto;
 import com.example.demoSpringRestaurant.model.OrderDto;
 import com.example.demoSpringRestaurant.model.RestaurantDto;
-import com.example.demoSpringRestaurant.persistance.entity.RestaurantEntity;
 import com.example.demoSpringRestaurant.service.OrderService;
 import com.example.demoSpringRestaurant.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -37,6 +36,7 @@ public class RestaurantOrderFacade {
         var restaurantEntity = restaurantService.findRestaurantById(restaurantId)
                 .orElseThrow(() -> new RestaurantEntityNotFoundException("Restaurant not found"));
         orderCreationDto.setRestaurant(restaurantEntity);
+        orderCreationDto.setCreateDate(LocalDateTime.now());
         var orderEntity = orderMapper.fromOrderCreationDtoToEntity(orderCreationDto);
         orderService.saveOrder(orderEntity);
         return orderMapper.fromEntityToOrderDto(orderEntity);

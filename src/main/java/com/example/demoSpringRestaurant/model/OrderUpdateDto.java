@@ -10,13 +10,14 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotNull;
 import com.example.demoSpringRestaurant.constant.OrderStatus;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Data
-@RequiredArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class OrderUpdateDto {
 
     @ManyToOne
@@ -62,9 +63,9 @@ public class OrderUpdateDto {
         return getMealType().getValue() + getDrinkType().getValue();
     }
 
-    public LocalDateTime getCreateDate() {
-        return LocalDateTime.now();
-    }//TODO test has problems with that
+    //public LocalDateTime getCreateDate() {
+    //    return LocalDateTime.now();
+    //}
 
 }
 

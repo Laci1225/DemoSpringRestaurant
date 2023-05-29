@@ -82,8 +82,8 @@ public class RestaurantServiceTest {
 
         //assert / then
         assertThat(restaurantUpdate).usingRecursiveComparison().isEqualTo(RestaurantFixture.getRestaurantDto());
-        verify(restaurantRepository, times(2)).existsById(any(Long.class));
-        verify(restaurantRepository, times(2)).save(any(RestaurantEntity.class));
+        verify(restaurantRepository, times(1)).existsById(any(Long.class));
+        verify(restaurantRepository, times(1)).save(any(RestaurantEntity.class));
         verifyNoMoreInteractions(restaurantRepository);
     }
     @Test

@@ -4,6 +4,7 @@ import com.example.demoSpringRestaurant.model.RestaurantCreationDto;
 import com.example.demoSpringRestaurant.model.RestaurantDto;
 import com.example.demoSpringRestaurant.model.RestaurantUpdateDto;
 import com.example.demoSpringRestaurant.persistance.entity.RestaurantEntity;
+import jakarta.validation.constraints.Email;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +15,7 @@ public class RestaurantFixture {
     private static final String NAME = "John's restaurant";
     private static final String OWNER = "John";
     private static final String ADDRESS = "Budapest xy street 6.";
+    @Email
     private static final String EMAIL = "asd@dsa.com"; // TODO email not verified
     private static final String PHONE_NUMBER = "PhoneNumber";
     private static final Integer NUMBER_OF_TABLES = 45;

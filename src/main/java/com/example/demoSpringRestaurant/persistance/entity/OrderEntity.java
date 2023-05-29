@@ -74,8 +74,8 @@ public class OrderEntity {
         return getMealType().getValue() + getDrinkType().getValue();
     }
 
-    public LocalDateTime getCreateDate() {
-        return LocalDateTime.now();
-    }
+    //public LocalDateTime getCreateDate() {
+    //    return LocalDateTime.now();
+    //}
 
 }
