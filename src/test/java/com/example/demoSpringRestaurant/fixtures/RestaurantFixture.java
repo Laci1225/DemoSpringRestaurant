@@ -110,4 +110,33 @@ public class RestaurantFixture {
                 .build());
         return list;
     }
+    public static RestaurantUpdateDto getUpdatedRestaurantUpdateDto() {
+        return RestaurantUpdateDto.builder()
+                .name(NAME + "Updated")
+                .owner(OWNER)
+                .address(ADDRESS)
+                .email(EMAIL)
+                .phoneNumber(PHONE_NUMBER)
+                .numberOfTables(NUMBER_OF_TABLES)
+                .isVegan(IS_VEGAN)
+                .canDeliver(CAN_DELIVER)
+                .build();
+    }
+
+    public static RestaurantEntity getRestaurantEntityIsVegan(boolean withId) {
+
+        var restaurantEntity = RestaurantEntity.builder()
+                .name(NAME)
+                .owner(OWNER)
+                .address(ADDRESS)
+                .email(EMAIL)
+                .phoneNumber(PHONE_NUMBER)
+                .numberOfTables(NUMBER_OF_TABLES)
+                .isVegan(true)
+                .canDeliver(CAN_DELIVER)
+                .build();
+        if (withId)
+            restaurantEntity.setId(1L);
+        return restaurantEntity;
+    }
 }

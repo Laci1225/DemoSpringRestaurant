@@ -8,8 +8,7 @@ import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring", uses = {RestaurantMapper.class})
 public interface OrderMapper {
-    OrderEntity fromOrderDtoToEntity(OrderDto OrderDto); //TODO mock test if restaurant given than create restaurantEntity and etc.
-    // TODO test fixtures with each other
+    OrderEntity fromOrderDtoToEntity(OrderDto OrderDto);
 
     OrderDto fromEntityToOrderDto(OrderEntity OrderEntity);
 

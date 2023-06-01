@@ -105,4 +105,42 @@ public class OrderFixture {
                 .orderStatus(ORDER_STATUS)
                 .build();
     }
+
+    public static OrderEntity getOrderEntityToGivenRestaurant(boolean withId,RestaurantEntity restaurantEntity) {
+        var orderEntity = OrderEntity.builder()
+                .restaurant(restaurantEntity)
+                .mealType(MEAL_TYPE)
+                .drinkType(DRINK_TYPE)
+                .price(PRICE)
+                .deliveryAddress(DELIVERY_ADDRESS)
+                .createDate(CREATE_DATE)
+                .orderStatus(ORDER_STATUS)
+                .build();
+        if (withId)
+            orderEntity.setId(1L);
+        return orderEntity;
+    }
+    public static OrderDto getOrderDtoToGivenRestaurant(RestaurantEntity restaurantEntity) {
+        return OrderDto.builder()
+                .restaurant(restaurantEntity)
+                .mealType(MEAL_TYPE)
+                .drinkType(DRINK_TYPE)
+                .price(PRICE)
+                .deliveryAddress(DELIVERY_ADDRESS)
+                .createDate(CREATE_DATE)
+                .orderStatus(ORDER_STATUS)
+                .build();
+    }
+    public static OrderDto getOrderDtoGetNextStatusToGivenRestaurant(OrderStatus fromStatus,RestaurantEntity restaurantEntity) {
+        return OrderDto.builder()
+                .id(1L)
+                .restaurant(restaurantEntity)
+                .mealType(MEAL_TYPE)
+                .drinkType(DRINK_TYPE)
+                .price(PRICE)
+                .deliveryAddress(DELIVERY_ADDRESS)
+                .createDate(CREATE_DATE)
+                .orderStatus(fromStatus.getNextStatus())
+                .build();
+    }
 }

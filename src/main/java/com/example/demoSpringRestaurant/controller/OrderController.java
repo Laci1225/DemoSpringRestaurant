@@ -6,7 +6,9 @@ import com.example.demoSpringRestaurant.facade.RestaurantOrderFacade;
 import com.example.demoSpringRestaurant.model.OrderCreationDto;
 import com.example.demoSpringRestaurant.model.OrderDto;
 import com.example.demoSpringRestaurant.service.OrderService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -15,6 +17,7 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
+@Slf4j
 public class OrderController {
     OrderService orderService;
     RestaurantOrderFacade restaurantOrderFacade;
@@ -31,11 +34,15 @@ public class OrderController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(path = "orders/{restaurantId}")
-    public OrderDto addOrder(@RequestBody OrderCreationDto orderCreationDto, @PathVariable("restaurantId") Long restaurantId) {
+    public OrderDto addOrder(@Valid @RequestBody OrderCreationDto orderCreationDto, @PathVariable("restaurantId") Long restaurantId) {
         try {
             return restaurantOrderFacade.addOrder(orderCreationDto, restaurantId);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        } catch (Exception e){ //TODO swaggert nézegetni meg
+            // TODO mongot
+            log.error("Server error"); //TODO mindenhova
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

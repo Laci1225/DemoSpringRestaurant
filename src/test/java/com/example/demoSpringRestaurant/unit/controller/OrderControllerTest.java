@@ -4,6 +4,7 @@ import com.example.demoSpringRestaurant.controller.OrderController;
 import com.example.demoSpringRestaurant.exception.RestaurantEntityNotFoundException;
 import com.example.demoSpringRestaurant.facade.RestaurantOrderFacade;
 import com.example.demoSpringRestaurant.fixtures.OrderFixture;
+import com.example.demoSpringRestaurant.fixtures.RestaurantFixture;
 import com.example.demoSpringRestaurant.model.OrderCreationDto;
 import com.example.demoSpringRestaurant.service.OrderService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -51,16 +52,30 @@ public class OrderControllerTest {
 
     @Test
     void addOrderShouldThrowOrderEntityNotFoundException() throws Exception {
-       /* //given
+
+        //given
         when(restaurantOrderFacade.addOrder(any(OrderCreationDto.class), any(Long.class)))
                 .thenThrow(RestaurantEntityNotFoundException.class);
         //when
         //then
         this.mockMvc.perform(
                 post("/orders/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(RestaurantFixture.getRestaurantEntity(true)))
+        ).andExpect(status().isBadRequest());
+    }
+    @Test
+    void addOrderShouldThrowOrderEntityNotFoundExceptionWith400() throws Exception {
+        //given //TODO rossz a név With 400 jobb(?) + bad request többihez
+        when(restaurantOrderFacade.addOrder(any(OrderCreationDto.class), any(Long.class)))
+                .thenThrow(RestaurantEntityNotFoundException.class);
+        //when
+        //then
+        this.mockMvc.perform(
+                post("/orders/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(OrderFixture.getOrderCreationDto()))
         ).andExpect(status().isNotFound());
-        //TODO no idea why it is bad
-*/
     }
 
 

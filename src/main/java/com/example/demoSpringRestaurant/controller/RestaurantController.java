@@ -29,7 +29,7 @@ public class RestaurantController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public RestaurantDto addRestaurant(@RequestBody RestaurantCreationDto restaurant) {
+    public RestaurantDto addRestaurant(@Valid @RequestBody RestaurantCreationDto restaurant) {
         return restaurantService.addRestaurant(restaurant);
     }
 

@@ -9,6 +9,7 @@ import com.example.demoSpringRestaurant.persistance.entity.RestaurantEntity;
 import com.example.demoSpringRestaurant.persistance.repository.RestaurantRepository;
 import com.example.demoSpringRestaurant.mapper.RestaurantMapper;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class RestaurantService {
 
     public final RestaurantRepository restaurantRepository;
@@ -29,6 +31,7 @@ public class RestaurantService {
     public RestaurantDto addRestaurant(RestaurantCreationDto restaurantCreationDto) {
         var restaurantEntity = restaurantRepository.save(restaurantMapper.
                 fromRestaurantCreationDtoToEntity(restaurantCreationDto));
+        log.trace("Restaurant created in " + this.getClass()); //TODO mindenhova
         return restaurantMapper.fromEntityToRestaurantDto(restaurantEntity);
     }
 
