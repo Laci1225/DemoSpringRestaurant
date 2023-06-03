@@ -1,6 +1,6 @@
 package com.example.demoSpringRestaurant.controller;
 
-import com.example.demoSpringRestaurant.exception.EntityNotFoundException;
+import com.example.demoSpringRestaurant.exception.OrderEntityNotFoundException;
 import com.example.demoSpringRestaurant.exception.RestaurantEntityNotFoundException;
 import com.example.demoSpringRestaurant.facade.RestaurantOrderFacade;
 import com.example.demoSpringRestaurant.model.OrderCreationDto;
@@ -12,56 +12,121 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import com.example.demoSpringRestaurant.persistance.entity.RestaurantEntity;
+import com.example.demoSpringRestaurant.persistance.entity.OrderEntity;
 
 import java.util.List;
 
+/**
+ * The OrderController class handles HTTP requests related to orders.
+ * It provides endpoints for getting, creating, deleting, and updating orders
+ */
 @RestController
 @AllArgsConstructor
 @Slf4j
 public class OrderController {
-    OrderService orderService;
-    RestaurantOrderFacade restaurantOrderFacade;
+    private final OrderService orderService;
+    private final RestaurantOrderFacade restaurantOrderFacade;
 
+    /**
+     * Returns a list of orders by restaurant ID.
+     *
+     * @param restaurantId The ID of the restaurant.
+     * @return A list of OrderDto objects representing the orders.
+     * @throws ResponseStatusException If the {@link RestaurantEntity} is not found with 404 status code
+     *                                 or if there is a server error with 500 status code.
+     */
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(path = "orders/{restaurantId}")
-    public List<OrderDto> getOrdersByRestaurantId(@PathVariable("restaurantId") Long id) {
+    public List<OrderDto> getOrdersByRestaurantId(@PathVariable("restaurantId") Long restaurantId) {
         try {
-            return restaurantOrderFacade.getOrdersByRestaurantId(id);
+            log.debug("Requested all order");
+            var orderList = restaurantOrderFacade.getOrdersByRestaurantId(restaurantId);
+            log.debug("Orders returned successfully");
+            return orderList;
         } catch (RestaurantEntityNotFoundException e) {
+            log.warn("Getting orders were unsuccessful due to: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
-        }
-    }
-
-    @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping(path = "orders/{restaurantId}")
-    public OrderDto addOrder(@Valid @RequestBody OrderCreationDto orderCreationDto, @PathVariable("restaurantId") Long restaurantId) {
-        try {
-            return restaurantOrderFacade.addOrder(orderCreationDto, restaurantId);
-        } catch (EntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
-        } catch (Exception e){ //TODO swaggert nézegetni meg
-            // TODO mongot
-            log.error("Server error"); //TODO mindenhova
+        } catch (Exception e) {
+            log.error("Server error");
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    @DeleteMapping(path = "orders/{orderId}")
-    public OrderDto removeOrder(@PathVariable("orderId") Long orderId) {
+    /**
+     * Creates a new order for a given restaurant.
+     *
+     * @param orderCreationDto The OrderCreationDto object containing the order details.
+     * @param restaurantId     The ID of the restaurant.
+     * @return The created OrderDto object representing the new order.
+     * @throws ResponseStatusException If the {@link RestaurantEntity} is not found with 404 status code
+     *                                 or if there is a server error with 500 status code.
+     */
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping(path = "orders/{restaurantId}")
+    public OrderDto createOrder(@Valid @RequestBody OrderCreationDto orderCreationDto, @PathVariable("restaurantId") Long restaurantId) {
         try {
-            return orderService.removeOrder(orderId);
-        } catch (EntityNotFoundException e) {
+            log.debug("Creating an order");
+            var order = restaurantOrderFacade.createOrder(orderCreationDto, restaurantId);
+            log.debug("Created an order successfully");
+            return order;
+        } catch (RestaurantEntityNotFoundException e) {
+            log.warn("Creating an order was unsuccessful due to: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        } catch (Exception e) {
+
+            log.error("Server error");
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
+    /**
+     * Deletes an order from a restaurant by its ID.
+     *
+     * @param orderId The ID of the order to be deleted.
+     * @return The deleted OrderDto object representing the deleted order.
+     * @throws ResponseStatusException If the {@link OrderEntity} is not found with 404 status code
+     *                                 or if there is a server error with 500 status code.
+     */
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    @DeleteMapping(path = "orders/{orderId}")
+    public OrderDto deleteOrder(@PathVariable("orderId") Long orderId) {
+        try {
+            log.debug("Deleting an order");
+            var order = orderService.deleteOrder(orderId);
+            log.debug("Order with ID: " + orderId + " deleted successfully");
+            return order;
+        } catch (OrderEntityNotFoundException e) {
+            log.warn("Deleting an order were unsuccessful due to: " + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        } catch (Exception e) {
+            log.error("Server error");
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Sets the next state of an order by its ID.
+     *
+     * @param orderId The ID of the order.
+     * @return The updated OrderDto object representing the order with the next state.
+     * @throws ResponseStatusException If the {@link OrderEntity} is not found with 404 status code
+     *                                 or if there is a server error with 500 status code.
+     */
+    @ResponseStatus(HttpStatus.OK)
     @PostMapping(path = "orders/{orderId}/next-state")
     public OrderDto setNextState(@PathVariable("orderId") Long orderId) {
         try {
-            return orderService.setNextState(orderId);
-        } catch (EntityNotFoundException e) {
+            log.debug("Setting order with ID: " + orderId + " to the next status");
+            var order = orderService.setNextState(orderId);
+            log.debug("Setting order with ID: " + orderId + " was successful");
+            return order;
+        } catch (OrderEntityNotFoundException e) {
+            log.warn("Setting an order's next stage was unsuccessful due to: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        } catch (Exception e) {
+            log.error("Server error");
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }
