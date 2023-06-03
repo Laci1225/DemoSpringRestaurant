@@ -134,7 +134,7 @@ public class RestaurantController {
     @PatchMapping(path = "{restaurantId}")
     public RestaurantDto updateParametersInRestaurant(
             @PathVariable("restaurantId") Long restaurantId,
-            @RequestBody RestaurantUpdateDto restaurantUpdateDto) {
+            @Valid @RequestBody RestaurantUpdateDto restaurantUpdateDto) {
         try {
             log.debug("Updating restaurant's parameter with ID: " + restaurantId);
             var restaurant = restaurantService.updateParametersInRestaurant(restaurantId, restaurantUpdateDto);

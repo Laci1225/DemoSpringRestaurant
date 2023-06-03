@@ -34,9 +34,9 @@ public class OrderControllerTest {
 
 
     @Test
-    void addOrderShouldReturnCreatedOrder() throws Exception {
+    void createOrderShouldReturnCreatedOrder() throws Exception {
         //given
-        when(restaurantOrderFacade.addOrder(any(OrderCreationDto.class), any(Long.class)))
+        when(restaurantOrderFacade.createOrder(any(OrderCreationDto.class), any(Long.class)))
                 .thenReturn(OrderFixture.getOrderDto());
 
         //when
@@ -51,10 +51,10 @@ public class OrderControllerTest {
     }
 
     @Test
-    void addOrderShouldThrowOrderEntityNotFoundException() throws Exception {
+    void createOrderShouldThrowOrderEntityNotFoundExceptionWith400() throws Exception {
 
         //given
-        when(restaurantOrderFacade.addOrder(any(OrderCreationDto.class), any(Long.class)))
+        when(restaurantOrderFacade.createOrder(any(OrderCreationDto.class), any(Long.class)))
                 .thenThrow(RestaurantEntityNotFoundException.class);
         //when
         //then
@@ -65,9 +65,9 @@ public class OrderControllerTest {
         ).andExpect(status().isBadRequest());
     }
     @Test
-    void addOrderShouldThrowOrderEntityNotFoundExceptionWith400() throws Exception {
-        //given //TODO rossz a név With 400 jobb(?) + bad request többihez
-        when(restaurantOrderFacade.addOrder(any(OrderCreationDto.class), any(Long.class)))
+    void createOrderShouldThrowOrderEntityNotFoundExceptionWith404() throws Exception {
+        //given
+        when(restaurantOrderFacade.createOrder(any(OrderCreationDto.class), any(Long.class)))
                 .thenThrow(RestaurantEntityNotFoundException.class);
         //when
         //then
@@ -96,7 +96,7 @@ public class OrderControllerTest {
     }
 
     @Test
-    void getOrdersByRestaurantIdShouldThrowOrderEntityNotFoundException() throws Exception {
+    void getOrdersByRestaurantIdShouldThrowOrderEntityNotFoundExceptionWith404() throws Exception {
         //given
         when(restaurantOrderFacade.getOrdersByRestaurantId(any(Long.class)))
                 .thenThrow(RestaurantEntityNotFoundException.class);
@@ -105,13 +105,12 @@ public class OrderControllerTest {
         this.mockMvc.perform(
                 get("/orders/1")
         ).andExpect(status().isNotFound());
-
     }
 
     @Test
-    void removeOrderShouldRemoveOneOrder() throws Exception {
+    void deleteOrderShouldRemoveOneOrder() throws Exception {
         //given
-        when(orderService.removeOrder(any(Long.class)))
+        when(orderService.deleteOrder(any(Long.class)))
                 .thenReturn(OrderFixture.getOrderDto());
         //when
         //then
@@ -124,15 +123,14 @@ public class OrderControllerTest {
     }
 
     @Test
-    void removeOrderShouldThrowOrderEntityNotFoundException() throws Exception {
+    void deleteOrderShouldThrowOrderEntityNotFoundExceptionWith404() throws Exception {
         //given
-        when(orderService.removeOrder(any(Long.class)))
+        when(orderService.deleteOrder(any(Long.class)))
                 .thenThrow(RestaurantEntityNotFoundException.class);
         //when
         //then
         this.mockMvc.perform(
                 delete("/orders/1")
         ).andExpect(status().isNotFound());
-
     }
 }

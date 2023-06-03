@@ -1,7 +1,9 @@
 package com.example.demoSpringRestaurant.unit.controller;
 
 import com.example.demoSpringRestaurant.controller.RestaurantController;
+import com.example.demoSpringRestaurant.exception.RestaurantEntityNotFoundException;
 import com.example.demoSpringRestaurant.facade.RestaurantOrderFacade;
+import com.example.demoSpringRestaurant.fixtures.OrderFixture;
 import com.example.demoSpringRestaurant.fixtures.RestaurantFixture;
 import com.example.demoSpringRestaurant.model.RestaurantCreationDto;
 import com.example.demoSpringRestaurant.model.RestaurantUpdateDto;
@@ -35,7 +37,7 @@ public class RestaurantControllerTest {
 
 
     @Test
-    void getRestaurant() throws Exception {
+    void getRestaurantShouldReturnAllRestaurant() throws Exception {
         when(restaurantService.getRestaurants())
                 .thenReturn(RestaurantFixture.getRestaurantDtoList());
 
@@ -48,8 +50,8 @@ public class RestaurantControllerTest {
     }
 
     @Test
-    void addRestaurant() throws Exception {
-        when(restaurantService.addRestaurant(any(RestaurantCreationDto.class)))
+    void createRestaurantShouldReturnCreatedRestaurant() throws Exception {
+        when(restaurantService.createRestaurant(any(RestaurantCreationDto.class)))
                 .thenReturn(RestaurantFixture.getRestaurantDto());
 
         this.mockMvc.perform(
@@ -62,8 +64,8 @@ public class RestaurantControllerTest {
     }
 
     @Test
-    void removeRestaurant() throws Exception {
-        when(restaurantOrderFacade.removeRestaurant(any(Long.class)))
+    void deleteRestaurantShouldRemoveOneRestaurant() throws Exception {
+        when(restaurantOrderFacade.deleteRestaurant(any(Long.class)))
                 .thenReturn(RestaurantFixture.getRestaurantDto());
 
         this.mockMvc.perform(
@@ -72,11 +74,22 @@ public class RestaurantControllerTest {
         ).andExpect(status().isAccepted()).andExpect(content()
                 .json(objectMapper.writeValueAsString(RestaurantFixture.getRestaurantCreationDto()))
         );
-
     }
 
     @Test
-    void updateRestaurant() throws Exception {
+    void deleteRestaurantShouldThrowOrderEntityNotFoundExceptionWith404() throws Exception {
+        //given
+        when(restaurantOrderFacade.deleteRestaurant(any(Long.class)))
+                .thenThrow(RestaurantEntityNotFoundException.class);
+        //when
+        //then
+        this.mockMvc.perform(
+                delete("/orders/1")
+        ).andExpect(status().isNotFound());
+    }
+
+    @Test
+    void updateRestaurantShouldUpdateOneRestaurant() throws Exception {
         when(restaurantService.updateRestaurant(any(Long.class), any(RestaurantUpdateDto.class)))
                 .thenReturn(RestaurantFixture.getRestaurantDto());
 
@@ -90,7 +103,31 @@ public class RestaurantControllerTest {
     }
 
     @Test
-    void updateParametersInRestaurant() throws Exception {
+    void updateRestaurantShouldThrowOrderEntityNotFoundExceptionWith404() throws Exception {
+        when(restaurantService.updateRestaurant(any(Long.class), any(RestaurantUpdateDto.class)))
+                .thenThrow(RestaurantEntityNotFoundException.class);
+
+        this.mockMvc.perform(
+                put("/restaurants/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(RestaurantFixture.getRestaurantUpdateDto()))
+
+        ).andExpect(status().isNotFound());
+    }
+    @Test
+    void updateRestaurantShouldThrowOrderEntityNotFoundExceptionWith400() throws Exception {
+        when(restaurantService.updateRestaurant(any(Long.class), any(RestaurantUpdateDto.class)))
+                .thenThrow(RestaurantEntityNotFoundException.class);
+
+        this.mockMvc.perform(
+                put("/restaurants/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(OrderFixture.getOrderCreationDto()))
+        ).andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void updateParametersInRestaurantShouldUpdateOneRestaurantsParameter() throws Exception {
         when(restaurantService.updateParametersInRestaurant(any(Long.class), any(RestaurantUpdateDto.class)))
                 .thenReturn(RestaurantFixture.getRestaurantDto());
 
@@ -101,7 +138,30 @@ public class RestaurantControllerTest {
         ).andExpect(status().isOk()).andExpect(content()
                 .json(objectMapper.writeValueAsString(RestaurantFixture.getRestaurantDto()))
         );
+    }
 
+    @Test
+    void updateParametersInRestaurantShouldThrowOrderEntityNotFoundExceptionWith404() throws Exception {
+        when(restaurantService.updateParametersInRestaurant(any(Long.class), any(RestaurantUpdateDto.class)))
+                .thenThrow(RestaurantEntityNotFoundException.class);
+
+        this.mockMvc.perform(
+                patch("/restaurants/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(RestaurantFixture.getRestaurantUpdateDto()))
+
+        ).andExpect(status().isNotFound());
+    }
+    @Test
+    void updateParametersInRestaurantShouldThrowOrderEntityNotFoundExceptionWith400() throws Exception {
+        when(restaurantService.updateParametersInRestaurant(any(Long.class), any(RestaurantUpdateDto.class)))
+                .thenThrow(RestaurantEntityNotFoundException.class);
+
+        this.mockMvc.perform(
+                patch("/restaurants/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(OrderFixture.getOrderDtoList()))
+        ).andExpect(status().isBadRequest());
     }
 
     @Test
@@ -115,4 +175,5 @@ public class RestaurantControllerTest {
                 .json(objectMapper.writeValueAsString(RestaurantFixture.getRestaurantDtoList()))
         );
     }
+
 }

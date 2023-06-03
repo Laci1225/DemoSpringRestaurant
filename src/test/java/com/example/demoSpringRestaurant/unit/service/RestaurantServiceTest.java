@@ -35,7 +35,7 @@ public class RestaurantServiceTest {
     private RestaurantMapper restaurantMapper;
 
     @Test
-    void addRestaurantShouldCreateOneRestaurant() {
+    void createRestaurantShouldCreateOneRestaurant() {
         //arrange / given
         when(restaurantMapper.fromRestaurantCreationDtoToEntity(any(RestaurantCreationDto.class)))
                 .thenReturn(RestaurantFixture.getRestaurantEntity(false));
@@ -45,7 +45,7 @@ public class RestaurantServiceTest {
                 .thenReturn(RestaurantFixture.getRestaurantEntity(true));
 
         //act / when
-        var restaurantDto = restaurantService.addRestaurant(RestaurantFixture.getRestaurantCreationDto());
+        var restaurantDto = restaurantService.createRestaurant(RestaurantFixture.getRestaurantCreationDto());
 
         //assert / then
         assertThat(restaurantDto).usingRecursiveComparison().isEqualTo(RestaurantFixture.getRestaurantDto());

@@ -1,6 +1,7 @@
 package com.example.demoSpringRestaurant.integration.restaurant;
 
 
+import com.example.demoSpringRestaurant.exception.RestaurantEntityNotFoundException;
 import com.example.demoSpringRestaurant.fixtures.OrderFixture;
 import com.example.demoSpringRestaurant.fixtures.RestaurantFixture;
 import com.example.demoSpringRestaurant.mapper.RestaurantMapper;
@@ -8,6 +9,7 @@ import com.example.demoSpringRestaurant.model.RestaurantDto;
 import com.example.demoSpringRestaurant.persistance.repository.RestaurantRepository;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import io.restassured.path.json.JsonPath;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,7 +44,7 @@ public class RestaurantControllerIT {
     }
 
     @Test
-    void addRestaurantShouldRespondWithTheCreatedRestaurant() { //TODO nevezék
+    void createRestaurantShouldRespondWithOneCreatedRestaurant() {
         var expectedResult = RestaurantFixture.getRestaurantDto();
         var response = given().body(RestaurantFixture.getRestaurantCreationDto())
                 .contentType(ContentType.JSON)
@@ -56,7 +58,7 @@ public class RestaurantControllerIT {
     }
 
     @Test
-    void addRestaurantShouldRespondWithBadRequestInCaseOfWrongBody() { //TODO nevezék
+    void createRestaurantShouldRespondWithBadRequestInCaseOfWrongBody() {
         given().body(OrderFixture.getOrderDto())
                 .contentType(ContentType.JSON)
                 .when().post("/restaurants")
@@ -68,7 +70,7 @@ public class RestaurantControllerIT {
         given()
                 .when().get("/restaurants")
                 .then().statusCode(HttpStatus.OK.value())
-                .body("size()",is(0));
+                .body("size()", is(0));
     }
 
     @Test
@@ -77,13 +79,14 @@ public class RestaurantControllerIT {
         given()
                 .when().get("/restaurants")
                 .then().statusCode(HttpStatus.OK.value())
-                .body("size()",is(1));
+                .body("size()", is(1));
         //TODO tömb visszaellenőrzés stringbe mi
-                //.body("",hasItem(restaurantMapper.fromEntityToRestaurantDto(result)));
+        //.body("",hasItem(restaurantMapper.fromEntityToRestaurantDto(result)));
 
     }
+
     @Test
-    void removeRestaurantShouldRemoveGivenRestaurant() {
+    void deleteRestaurantShouldRemoveGivenRestaurant() {
         var expectedResult = RestaurantFixture.getRestaurantDto();
         restaurantRepository.save(RestaurantFixture.getRestaurantEntity(false));
 
@@ -98,7 +101,20 @@ public class RestaurantControllerIT {
     }
 
     @Test
-    void updateRestaurant() {
+    void deleteRestaurantShouldRespondWithNotFound() {
+        var expectedResult = new RestaurantEntityNotFoundException("Restaurant not found");
+
+        var response = given()
+                .when().delete("/restaurants/1")
+                .then().statusCode(HttpStatus.NOT_FOUND.value())
+                .extract().response();
+
+        String message = JsonPath.from(response.getBody().asString()).getString("message");
+        assertThat(message).isEqualTo(expectedResult.getMessage());
+    }
+
+    @Test
+    void updateRestaurantShouldUpdateOneRestaurant() {
         var expectedResult = RestaurantFixture.getRestaurantDto();
         restaurantRepository.save(RestaurantFixture.getRestaurantEntity(false));
 
@@ -115,7 +131,22 @@ public class RestaurantControllerIT {
     }
 
     @Test
-    void updateParametersInRestaurant() {
+    void updateRestaurantShouldRespondWithNotFound() {
+        given().body(RestaurantFixture.getUpdatedRestaurantUpdateDto())
+                .contentType(ContentType.JSON)
+                .when().put("/restaurants/1")
+                .then().statusCode(HttpStatus.NOT_FOUND.value());
+    }
+    @Test
+    void updateRestaurantShouldRespondWithBadRequest() {
+        given().body(OrderFixture.getOrderCreationDto())
+                .contentType(ContentType.JSON)
+                .when().put("/restaurants/1")
+                .then().statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    void updateParametersInRestaurantShouldUpdateOneRestaurantsParameter() {
         var expectedResult = RestaurantFixture.getRestaurantDto();
         restaurantRepository.save(RestaurantFixture.getRestaurantEntity(false));
 
@@ -130,23 +161,36 @@ public class RestaurantControllerIT {
         assertThat(response).isNotEqualTo(expectedResult);
         assertThat(response.getOwner()).isEqualTo(expectedResult.getOwner());
     }
+    @Test
+    void updateParametersInRestaurantShouldRespondWithNotFound() {
+        given().body(RestaurantFixture.getUpdatedRestaurantUpdateDto())
+                .contentType(ContentType.JSON)
+                .when().patch("/restaurants/1")
+                .then().statusCode(HttpStatus.NOT_FOUND.value());
+    }
+    @Test
+    void updateParametersInRestaurantShouldRespondWithBadRequest() {
+        given().body(OrderFixture.getOrderCreationDto())
+                .contentType(ContentType.JSON)
+                .when().patch("/restaurants/1")
+                .then().statusCode(HttpStatus.BAD_REQUEST.value());
+    }
 
     @Test
     void getVeganRestaurantsShouldReturnZero() {
-        var result = restaurantRepository.save(RestaurantFixture.getRestaurantEntity(false));
+        restaurantRepository.save(RestaurantFixture.getRestaurantEntity(false));
         given()
                 .when().get("/restaurants/vegan")
                 .then().statusCode(HttpStatus.OK.value())
-                .body("size()",is(0));
+                .body("size()", is(0));
     }
-    //TODO error throwokat is megnézni
     @Test
     void getVeganRestaurantsShouldReturnOne() {
-        var result = restaurantRepository.save(RestaurantFixture.getRestaurantEntityIsVegan(false));
+        restaurantRepository.save(RestaurantFixture.getRestaurantEntityIsVegan(false));
         given()
                 .when().get("/restaurants/vegan")
                 .then().statusCode(HttpStatus.OK.value())
-                .body("size()",is(1));
+                .body("size()", is(1));
     }
 
 

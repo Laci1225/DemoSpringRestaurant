@@ -49,8 +49,7 @@ public class OrderControllerIT {
     @Test
     void getOrdersByRestaurantIdShouldReturnOneOrder() {
         var restaurant = restaurantRepository.save(RestaurantFixture.getRestaurantEntity(true));
-        var result = orderRepository.save(
-                OrderFixture.getOrderEntityToGivenRestaurant(true,restaurant));
+        orderRepository.save(OrderFixture.getOrderEntityToGivenRestaurant(true,restaurant));
 
         given()
                 .when().get("/orders/1")
@@ -59,7 +58,15 @@ public class OrderControllerIT {
     }
 
     @Test
-    void addOrder() {
+    void getOrdersByRestaurantIdShouldReturnZeroOrder() {
+        given()
+                .when().get("/orders/1")
+                .then().statusCode(HttpStatus.OK.value())
+                .body("size()", is(0));
+    }
+
+    @Test
+    void createOrderShouldRespondWithOneCreatedOrder() {
         var restaurant = restaurantRepository.save(RestaurantFixture.getRestaurantEntity(true));
         var expectedResult = OrderFixture.getOrderDtoToGivenRestaurant(restaurant);
 
@@ -76,7 +83,23 @@ public class OrderControllerIT {
     }
 
     @Test
-    void removeOrder() {
+    void createOrderShouldRespondWithNotFound() {
+        given().body(OrderFixture.getOrderCreationDto())
+                .contentType(ContentType.JSON)
+                .when().post("/orders/1")
+                .then().statusCode(HttpStatus.NOT_FOUND.value());
+    }
+
+    @Test
+    void createOrderShouldRespondWithBadRequest() {
+        given().body(RestaurantFixture.getRestaurantCreationDto())
+                .contentType(ContentType.JSON)
+                .when().post("/orders/1")
+                .then().statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    void deleteOrderShouldRemoveGivenOrder() {
         var restaurant = restaurantRepository.save(RestaurantFixture.getRestaurantEntity(true));
         var a = orderRepository.save(OrderFixture.getOrderEntityToGivenRestaurant(true,restaurant));
         var expectedResult = OrderFixture.getOrderDtoToGivenRestaurant(restaurant);
@@ -90,6 +113,13 @@ public class OrderControllerIT {
         expectedResult.setCreateDate(response.getCreateDate());
         expectedResult.setId(response.getId());
         assertThat(response).isEqualTo(expectedResult);
+    }
+
+    @Test
+    void deleteOrderShouldRespondWithNotFound() {
+        given()
+                .when().delete("/orders/1")
+                .then().statusCode(HttpStatus.NOT_FOUND.value());
     }
 
     @Test

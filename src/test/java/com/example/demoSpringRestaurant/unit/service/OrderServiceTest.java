@@ -36,7 +36,7 @@ class OrderServiceTest {
     private OrderMapper orderMapper;
 
     @Test
-    void removeOrderShouldRemoveOneOrder() throws EntityNotFoundException {
+    void deleteOrderShouldRemoveOneOrder() throws EntityNotFoundException {
         //arrange / given
         when(orderMapper.fromEntityToOrderDto(any(OrderEntity.class)))
                 .thenReturn(OrderFixture.getOrderDto());
@@ -45,7 +45,7 @@ class OrderServiceTest {
         Mockito.doNothing().when(orderRepository).deleteById(Mockito.anyLong());
 
         //act / when
-        var orderDto = orderService.removeOrder(OrderFixture.getOrderEntity(true).getId());
+        var orderDto = orderService.deleteOrder(OrderFixture.getOrderEntity(true).getId());
 
         //assert / then
         assertThat(orderDto).usingRecursiveComparison().isEqualTo(OrderFixture.getOrderDto());
@@ -55,12 +55,12 @@ class OrderServiceTest {
     }
 
     @Test
-    void removeOrderShouldThrowEntityNotFoundException() {
+    void deleteOrderShouldThrowEntityNotFoundException() {
         Long orderId = 1L;
         when(orderRepository.findById(orderId)).thenReturn(Optional.empty());
 
         assertThrows(OrderEntityNotFoundException.class, () ->
-                orderService.removeOrder(orderId));
+                orderService.deleteOrder(orderId));
 
         verify(orderRepository, times(1)).findById(any(Long.class));
         verifyNoMoreInteractions(orderRepository);

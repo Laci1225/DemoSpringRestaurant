@@ -2,7 +2,6 @@ package com.example.demoSpringRestaurant.persistance.entity;
 
 import com.example.demoSpringRestaurant.constant.DrinkType;
 import com.example.demoSpringRestaurant.constant.MealType;
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import com.example.demoSpringRestaurant.constant.OrderStatus;
@@ -30,10 +29,10 @@ public class OrderEntity {
     private RestaurantEntity restaurant;
 
     @Enumerated(EnumType.STRING)
-    @Nullable
+    //@Nullable
     private MealType mealType;
 
-    @Nullable
+    //@Nullable
     @Enumerated(EnumType.STRING)
     private DrinkType drinkType;
     @Transient

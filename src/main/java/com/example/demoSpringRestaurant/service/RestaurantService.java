@@ -1,6 +1,5 @@
 package com.example.demoSpringRestaurant.service;
 
-import com.example.demoSpringRestaurant.exception.EntityNotFoundException;
 import com.example.demoSpringRestaurant.exception.RestaurantEntityNotFoundException;
 import com.example.demoSpringRestaurant.model.RestaurantCreationDto;
 import com.example.demoSpringRestaurant.model.RestaurantDto;
@@ -24,30 +23,33 @@ public class RestaurantService {
     public final RestaurantMapper restaurantMapper;
 
     public List<RestaurantDto> getRestaurants() {
+        log.trace("All restaurants listed");
         return restaurantRepository.findAll().stream()
                 .map(restaurantMapper::fromEntityToRestaurantDto).toList();
     }
 
-    public RestaurantDto addRestaurant(RestaurantCreationDto restaurantCreationDto) {
+    public RestaurantDto createRestaurant(RestaurantCreationDto restaurantCreationDto) {
         var restaurantEntity = restaurantRepository.save(restaurantMapper.
                 fromRestaurantCreationDtoToEntity(restaurantCreationDto));
-        log.trace("Restaurant created in " + this.getClass()); //TODO mindenhova
+        log.trace("Restaurant created");
         return restaurantMapper.fromEntityToRestaurantDto(restaurantEntity);
     }
 
     //@Transactional
-    public RestaurantDto updateRestaurant(Long id, RestaurantUpdateDto restaurantUpdateDto) throws EntityNotFoundException {
+    public RestaurantDto updateRestaurant(Long id, RestaurantUpdateDto restaurantUpdateDto) throws RestaurantEntityNotFoundException {
         //var restaurant = repository.findById(id).stream().map(restaurantMapper::fromEntityToRestaurantDto).findFirst();
         if (restaurantRepository.existsById(id)) {
             var updatedEntity = restaurantMapper.fromRestaurantUpdateDtoToEntity(restaurantUpdateDto);
             updatedEntity.setId(id);
             //repository.save(restaurantMapper.fromRestaurantDtoToEntity(restaurant.get()));
             restaurantRepository.save(updatedEntity);
+            log.trace("Restaurant with ID: " + id + " updated");
             return restaurantMapper.fromEntityToRestaurantDto(updatedEntity);
+
         } else throw new RestaurantEntityNotFoundException("Entity doesn't exist");
     }
 
-    public RestaurantDto updateParametersInRestaurant(Long id, RestaurantUpdateDto restaurantUpdateDto) throws EntityNotFoundException {
+    public RestaurantDto updateParametersInRestaurant(Long id, RestaurantUpdateDto restaurantUpdateDto) throws RestaurantEntityNotFoundException {
         var restaurant = restaurantRepository.findById(id)
                 .stream().map(restaurantMapper::fromEntityToRestaurantDto).findFirst()
                 .orElseThrow(() -> new RestaurantEntityNotFoundException("Restaurant not found"));
@@ -77,10 +79,12 @@ public class RestaurantService {
             restaurant.setIsVegan(restaurantUpdateDto.getIsVegan());
         }
         restaurantRepository.save(restaurantMapper.fromRestaurantDtoToEntity(restaurant));
+        log.trace("Restaurant's parameter with ID: " + id + " updated");
         return restaurant;
     }
 
     public List<RestaurantDto> getVeganRestaurant() {
+        log.trace("Vegan restaurants listed");
         return restaurantRepository.findAllByIsVeganTrue()
                 .stream().map(restaurantMapper::fromEntityToRestaurantDto).toList();
     }
@@ -89,7 +93,7 @@ public class RestaurantService {
         return restaurantRepository.findById(restaurantId);
     }
 
-    public void removeRestaurant(RestaurantEntity restaurantEntity) {
+    public void deleteRestaurant(RestaurantEntity restaurantEntity) {
         restaurantRepository.delete(restaurantEntity);
 
     }
