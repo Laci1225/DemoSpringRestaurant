@@ -1,6 +1,8 @@
 package com.example.demoSpringRestaurant.unit.controller;
 
+import com.example.demoSpringRestaurant.constant.OrderStatus;
 import com.example.demoSpringRestaurant.controller.OrderController;
+import com.example.demoSpringRestaurant.exception.OrderEntityNotFoundException;
 import com.example.demoSpringRestaurant.exception.RestaurantEntityNotFoundException;
 import com.example.demoSpringRestaurant.facade.RestaurantOrderFacade;
 import com.example.demoSpringRestaurant.fixtures.OrderFixture;
@@ -12,8 +14,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.server.ResponseStatusException;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -64,6 +68,7 @@ public class OrderControllerTest {
                         .content(objectMapper.writeValueAsString(RestaurantFixture.getRestaurantEntity(true)))
         ).andExpect(status().isBadRequest());
     }
+
     @Test
     void createOrderShouldThrowOrderEntityNotFoundExceptionWith404() throws Exception {
         //given
@@ -126,11 +131,71 @@ public class OrderControllerTest {
     void deleteOrderShouldThrowOrderEntityNotFoundExceptionWith404() throws Exception {
         //given
         when(orderService.deleteOrder(any(Long.class)))
-                .thenThrow(RestaurantEntityNotFoundException.class);
+                .thenThrow(OrderEntityNotFoundException.class);
         //when
         //then
         this.mockMvc.perform(
                 delete("/orders/1")
+        ).andExpect(status().isNotFound());
+    }
+
+    @Test
+    void setNextStateShouldSetToTheNextStateFromSENTTOAPPROVED() throws Exception {
+        OrderStatus orderStatus = OrderStatus.SENT;
+        when(orderService.setNextState(any(Long.class)))
+                .thenReturn(OrderFixture.getOrderDtoGetNextStatus(orderStatus));
+        //when
+        //then
+        this.mockMvc.perform(
+                post("/orders/1/next-state")
+        ).andExpect(status().isOk()).andExpect(content()
+                .json(objectMapper.writeValueAsString(OrderFixture.getOrderDtoGetNextStatus(orderStatus)))
+        );
+    }
+    @Test
+    void setNextStateShouldSetToTheNextStateFromAPPROVEDToSHIPPING() throws Exception {
+        OrderStatus orderStatus = OrderStatus.APPROVED;
+        when(orderService.setNextState(any(Long.class)))
+                .thenReturn(OrderFixture.getOrderDtoGetNextStatus(orderStatus));
+        //when
+        //then
+        this.mockMvc.perform(
+                post("/orders/1/next-state")
+        ).andExpect(status().isOk()).andExpect(content()
+                .json(objectMapper.writeValueAsString(OrderFixture.getOrderDtoGetNextStatus(orderStatus)))
+        );
+    }
+    @Test
+    void setNextStateShouldSetToTheNextStateFromSHIPPINGToSHIPPED() throws Exception {
+        OrderStatus orderStatus = OrderStatus.SHIPPING;
+        when(orderService.setNextState(any(Long.class)))
+                .thenReturn(OrderFixture.getOrderDtoGetNextStatus(orderStatus));
+        //when
+        //then
+        this.mockMvc.perform(
+                post("/orders/1/next-state")
+        ).andExpect(status().isOk()).andExpect(content()
+                .json(objectMapper.writeValueAsString(OrderFixture.getOrderDtoGetNextStatus(orderStatus)))
+        );
+    }
+    @Test
+    void setNextStateShouldThrowResponseStatusException() throws Exception {
+        when(orderService.setNextState(any(Long.class)))
+                .thenThrow(new ResponseStatusException(HttpStatus.BAD_REQUEST));
+        //when
+        //then
+        this.mockMvc.perform(
+                post("/orders/1/next-state")
+        ).andExpect(status().isBadRequest());
+    }
+    @Test
+    void setNextStateShouldThrowEntityNotFoundExceptionWith404() throws Exception {
+        when(orderService.setNextState(any(Long.class)))
+                .thenThrow(OrderEntityNotFoundException.class);
+        //when
+        //then
+        this.mockMvc.perform(
+                post("/orders/1/next-state")
         ).andExpect(status().isNotFound());
     }
 }

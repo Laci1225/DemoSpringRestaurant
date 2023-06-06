@@ -143,4 +143,19 @@ public class OrderFixture {
                 .orderStatus(fromStatus.getNextStatus())
                 .build();
     }
+
+    public static List<OrderEntity> getOrderEntityList() {
+        var list = new ArrayList<OrderEntity>();
+        list.add(OrderEntity.builder()
+                .id(1L)
+                .restaurant(RESTAURANT_ENTITY)
+                .mealType(MEAL_TYPE)
+                .drinkType(DRINK_TYPE)
+                .price(PRICE)
+                .deliveryAddress(DELIVERY_ADDRESS)
+                .createDate(CREATE_DATE)
+                .orderStatus(ORDER_STATUS)
+                .build());
+        return list;
+    }
 }

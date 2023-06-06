@@ -47,6 +47,18 @@ public class RestaurantFixture {
                 .canDeliver(CAN_DELIVER)
                 .build();
     }
+    public static RestaurantUpdateDto getRestaurantUpdateDtoSetEverythingToNull() {
+        return RestaurantUpdateDto.builder()
+                .name(null)
+                .owner(null)
+                .address(null)
+                .email(null)
+                .phoneNumber(null)
+                .numberOfTables(null)
+                .isVegan(null)
+                .canDeliver(null)
+                .build();
+    }
 
     public static RestaurantEntity getRestaurantEntity(boolean withId) {
 

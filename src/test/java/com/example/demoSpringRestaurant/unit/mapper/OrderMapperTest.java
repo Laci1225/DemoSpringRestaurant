@@ -24,6 +24,13 @@ public class OrderMapperTest {
     }
 
     @Test
+    public void fromOrderDtoToEntityReturnsNull() {
+        var result = orderMapper
+                .fromOrderDtoToEntity(null);
+
+        assertNull(result);
+    }
+    @Test
     public void fromEntityToOrderDto() {
         var result = orderMapper
                 .fromEntityToOrderDto(OrderFixture.getOrderEntity(true));
@@ -32,11 +39,25 @@ public class OrderMapperTest {
     }
 
     @Test
+    public void fromEntityToOrderDtoReturnsNull() {
+        var result = orderMapper
+                .fromEntityToOrderDto(null);
+
+        assertNull(result);
+    }
+    @Test
     public void fromEntityToOrderCreationDto() {
         var result = orderMapper
                 .fromEntityToOrderCreationDto(OrderFixture.getOrderEntity(false));
 
         assertEquals(result, OrderFixture.getOrderCreationDto());
+    }
+    @Test
+    public void fromEntityToOrderCreationDtoReturnsNull() {
+        var result = orderMapper
+                .fromEntityToOrderCreationDto(null);
+
+        assertNull(result);
     }
 
     @Test
@@ -46,6 +67,13 @@ public class OrderMapperTest {
 
         assertEquals(result, OrderFixture.getOrderEntity(false));
     }
+    @Test
+    public void fromOrderCreationDtoToEntityReturnsNull() {
+        var result = orderMapper
+                .fromOrderCreationDtoToEntity(null);
+
+        assertNull(result);
+    }
 
     @Test
     public void fromEntityToOrderUpdateDto() {
@@ -54,6 +82,13 @@ public class OrderMapperTest {
 
         assertEquals(result, OrderFixture.getorderUpdateDto());
     }
+    @Test
+    public void fromEntityToOrderUpdateDtoReturnsNull() {
+        var result = orderMapper
+                .fromEntityToOrderUpdateDto(null);
+
+        assertNull(result);
+    }
 
     @Test
     public void fromOrderUpdateDtoToEntity() {
@@ -61,5 +96,12 @@ public class OrderMapperTest {
                 .fromOrderUpdateDtoToEntity(OrderFixture.getorderUpdateDto());
 
         assertEquals(result, OrderFixture.getOrderEntity(false));
+    }
+    @Test
+    public void fromOrderUpdateDtoToEntityReturnsNull() {
+        var result = orderMapper
+                .fromOrderUpdateDtoToEntity(null);
+
+        assertNull(result);
     }
 }

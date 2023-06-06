@@ -47,9 +47,6 @@ public class OrderController {
         } catch (RestaurantEntityNotFoundException e) {
             log.warn("Getting orders were unsuccessful due to: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
-        } catch (Exception e) {
-            log.error("Server error");
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -73,10 +70,6 @@ public class OrderController {
         } catch (RestaurantEntityNotFoundException e) {
             log.warn("Creating an order was unsuccessful due to: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
-        } catch (Exception e) {
-
-            log.error("Server error");
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -99,9 +92,6 @@ public class OrderController {
         } catch (OrderEntityNotFoundException e) {
             log.warn("Deleting an order were unsuccessful due to: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
-        } catch (Exception e) {
-            log.error("Server error");
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -124,9 +114,6 @@ public class OrderController {
         } catch (OrderEntityNotFoundException e) {
             log.warn("Setting an order's next stage was unsuccessful due to: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
-        } catch (Exception e) {
-            log.error("Server error");
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

@@ -5,10 +5,17 @@ import com.example.demoSpringRestaurant.exception.RestaurantEntityNotFoundExcept
 import com.example.demoSpringRestaurant.facade.RestaurantOrderFacade;
 import com.example.demoSpringRestaurant.model.*;
 import com.example.demoSpringRestaurant.service.RestaurantService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -33,18 +40,20 @@ public class RestaurantController {
      * @return A list of {@link RestaurantDto} objects representing the restaurants.
      * @throws ResponseStatusException If there is a server error with 500 status code.
      */
+    @Operation(summary = "Returns all restaurant")// TODO
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "All restaurant found",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            array = @ArraySchema(schema = @Schema(implementation = RestaurantDto.class)))),
+            @ApiResponse(responseCode = "500", description = "Server error",
+                    content = @Content)})
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
-    public List<RestaurantDto> getRestaurant() {
-        try {
-            log.debug("Requested all restaurant");
-            var restaurantList = restaurantService.getRestaurants();
-            log.debug("Restaurants returned successfully");
-            return restaurantList;
-        } catch (Exception e) {
-            log.error("Server error");
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public List<RestaurantDto> getRestaurants() {
+        log.debug("Requested all restaurant");
+        var restaurantList = restaurantService.getRestaurants();
+        log.debug("Restaurants returned successfully");
+        return restaurantList;
     }
 
     /**
@@ -54,18 +63,22 @@ public class RestaurantController {
      * @return The created {@link RestaurantDto} object representing the new restaurant.
      * @throws ResponseStatusException If there is a server error with 500 status code.
      */
+    @Operation(summary = "Create a restaurant")// TODO
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "A restaurant created",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = RestaurantDto.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid request body",
+                    content = @Content),
+            @ApiResponse(responseCode = "500", description = "Server error",
+                    content = @Content)})
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public RestaurantDto addRestaurant(@Valid @RequestBody RestaurantCreationDto restaurantCreationDto) {
-        try {
-            log.debug("Creating a restaurant");
-            var restaurant = restaurantService.createRestaurant(restaurantCreationDto);
-            log.debug("Created a restaurant successfully");
-            return restaurant;
-        } catch (Exception e) {
-            log.error("Server error");
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public RestaurantDto createRestaurant(@Valid @RequestBody RestaurantCreationDto restaurantCreationDto) {
+        log.debug("Creating a restaurant");
+        var restaurant = restaurantService.createRestaurant(restaurantCreationDto);
+        log.debug("Created a restaurant successfully");
+        return restaurant;
     }
 
     /**
@@ -87,9 +100,6 @@ public class RestaurantController {
         } catch (RestaurantEntityNotFoundException e) {
             log.warn("Deleting a restaurant was unsuccessful due to: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
-        } catch (Exception e) {
-            log.error("Server error");
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -115,9 +125,6 @@ public class RestaurantController {
         } catch (RestaurantEntityNotFoundException e) {
             log.warn("Updating a restaurant was unsuccessful due to: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
-        } catch (Exception e) {
-            log.error("Server error");
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -143,9 +150,6 @@ public class RestaurantController {
         } catch (RestaurantEntityNotFoundException e) {
             log.warn("Updating a restaurant's parameter was unsuccessful due to: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
-        } catch (Exception e) {
-            log.error("Server error");
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -158,14 +162,9 @@ public class RestaurantController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("vegan")
     public List<RestaurantDto> getVeganRestaurants() {
-        try {
-            log.debug("Requested all vegan restaurant");
-            var restaurantList = restaurantService.getVeganRestaurant();
-            log.debug("Vegan restaurants returned successfully");
-            return restaurantList;
-        } catch (Exception e) {
-            log.error("Server error");
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        log.debug("Requested all vegan restaurant");
+        var restaurantList = restaurantService.getVeganRestaurant();
+        log.debug("Vegan restaurants returned successfully");
+        return restaurantList;
     }
 }
