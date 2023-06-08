@@ -14,7 +14,7 @@ public enum OrderStatus {
             case SENT -> APPROVED;
             case APPROVED -> SHIPPING;
             case SHIPPING -> SHIPPED;
-            case SHIPPED -> throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            case SHIPPED -> throw new UnsupportedOperationException("Invalid operation: Next status not available after SHIPPED");
         };
     }
 }

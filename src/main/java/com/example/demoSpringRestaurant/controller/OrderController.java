@@ -41,7 +41,7 @@ public class OrderController {
     public List<OrderDto> getOrdersByRestaurantId(@PathVariable("restaurantId") Long restaurantId) {
         try {
             log.debug("Requested all order");
-            var orderList = restaurantOrderFacade.getOrdersByRestaurantId(restaurantId);
+            var orderList = orderService.getOrdersByRestaurantId(restaurantId);
             log.debug("Orders returned successfully");
             return orderList;
         } catch (RestaurantEntityNotFoundException e) {
@@ -114,6 +114,8 @@ public class OrderController {
         } catch (OrderEntityNotFoundException e) {
             log.warn("Setting an order's next stage was unsuccessful due to: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        } catch (UnsupportedOperationException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
         }
     }
 }

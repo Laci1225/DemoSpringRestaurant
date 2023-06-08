@@ -24,13 +24,6 @@ public class RestaurantOrderFacade {
     private final OrderService orderService;
     private final RestaurantService restaurantService;
 
-    public List<OrderDto> getOrdersByRestaurantId(Long restaurantId) throws RestaurantEntityNotFoundException {
-        restaurantService.findRestaurantById(restaurantId)
-                .orElseThrow(() -> new RestaurantEntityNotFoundException("Restaurant not found"));
-        log.trace("All orders with Restaurant ID: " + restaurantId + " listed.");
-        return orderService.findAllRestaurantById(restaurantId)
-                .stream().map(orderMapper::fromEntityToOrderDto).toList();
-    }
 
     public OrderDto createOrder(OrderCreationDto orderCreationDto, Long restaurantId) throws RestaurantEntityNotFoundException {
         var restaurantEntity = restaurantService.findRestaurantById(restaurantId)
@@ -44,7 +37,7 @@ public class RestaurantOrderFacade {
     }
 
     public RestaurantDto deleteRestaurant(Long restaurantId) throws RestaurantEntityNotFoundException {
-        var orders = orderService.findAllRestaurantById(restaurantId);
+        var orders = orderService.findAllByRestaurantId(restaurantId);
         orderService.deleteAllOrder(orders);
         var restaurantEntity = restaurantService.findRestaurantById(restaurantId)
                 .orElseThrow(() -> new RestaurantEntityNotFoundException("Restaurant not found"));

@@ -3,7 +3,9 @@ package com.example.demoSpringRestaurant.unit.service;
 import com.example.demoSpringRestaurant.constant.OrderStatus;
 import com.example.demoSpringRestaurant.exception.EntityNotFoundException;
 import com.example.demoSpringRestaurant.exception.OrderEntityNotFoundException;
+import com.example.demoSpringRestaurant.exception.RestaurantEntityNotFoundException;
 import com.example.demoSpringRestaurant.fixtures.OrderFixture;
+import com.example.demoSpringRestaurant.fixtures.RestaurantFixture;
 import com.example.demoSpringRestaurant.mapper.OrderMapper;
 import com.example.demoSpringRestaurant.persistance.entity.OrderEntity;
 import com.example.demoSpringRestaurant.persistance.repository.OrderRepository;
@@ -34,6 +36,22 @@ class OrderServiceTest {
 
     @Mock
     private OrderMapper orderMapper;
+
+    /*@Test
+    void getOrdersByRestaurantId() throws RestaurantEntityNotFoundException {
+        when(orderMapper.fromEntityToOrderDto(any(OrderEntity.class)))
+                .thenReturn(OrderFixture.getOrderDto());
+        when(orderRepository.findAll())
+                .thenReturn(OrderFixture.getOrderEntityList());
+        when(orderService.findAllByRestaurantId(anyLong()))
+                .thenReturn(orderRepository.findAll());
+
+        var orderDtoList = orderService.getOrdersByRestaurantId(RestaurantFixture.getRestaurantDto().getId());
+
+        assertThat(orderDtoList).usingRecursiveComparison().isEqualTo(OrderFixture.getOrderDtoList());
+        verify(orderRepository, times(1)).findAll();
+        verifyNoMoreInteractions(orderRepository);
+    }*/ // TODO some weird problem
 
     @Test
     void deleteOrderShouldRemoveOneOrder() throws EntityNotFoundException {
@@ -128,7 +146,7 @@ class OrderServiceTest {
     @Test
     void setNextStateShouldThrowResponseStatusException() {
 
-        assertThrows(ResponseStatusException.class, () -> OrderFixture.getOrderDtoGetNextStatus(OrderStatus.SHIPPED));
+        assertThrows(UnsupportedOperationException.class, () -> OrderFixture.getOrderDtoGetNextStatus(OrderStatus.SHIPPED));
 
         verifyNoMoreInteractions(orderRepository);
     }

@@ -1,14 +1,19 @@
 package com.example.demoSpringRestaurant.service;
 
 import com.example.demoSpringRestaurant.exception.OrderEntityNotFoundException;
+import com.example.demoSpringRestaurant.exception.RestaurantEntityNotFoundException;
 import com.example.demoSpringRestaurant.mapper.OrderMapper;
 import com.example.demoSpringRestaurant.model.OrderDto;
 import com.example.demoSpringRestaurant.persistance.entity.OrderEntity;
 import com.example.demoSpringRestaurant.persistance.repository.OrderRepository;
+import jakarta.persistence.criteria.Order;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.aspectj.weaver.ast.Or;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -17,6 +22,13 @@ import java.util.List;
 public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
+
+    public List<OrderDto> getOrdersByRestaurantId(Long restaurantId) throws RestaurantEntityNotFoundException {
+        log.trace("All orders with Restaurant ID: " + restaurantId + " listed.");
+        return findAllByRestaurantId(restaurantId).stream()
+                .map(orderMapper::fromEntityToOrderDto)
+                .toList();
+    }
 
     public OrderDto deleteOrder(Long orderId) throws OrderEntityNotFoundException {
         var order = orderRepository.findById(orderId)
@@ -39,12 +51,15 @@ public class OrderService {
     }
 
 
-    public void saveOrder(OrderEntity orderEntity) {
-        orderRepository.save(orderEntity);
+    public List<OrderEntity> findAllByRestaurantId(Long restaurantId) {
+        return orderRepository.findAll()
+                .stream()
+                .filter(orderId -> orderId.getRestaurant().getId().equals(restaurantId))
+                .toList();
     }
 
-    public List<OrderEntity> findAllRestaurantById(Long restaurantId) {
-        return orderRepository.findAllByRestaurantId(restaurantId);
+    public void saveOrder(OrderEntity orderEntity) {
+        orderRepository.save(orderEntity);
     }
 
     public void deleteAllOrder(List<OrderEntity> orders) {
