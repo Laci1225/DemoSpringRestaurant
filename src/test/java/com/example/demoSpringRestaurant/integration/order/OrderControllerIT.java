@@ -61,10 +61,17 @@ public class OrderControllerIT {
 
     @Test
     void getOrdersByRestaurantIdShouldReturnZeroOrder() {
+        var restaurant = restaurantRepository.save(RestaurantFixture.getRestaurantEntity(true));
         given()
-                .when().get("/orders/" + new Random().nextInt(1, 10))
+                .when().get("/orders/" + restaurant.getId())
                 .then().statusCode(HttpStatus.OK.value())
                 .body("size()", is(0));
+    }
+    @Test
+    void getOrdersByRestaurantIdShouldRespondWithNotFound() {
+        given()
+                .when().get("/orders/" + new Random().nextInt(1, 10))
+                .then().statusCode(HttpStatus.NOT_FOUND.value());
     }
 
     @Test
