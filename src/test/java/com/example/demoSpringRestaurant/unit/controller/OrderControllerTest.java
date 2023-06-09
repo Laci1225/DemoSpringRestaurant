@@ -1,8 +1,12 @@
 package com.example.demoSpringRestaurant.unit.controller;
 
+import com.example.demoSpringRestaurant.constant.OrderStatus;
 import com.example.demoSpringRestaurant.controller.OrderController;
+import com.example.demoSpringRestaurant.exception.OrderEntityNotFoundException;
+import com.example.demoSpringRestaurant.exception.RestaurantEntityNotFoundException;
 import com.example.demoSpringRestaurant.facade.RestaurantOrderFacade;
 import com.example.demoSpringRestaurant.fixtures.OrderFixture;
+import com.example.demoSpringRestaurant.fixtures.RestaurantFixture;
 import com.example.demoSpringRestaurant.model.OrderCreationDto;
 import com.example.demoSpringRestaurant.service.OrderService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -32,9 +36,9 @@ public class OrderControllerTest {
 
 
     @Test
-    void addOrderShouldReturnCreatedOrder() throws Exception {
+    void createOrderShouldReturnCreatedOrder() throws Exception {
         //given
-        when(restaurantOrderFacade.addOrder(any(OrderCreationDto.class), any(Long.class)))
+        when(restaurantOrderFacade.createOrder(any(OrderCreationDto.class), any(Long.class)))
                 .thenReturn(OrderFixture.getOrderDto());
 
         //when
@@ -46,67 +50,154 @@ public class OrderControllerTest {
         ).andExpect(status().isCreated()).andExpect(content()
                 .json(objectMapper.writeValueAsString(OrderFixture.getOrderDto()))
         );
-        //todo facade exception throws what?
+    }
 
+    @Test
+    void createOrderShouldThrowOrderEntityNotFoundExceptionWith400() throws Exception {
+
+        //given
+        when(restaurantOrderFacade.createOrder(any(OrderCreationDto.class), any(Long.class)))
+                .thenThrow(RestaurantEntityNotFoundException.class);
+        //when
+        //then
+        this.mockMvc.perform(
+                post("/orders/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(RestaurantFixture.getRestaurantEntity(true)))
+        ).andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void createOrderShouldThrowOrderEntityNotFoundExceptionWith404() throws Exception {
+        //given
+        when(restaurantOrderFacade.createOrder(any(OrderCreationDto.class), any(Long.class)))
+                .thenThrow(RestaurantEntityNotFoundException.class);
+        //when
+        //then
+        this.mockMvc.perform(
+                post("/orders/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(OrderFixture.getOrderCreationDto()))
+        ).andExpect(status().isNotFound());
     }
 
 
-    /*@Test
-    void getOrdersByRestaurantId() {
-        when(restaurantOrderFacade.getOrdersByRestaurantId(any(Long.class)))
+    @Test
+    void getOrdersByRestaurantIdShouldReturnAllOrder() throws Exception {
+        //given
+        when(orderService.getOrdersByRestaurantId(any(Long.class)))
                 .thenReturn(OrderFixture.getOrderDtoList());
 
-        var orderDto = orderController.getOrdersByRestaurantId(
-                RestaurantFixture.getRestaurantDto().getId());
-
-        assertThat(orderDto).usingRecursiveComparison().isEqualTo(OrderFixture.getOrderDtoList());
+        //when
+        //then
+        this.mockMvc.perform(
+                get("/orders/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isOk()).andExpect(content()
+                .json(objectMapper.writeValueAsString(OrderFixture.getOrderDtoList()))
+        );
     }
 
     @Test
-    void addOrderShouldCreateOneOrder() throws EntityNotFoundException {
-        when(restaurantOrderFacade.addOrder(any(OrderCreationDto.class), any(Long.class)))
+    void getOrdersByRestaurantIdShouldThrowOrderEntityNotFoundExceptionWith404() throws Exception {
+        //given
+        when(orderService.getOrdersByRestaurantId(any(Long.class)))
+                .thenThrow(RestaurantEntityNotFoundException.class);
+        //when
+        //then
+        this.mockMvc.perform(
+                get("/orders/1")
+        ).andExpect(status().isNotFound());
+    }
+
+    @Test
+    void deleteOrderShouldRemoveOneOrder() throws Exception {
+        //given
+        when(orderService.deleteOrder(any(Long.class)))
                 .thenReturn(OrderFixture.getOrderDto());
-
-        var orderDto = orderController.addOrder(
-                OrderFixture.getOrderCreationDto(), RestaurantFixture.getRestaurantDto().getId());
-
-        assertThat(orderDto).usingRecursiveComparison().isEqualTo(OrderFixture.getOrderDto());
-    }
-
-    *//*@Test
-    void addOrderShouldThrowRestaurantEntityNotFoundException() {
-        // TODO test handling exceptions
-        String errorMessage = "Restaurant not found";
-        when(restaurantOrderFacade.addOrder(OrderFixture.getOrderCreationDto(), 1L))
-                .thenThrow(new RestaurantEntityNotFoundException(errorMessage));
-
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
-            orderController.addOrder(OrderFixture.getOrderCreationDto(), 1L);
-        });
-
-        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
-        assertEquals(errorMessage, exception.getReason());
-    }*//*
-
-    @Test
-    void removeOrder() throws EntityNotFoundException {
-        when(orderService.removeOrder(any(Long.class)))
-                .thenReturn(OrderFixture.getOrderDto());
-
-        var orderDto = orderController.removeOrder(
-                OrderFixture.getOrderDto().getId());
-
-        assertThat(orderDto).usingRecursiveComparison().isEqualTo(OrderFixture.getOrderDto());
+        //when
+        //then
+        this.mockMvc.perform(
+                delete("/orders/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isAccepted()).andExpect(content()
+                .json(objectMapper.writeValueAsString(OrderFixture.getOrderDto()))
+        );
     }
 
     @Test
-    void setNextState() throws EntityNotFoundException {
+    void deleteOrderShouldThrowOrderEntityNotFoundExceptionWith404() throws Exception {
+        //given
+        when(orderService.deleteOrder(any(Long.class)))
+                .thenThrow(OrderEntityNotFoundException.class);
+        //when
+        //then
+        this.mockMvc.perform(
+                delete("/orders/1")
+        ).andExpect(status().isNotFound());
+    }
+
+    @Test
+    void setNextStateShouldSetToTheNextStateFromSENTTOAPPROVED() throws Exception {
+        OrderStatus orderStatus = OrderStatus.SENT;
         when(orderService.setNextState(any(Long.class)))
-                .thenReturn(OrderFixture.getOrderDto());
+                .thenReturn(OrderFixture.getOrderDtoGetNextStatus(orderStatus));
+        //when
+        //then
+        this.mockMvc.perform(
+                post("/orders/1/next-state")
+        ).andExpect(status().isOk()).andExpect(content()
+                .json(objectMapper.writeValueAsString(OrderFixture.getOrderDtoGetNextStatus(orderStatus)))
+        );
+    }
 
-        var orderDto = orderController.setNextState(
-                OrderFixture.getOrderDto().getId());
+    @Test
+    void setNextStateShouldSetToTheNextStateFromAPPROVEDToSHIPPING() throws Exception {
+        OrderStatus orderStatus = OrderStatus.APPROVED;
+        when(orderService.setNextState(any(Long.class)))
+                .thenReturn(OrderFixture.getOrderDtoGetNextStatus(orderStatus));
+        //when
+        //then
+        this.mockMvc.perform(
+                post("/orders/1/next-state")
+        ).andExpect(status().isOk()).andExpect(content()
+                .json(objectMapper.writeValueAsString(OrderFixture.getOrderDtoGetNextStatus(orderStatus)))
+        );
+    }
 
-        assertThat(orderDto).usingRecursiveComparison().isEqualTo(OrderFixture.getOrderDto());
-    }*/
+    @Test
+    void setNextStateShouldSetToTheNextStateFromSHIPPINGToSHIPPED() throws Exception {
+        OrderStatus orderStatus = OrderStatus.SHIPPING;
+        when(orderService.setNextState(any(Long.class)))
+                .thenReturn(OrderFixture.getOrderDtoGetNextStatus(orderStatus));
+        //when
+        //then
+        this.mockMvc.perform(
+                post("/orders/1/next-state")
+        ).andExpect(status().isOk()).andExpect(content()
+                .json(objectMapper.writeValueAsString(OrderFixture.getOrderDtoGetNextStatus(orderStatus)))
+        );
+    }
+
+    @Test
+    void setNextStateShouldThrowResponseStatusException() throws Exception {
+        when(orderService.setNextState(any(Long.class)))
+                .thenThrow(UnsupportedOperationException.class);
+        //when
+        //then
+        this.mockMvc.perform(
+                post("/orders/1/next-state")
+        ).andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void setNextStateShouldThrowEntityNotFoundExceptionWith404() throws Exception {
+        when(orderService.setNextState(any(Long.class)))
+                .thenThrow(OrderEntityNotFoundException.class);
+        //when
+        //then
+        this.mockMvc.perform(
+                post("/orders/1/next-state")
+        ).andExpect(status().isNotFound());
+    }
 }

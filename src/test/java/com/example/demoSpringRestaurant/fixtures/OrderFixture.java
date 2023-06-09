@@ -5,6 +5,7 @@ import com.example.demoSpringRestaurant.constant.MealType;
 import com.example.demoSpringRestaurant.constant.OrderStatus;
 import com.example.demoSpringRestaurant.model.OrderCreationDto;
 import com.example.demoSpringRestaurant.model.OrderDto;
+import com.example.demoSpringRestaurant.model.OrderUpdateDto;
 import com.example.demoSpringRestaurant.persistance.entity.OrderEntity;
 import com.example.demoSpringRestaurant.persistance.entity.RestaurantEntity;
 import jakarta.persistence.ManyToOne;
@@ -38,19 +39,6 @@ public class OrderFixture {
                 .build();
     }
 
-    public static OrderEntity getOrderEntityGetActualStatus(OrderStatus fromStatus) {
-        return OrderEntity.builder()
-                .id(1L)
-                .restaurant(RESTAURANT_ENTITY)
-                .mealType(MEAL_TYPE)
-                .drinkType(DRINK_TYPE)
-                .price(PRICE)
-                .deliveryAddress(DELIVERY_ADDRESS)
-                .createDate(CREATE_DATE)
-                .orderStatus(fromStatus)
-                .build();
-    }
-
     public static OrderDto getOrderDtoGetNextStatus(OrderStatus fromStatus) {
         return OrderDto.builder()
                 .id(1L)
@@ -66,7 +54,6 @@ public class OrderFixture {
 
     public static OrderEntity getOrderEntity(boolean withId) {
         var orderEntity = OrderEntity.builder()
-                .id(1L)
                 .restaurant(RESTAURANT_ENTITY)
                 .mealType(MEAL_TYPE)
                 .drinkType(DRINK_TYPE)
@@ -95,6 +82,71 @@ public class OrderFixture {
     public static List<OrderDto> getOrderDtoList() {
         var list = new ArrayList<OrderDto>();
         list.add(OrderDto.builder()
+                .id(1L)
+                .restaurant(RESTAURANT_ENTITY)
+                .mealType(MEAL_TYPE)
+                .drinkType(DRINK_TYPE)
+                .price(PRICE)
+                .deliveryAddress(DELIVERY_ADDRESS)
+                .createDate(CREATE_DATE)
+                .orderStatus(ORDER_STATUS)
+                .build());
+        return list;
+    }
+
+    public static OrderUpdateDto getorderUpdateDto() {
+        return OrderUpdateDto.builder()
+                .restaurant(RESTAURANT_ENTITY)
+                .mealType(MEAL_TYPE)
+                .drinkType(DRINK_TYPE)
+                .price(PRICE)
+                .deliveryAddress(DELIVERY_ADDRESS)
+                .createDate(CREATE_DATE)
+                .orderStatus(ORDER_STATUS)
+                .build();
+    }
+
+    public static OrderEntity getOrderEntityToGivenRestaurant(boolean withId,RestaurantEntity restaurantEntity) {
+        var orderEntity = OrderEntity.builder()
+                .restaurant(restaurantEntity)
+                .mealType(MEAL_TYPE)
+                .drinkType(DRINK_TYPE)
+                .price(PRICE)
+                .deliveryAddress(DELIVERY_ADDRESS)
+                .createDate(CREATE_DATE)
+                .orderStatus(ORDER_STATUS)
+                .build();
+        if (withId)
+            orderEntity.setId(1L);
+        return orderEntity;
+    }
+    public static OrderDto getOrderDtoToGivenRestaurant(RestaurantEntity restaurantEntity) {
+        return OrderDto.builder()
+                .restaurant(restaurantEntity)
+                .mealType(MEAL_TYPE)
+                .drinkType(DRINK_TYPE)
+                .price(PRICE)
+                .deliveryAddress(DELIVERY_ADDRESS)
+                .createDate(CREATE_DATE)
+                .orderStatus(ORDER_STATUS)
+                .build();
+    }
+    public static OrderDto getOrderDtoGetNextStatusToGivenRestaurant(OrderStatus fromStatus,RestaurantEntity restaurantEntity) {
+        return OrderDto.builder()
+                .id(1L)
+                .restaurant(restaurantEntity)
+                .mealType(MEAL_TYPE)
+                .drinkType(DRINK_TYPE)
+                .price(PRICE)
+                .deliveryAddress(DELIVERY_ADDRESS)
+                .createDate(CREATE_DATE)
+                .orderStatus(fromStatus.getNextStatus())
+                .build();
+    }
+
+    public static List<OrderEntity> getOrderEntityList() {
+        var list = new ArrayList<OrderEntity>();
+        list.add(OrderEntity.builder()
                 .id(1L)
                 .restaurant(RESTAURANT_ENTITY)
                 .mealType(MEAL_TYPE)
