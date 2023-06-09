@@ -21,9 +21,9 @@ public class OrderService {
 
     public List<OrderDto> getOrdersByRestaurantId(Long restaurantId) throws RestaurantEntityNotFoundException {
         log.trace("All orders with Restaurant ID: " + restaurantId + " listed.");
-        if (orderRepository.isRestaurantExist(restaurantId).equals(0))
+        if (orderRepository.numberOfRestaurantFound(restaurantId).equals(0))
             throw new RestaurantEntityNotFoundException("Restaurant not found");
-        return findAllByRestaurantId(restaurantId).stream()
+        return orderRepository.findAllByRestaurantId(restaurantId).stream()
                 .map(orderMapper::fromEntityToOrderDto)
                 .toList();
     }
@@ -48,19 +48,15 @@ public class OrderService {
         return orderMapper.fromEntityToOrderDto(order);
     }
 
-
-    public List<OrderEntity> findAllByRestaurantId(Long restaurantId) {
-        return orderRepository.findAll()
-                .stream()
-                .filter(orderId -> orderId.getRestaurant().getId().equals(restaurantId))
-                .toList();
-    }
-
     public void saveOrder(OrderEntity orderEntity) {
         orderRepository.save(orderEntity);
     }
 
     public void deleteAllOrder(List<OrderEntity> orders) {
         orderRepository.deleteAll(orders);
+    }
+
+    public List<OrderEntity> findAllByRestaurantId(Long restaurantId) {
+        return orderRepository.findAllByRestaurantId(restaurantId);
     }
 }

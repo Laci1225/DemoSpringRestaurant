@@ -77,20 +77,20 @@ public class RestaurantServiceTest {
                 .thenReturn(RestaurantFixture.getRestaurantEntity(false));
         when(restaurantRepository.save(any(RestaurantEntity.class)))
                 .thenReturn(RestaurantFixture.getRestaurantEntity(true));
-        when(restaurantRepository.existsById(any(Long.class))).thenReturn(true);
+        when(restaurantRepository.existsById(anyLong())).thenReturn(true);
         //act / when
         var restaurantUpdate = restaurantService.updateRestaurant(1L, RestaurantFixture.getRestaurantUpdateDto());
 
         //assert / then
         assertThat(restaurantUpdate).usingRecursiveComparison().isEqualTo(RestaurantFixture.getRestaurantDto());
-        verify(restaurantRepository, times(1)).existsById(any(Long.class));
+        verify(restaurantRepository, times(1)).existsById(anyLong());
         verify(restaurantRepository, times(1)).save(any(RestaurantEntity.class));
         verifyNoMoreInteractions(restaurantRepository);
     }
 
     @Test
     void updateRestaurantShouldThrowRestaurantNotFoundException() {
-        when(restaurantRepository.existsById(any(Long.class))).thenReturn(false);
+        when(restaurantRepository.existsById(anyLong())).thenReturn(false);
 
         assertThrows(RestaurantEntityNotFoundException.class, () ->
                 restaurantService.updateRestaurant(1L, RestaurantFixture.getRestaurantUpdateDto()));
@@ -106,20 +106,20 @@ public class RestaurantServiceTest {
                 .thenReturn(RestaurantFixture.getRestaurantEntity(true));
         when(restaurantRepository.save(any(RestaurantEntity.class)))
                 .thenReturn(RestaurantFixture.getRestaurantEntity(true));
-        when(restaurantRepository.findById(any(Long.class)))
+        when(restaurantRepository.findById(anyLong()))
                 .thenReturn(Optional.of(RestaurantFixture.getRestaurantEntity(true)));
 
         var restaurantDto = restaurantService.updateParametersInRestaurant(1L, RestaurantFixture.getRestaurantUpdateDto());
 
         assertThat(restaurantDto).usingRecursiveComparison().isEqualTo(RestaurantFixture.getRestaurantDto());
-        verify(restaurantRepository, times(1)).findById(any(Long.class));
+        verify(restaurantRepository, times(1)).findById(anyLong());
         verify(restaurantRepository, times(1)).save(any(RestaurantEntity.class));
         verifyNoMoreInteractions(restaurantRepository);
     }
 
     @Test
     void updateParametersInRestaurantShouldThrowRestaurantNotFoundException() {
-        when(restaurantRepository.findById(any(Long.class))).thenReturn(Optional.empty());
+        when(restaurantRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         assertThrows(RestaurantEntityNotFoundException.class, () ->
                 restaurantService.updateParametersInRestaurant(1L, RestaurantFixture.getRestaurantUpdateDto()));
@@ -135,12 +135,12 @@ public class RestaurantServiceTest {
                 .thenReturn(RestaurantFixture.getRestaurantEntity(true));
         when(restaurantRepository.save(any(RestaurantEntity.class)))
                 .thenReturn(RestaurantFixture.getRestaurantEntity(true));
-        when(restaurantRepository.findById(any(Long.class)))
+        when(restaurantRepository.findById(anyLong()))
                 .thenReturn(Optional.of(RestaurantFixture.getRestaurantEntity(true)));
         var restaurantDto = restaurantService.updateParametersInRestaurant(1L, RestaurantFixture.getRestaurantUpdateDtoSetEverythingToNull());
 
         assertThat(restaurantDto).usingRecursiveComparison().isEqualTo(RestaurantFixture.getRestaurantDto());
-        verify(restaurantRepository, times(1)).findById(any(Long.class));
+        verify(restaurantRepository, times(1)).findById(anyLong());
         verify(restaurantRepository, times(1)).save(any(RestaurantEntity.class));
         verifyNoMoreInteractions(restaurantRepository);
     }
