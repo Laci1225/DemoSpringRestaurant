@@ -6,14 +6,10 @@ import com.example.demoSpringRestaurant.mapper.OrderMapper;
 import com.example.demoSpringRestaurant.model.OrderDto;
 import com.example.demoSpringRestaurant.persistance.entity.OrderEntity;
 import com.example.demoSpringRestaurant.persistance.repository.OrderRepository;
-import jakarta.persistence.criteria.Order;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.aspectj.weaver.ast.Or;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -25,6 +21,8 @@ public class OrderService {
 
     public List<OrderDto> getOrdersByRestaurantId(Long restaurantId) throws RestaurantEntityNotFoundException {
         log.trace("All orders with Restaurant ID: " + restaurantId + " listed.");
+        if (orderRepository.isRestaurantExist(restaurantId).equals(0))
+            throw new RestaurantEntityNotFoundException("Restaurant not found");
         return findAllByRestaurantId(restaurantId).stream()
                 .map(orderMapper::fromEntityToOrderDto)
                 .toList();

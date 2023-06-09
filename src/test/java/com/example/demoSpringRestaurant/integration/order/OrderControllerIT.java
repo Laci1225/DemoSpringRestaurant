@@ -20,6 +20,8 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.Random;
+
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -27,7 +29,7 @@ import static org.hamcrest.Matchers.notNullValue;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@DirtiesContext
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @TestPropertySource(locations = "classpath:application-integration.properties")
 public class OrderControllerIT {
 
@@ -49,10 +51,10 @@ public class OrderControllerIT {
     @Test
     void getOrdersByRestaurantIdShouldReturnOneOrder() {
         var restaurant = restaurantRepository.save(RestaurantFixture.getRestaurantEntity(true));
-        orderRepository.save(OrderFixture.getOrderEntityToGivenRestaurant(true,restaurant));
+        orderRepository.save(OrderFixture.getOrderEntityToGivenRestaurant(true, restaurant));
 
         given()
-                .when().get("/orders/1")
+                .when().get("/orders/" + restaurant.getId())
                 .then().statusCode(HttpStatus.OK.value())
                 .body("size()", is(1));
     }
@@ -60,7 +62,7 @@ public class OrderControllerIT {
     @Test
     void getOrdersByRestaurantIdShouldReturnZeroOrder() {
         given()
-                .when().get("/orders/1")
+                .when().get("/orders/" + new Random().nextInt(1, 10))
                 .then().statusCode(HttpStatus.OK.value())
                 .body("size()", is(0));
     }
@@ -72,7 +74,7 @@ public class OrderControllerIT {
 
         var response = given().body(OrderFixture.getOrderCreationDto())
                 .contentType(ContentType.JSON)
-                .when().post("/orders/1")
+                .when().post("/orders/" + restaurant.getId())
                 .then().statusCode(HttpStatus.CREATED.value())
                 .body("id", notNullValue())
                 .extract().as(OrderDto.class);
@@ -86,7 +88,7 @@ public class OrderControllerIT {
     void createOrderShouldRespondWithNotFound() {
         given().body(OrderFixture.getOrderCreationDto())
                 .contentType(ContentType.JSON)
-                .when().post("/orders/1")
+                .when().post("/orders/" + new Random().nextInt(1, 10))
                 .then().statusCode(HttpStatus.NOT_FOUND.value());
     }
 
@@ -94,20 +96,20 @@ public class OrderControllerIT {
     void createOrderShouldRespondWithBadRequest() {
         given().body(RestaurantFixture.getRestaurantCreationDto())
                 .contentType(ContentType.JSON)
-                .when().post("/orders/1")
+                .when().post("/orders/" + new Random().nextInt(1, 10))
                 .then().statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     @Test
     void deleteOrderShouldRemoveGivenOrder() {
         var restaurant = restaurantRepository.save(RestaurantFixture.getRestaurantEntity(true));
-        var a = orderRepository.save(OrderFixture.getOrderEntityToGivenRestaurant(true,restaurant));
+        var a = orderRepository.save(OrderFixture.getOrderEntityToGivenRestaurant(true, restaurant));
         var expectedResult = OrderFixture.getOrderDtoToGivenRestaurant(restaurant);
 
         var response = given()
-                .when().delete("/orders/1")
+                .when().delete("/orders/" + a.getId())
                 .then().statusCode(HttpStatus.ACCEPTED.value())
-                .body("id", is(1)) //TODO itt kivel kell hasonlítani miért nem a.getId tehát 1L
+                .body("id", is(a.getId().intValue()))
                 .extract().as(OrderDto.class);
 
         expectedResult.setCreateDate(response.getCreateDate());
@@ -118,20 +120,20 @@ public class OrderControllerIT {
     @Test
     void deleteOrderShouldRespondWithNotFound() {
         given()
-                .when().delete("/orders/1")
+                .when().delete("/orders/" + new Random().nextInt(1, 10))
                 .then().statusCode(HttpStatus.NOT_FOUND.value());
     }
 
     @Test
     void setNextStateFromSentToApproved() {
         var restaurant = restaurantRepository.save(RestaurantFixture.getRestaurantEntity(true));
-        var a = orderRepository.save(OrderFixture.getOrderEntityToGivenRestaurant(true,restaurant));
-        var expectedResult = OrderFixture.getOrderDtoGetNextStatusToGivenRestaurant(OrderStatus.SENT,restaurant);
+        var orderEntity = orderRepository.save(OrderFixture.getOrderEntityToGivenRestaurant(true, restaurant));
+        var expectedResult = OrderFixture.getOrderDtoGetNextStatusToGivenRestaurant(OrderStatus.SENT, restaurant);
 
         var response = given()
-                .when().post("/orders/1/next-state")
+                .when().post("/orders/" + orderEntity.getId() + "/next-state")
                 .then().statusCode(HttpStatus.OK.value())
-                .body("id", is(1)) //TODO a.getID nem jó miért itt kivel kell hasonlítani
+                .body("id", is(orderEntity.getId().intValue()))
                 .extract().as(OrderDto.class);
 
         expectedResult.setCreateDate(response.getCreateDate());

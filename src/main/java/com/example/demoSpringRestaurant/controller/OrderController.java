@@ -6,10 +6,17 @@ import com.example.demoSpringRestaurant.facade.RestaurantOrderFacade;
 import com.example.demoSpringRestaurant.model.OrderCreationDto;
 import com.example.demoSpringRestaurant.model.OrderDto;
 import com.example.demoSpringRestaurant.service.OrderService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import com.example.demoSpringRestaurant.persistance.entity.RestaurantEntity;
@@ -36,6 +43,15 @@ public class OrderController {
      * @throws ResponseStatusException If the {@link RestaurantEntity} is not found with 404 status code
      *                                 or if there is a server error with 500 status code.
      */
+    @Operation(summary = "Returns all orders in a restaurant")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "All order in a restaurant found",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            array = @ArraySchema(schema = @Schema(implementation = OrderDto.class)))),
+            @ApiResponse(responseCode = "404", description = "Restaurant not found",
+                    content = @Content),
+            @ApiResponse(responseCode = "500", description = "Server error",
+                    content = @Content)})
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(path = "orders/{restaurantId}")
     public List<OrderDto> getOrdersByRestaurantId(@PathVariable("restaurantId") Long restaurantId) {
@@ -59,6 +75,17 @@ public class OrderController {
      * @throws ResponseStatusException If the {@link RestaurantEntity} is not found with 404 status code
      *                                 or if there is a server error with 500 status code.
      */
+    @Operation(summary = "Creates an order in a restaurant")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "An order in a restaurant is created",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = OrderDto.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid request body",
+                    content = @Content),
+            @ApiResponse(responseCode = "404", description = "Restaurant not found",
+                    content = @Content),
+            @ApiResponse(responseCode = "500", description = "Server error",
+                    content = @Content)})
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(path = "orders/{restaurantId}")
     public OrderDto createOrder(@Valid @RequestBody OrderCreationDto orderCreationDto, @PathVariable("restaurantId") Long restaurantId) {
@@ -81,6 +108,15 @@ public class OrderController {
      * @throws ResponseStatusException If the {@link OrderEntity} is not found with 404 status code
      *                                 or if there is a server error with 500 status code.
      */
+    @Operation(summary = "Deletes an order from a restaurant")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "An order from a restaurant is deleted",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = OrderDto.class))),
+            @ApiResponse(responseCode = "404", description = "Restaurant not found",
+                    content = @Content),
+            @ApiResponse(responseCode = "500", description = "Server error",
+                    content = @Content)})
     @ResponseStatus(HttpStatus.ACCEPTED)
     @DeleteMapping(path = "orders/{orderId}")
     public OrderDto deleteOrder(@PathVariable("orderId") Long orderId) {
@@ -103,6 +139,17 @@ public class OrderController {
      * @throws ResponseStatusException If the {@link OrderEntity} is not found with 404 status code
      *                                 or if there is a server error with 500 status code.
      */
+    @Operation(summary = "Sets an order state to the next state")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "An order's state is set",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = OrderDto.class))),
+            @ApiResponse(responseCode = "400", description = "No more state to set",
+                    content = @Content),
+            @ApiResponse(responseCode = "404", description = "Restaurant not found",
+                    content = @Content),
+            @ApiResponse(responseCode = "500", description = "Server error",
+                    content = @Content)})
     @ResponseStatus(HttpStatus.OK)
     @PostMapping(path = "orders/{orderId}/next-state")
     public OrderDto setNextState(@PathVariable("orderId") Long orderId) {

@@ -40,7 +40,7 @@ public class RestaurantController {
      * @return A list of {@link RestaurantDto} objects representing the restaurants.
      * @throws ResponseStatusException If there is a server error with 500 status code.
      */
-    @Operation(summary = "Returns all restaurant")// TODO
+    @Operation(summary = "Returns all restaurant")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "All restaurant found",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
@@ -63,7 +63,7 @@ public class RestaurantController {
      * @return The created {@link RestaurantDto} object representing the new restaurant.
      * @throws ResponseStatusException If there is a server error with 500 status code.
      */
-    @Operation(summary = "Create a restaurant")// TODO
+    @Operation(summary = "Creates a restaurant")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "A restaurant created",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
@@ -89,6 +89,15 @@ public class RestaurantController {
      * @throws ResponseStatusException If the {@link RestaurantEntity} is not found with 404 status code
      *                                 or if there is a server error with 500 status code.
      */
+    @Operation(summary = "Deletes a restaurant")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "202", description = "A restaurant deleted",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = RestaurantDto.class))),
+            @ApiResponse(responseCode = "404", description = "Restaurant not found",
+                    content = @Content),
+            @ApiResponse(responseCode = "500", description = "Server error",
+                    content = @Content)})
     @ResponseStatus(HttpStatus.ACCEPTED)
     @DeleteMapping(path = "{restaurantId}")
     public RestaurantDto deleteRestaurant(@PathVariable("restaurantId") Long restaurantId) {
@@ -112,6 +121,17 @@ public class RestaurantController {
      * @throws ResponseStatusException If the {@link RestaurantEntity} is not found with 404 status code
      *                                 or if there is a server error with 500 status code.
      */
+    @Operation(summary = "Updates a restaurant")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "A restaurant updated",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = RestaurantDto.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid request body",
+                    content = @Content),
+            @ApiResponse(responseCode = "404", description = "Restaurant not found",
+                    content = @Content),
+            @ApiResponse(responseCode = "500", description = "Server error",
+                    content = @Content)})
     @ResponseStatus(HttpStatus.OK)
     @PutMapping(path = "{restaurantId}")
     public RestaurantDto updateRestaurant(
@@ -137,6 +157,17 @@ public class RestaurantController {
      * @throws ResponseStatusException If the {@link RestaurantEntity} is not found with 404 status code
      *                                 or if there is a server error with 500 status code.
      */
+    @Operation(summary = "Updates a parameter in a restaurant")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "A restaurant parameter is  updated",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = RestaurantDto.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid request body",
+                    content = @Content),
+            @ApiResponse(responseCode = "404", description = "Restaurant not found",
+                    content = @Content),
+            @ApiResponse(responseCode = "500", description = "Server error",
+                    content = @Content)})
     @ResponseStatus(HttpStatus.OK)
     @PatchMapping(path = "{restaurantId}")
     public RestaurantDto updateParametersInRestaurant(
@@ -159,6 +190,13 @@ public class RestaurantController {
      * @return A list of {@link RestaurantDto} objects representing the vegan restaurants.
      * @throws ResponseStatusException If there is a server error.
      */
+    @Operation(summary = "Returns all vegan restaurant")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "All vegan restaurant found",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            array = @ArraySchema(schema = @Schema(implementation = RestaurantDto.class)))),
+            @ApiResponse(responseCode = "500", description = "Server error",
+                    content = @Content)})
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("vegan")
     public List<RestaurantDto> getVeganRestaurants() {

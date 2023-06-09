@@ -90,6 +90,19 @@ public class RestaurantFixture {
                 .canDeliver(CAN_DELIVER)
                 .build();
     }
+    public static RestaurantDto getRestaurantDto(Long id) {
+        return RestaurantDto.builder()
+                .id(id)
+                .name(NAME)
+                .owner(OWNER)
+                .address(ADDRESS)
+                .email(EMAIL)
+                .phoneNumber(PHONE_NUMBER)
+                .numberOfTables(NUMBER_OF_TABLES)
+                .isVegan(IS_VEGAN)
+                .canDeliver(CAN_DELIVER)
+                .build();
+    }
 
     public static List<RestaurantEntity> getRestaurantEntityList() {
         var list = new ArrayList<RestaurantEntity>();

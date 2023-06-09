@@ -21,13 +21,16 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.Arrays;
+import java.util.Random;
+
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@DirtiesContext
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @TestPropertySource(locations = "classpath:application-integration.properties")
 public class RestaurantControllerIT {
 
@@ -75,14 +78,27 @@ public class RestaurantControllerIT {
 
     @Test
     void getRestaurantShouldReturnOneRestaurant() {
-        var result = restaurantRepository.save(RestaurantFixture.getRestaurantEntity(false));
-        given()
+        var expectedResult = RestaurantFixture.getRestaurantDtoList();
+        restaurantRepository.save(RestaurantFixture.getRestaurantEntity(false));
+        var response = Arrays.asList(given()
                 .when().get("/restaurants")
                 .then().statusCode(HttpStatus.OK.value())
-                .body("size()", is(1));
-        //TODO tömb visszaellenőrzés stringbe mi
-        //.body("",hasItem(restaurantMapper.fromEntityToRestaurantDto(result)));
-
+                .body("size()", is(1))
+                .extract().as(RestaurantDto[].class));
+        assertThat(response).isEqualTo(expectedResult);
+    }
+    @Test
+    void getRestaurantShouldReturnTwoRestaurant() {
+        var expectedResult = RestaurantFixture.getRestaurantDtoList();
+        expectedResult.add(RestaurantFixture.getRestaurantDto(2L));
+        restaurantRepository.save(RestaurantFixture.getRestaurantEntity(false));
+        restaurantRepository.save(RestaurantFixture.getRestaurantEntity(false));
+        var response = Arrays.asList(given()
+                .when().get("/restaurants")
+                .then().statusCode(HttpStatus.OK.value())
+                .body("size()", is(2))
+                .extract().as(RestaurantDto[].class));
+        assertThat(response).isEqualTo(expectedResult);
     }
 
     @Test
@@ -91,7 +107,7 @@ public class RestaurantControllerIT {
         restaurantRepository.save(RestaurantFixture.getRestaurantEntity(false));
 
         var response = given()
-                .when().delete("/restaurants/1")
+                .when().delete("/restaurants/" + expectedResult.getId())
                 .then().statusCode(HttpStatus.ACCEPTED.value())
                 .body("id", notNullValue())
                 .extract().as(RestaurantDto.class);
@@ -105,7 +121,7 @@ public class RestaurantControllerIT {
         var expectedResult = new RestaurantEntityNotFoundException("Restaurant not found");
 
         var response = given()
-                .when().delete("/restaurants/1")
+                .when().delete("/restaurants/" + new Random().nextInt(1, 10))
                 .then().statusCode(HttpStatus.NOT_FOUND.value())
                 .extract().response();
 
@@ -120,7 +136,7 @@ public class RestaurantControllerIT {
 
         var response = given().body(RestaurantFixture.getUpdatedRestaurantUpdateDto())
                 .contentType(ContentType.JSON)
-                .when().put("/restaurants/1")
+                .when().put("/restaurants/" + expectedResult.getId())
                 .then().statusCode(HttpStatus.OK.value())
                 .body("id", notNullValue())
                 .extract().as(RestaurantDto.class);
@@ -134,14 +150,15 @@ public class RestaurantControllerIT {
     void updateRestaurantShouldRespondWithNotFound() {
         given().body(RestaurantFixture.getUpdatedRestaurantUpdateDto())
                 .contentType(ContentType.JSON)
-                .when().put("/restaurants/1")
+                .when().put("/restaurants/" + new Random().nextInt(1, 10)) // TODO if not with an actual value then with what
                 .then().statusCode(HttpStatus.NOT_FOUND.value());
     }
+
     @Test
     void updateRestaurantShouldRespondWithBadRequest() {
         given().body(OrderFixture.getOrderCreationDto())
                 .contentType(ContentType.JSON)
-                .when().put("/restaurants/1")
+                .when().put("/restaurants/" + new Random().nextInt(1, 10))
                 .then().statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
@@ -152,7 +169,7 @@ public class RestaurantControllerIT {
 
         var response = given().body(RestaurantFixture.getUpdatedRestaurantUpdateDto())
                 .contentType(ContentType.JSON)
-                .when().patch("/restaurants/1")
+                .when().patch("/restaurants/" + expectedResult.getId())
                 .then().statusCode(HttpStatus.OK.value())
                 .body("id", notNullValue())
                 .extract().as(RestaurantDto.class);
@@ -161,18 +178,20 @@ public class RestaurantControllerIT {
         assertThat(response).isNotEqualTo(expectedResult);
         assertThat(response.getOwner()).isEqualTo(expectedResult.getOwner());
     }
+
     @Test
     void updateParametersInRestaurantShouldRespondWithNotFound() {
         given().body(RestaurantFixture.getUpdatedRestaurantUpdateDto())
                 .contentType(ContentType.JSON)
-                .when().patch("/restaurants/1")
+                .when().patch("/restaurants/" + new Random().nextInt(1, 10))
                 .then().statusCode(HttpStatus.NOT_FOUND.value());
     }
+
     @Test
     void updateParametersInRestaurantShouldRespondWithBadRequest() {
         given().body(OrderFixture.getOrderCreationDto())
                 .contentType(ContentType.JSON)
-                .when().patch("/restaurants/1")
+                .when().patch("/restaurants/" + new Random().nextInt(1, 10))
                 .then().statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
@@ -184,6 +203,7 @@ public class RestaurantControllerIT {
                 .then().statusCode(HttpStatus.OK.value())
                 .body("size()", is(0));
     }
+
     @Test
     void getVeganRestaurantsShouldReturnOne() {
         restaurantRepository.save(RestaurantFixture.getRestaurantEntityIsVegan(false));
