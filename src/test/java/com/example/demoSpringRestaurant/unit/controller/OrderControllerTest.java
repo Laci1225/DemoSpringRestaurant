@@ -85,7 +85,7 @@ public class OrderControllerTest {
     @Test
     void getOrdersByRestaurantIdShouldReturnAllOrder() throws Exception {
         //given
-        when(orderService.getOrdersByRestaurantId(any(Long.class)))
+        when(restaurantOrderFacade.getOrdersByRestaurantId(any(Long.class)))
                 .thenReturn(OrderFixture.getOrderDtoList());
 
         //when
@@ -101,7 +101,7 @@ public class OrderControllerTest {
     @Test
     void getOrdersByRestaurantIdShouldThrowOrderEntityNotFoundExceptionWith404() throws Exception {
         //given
-        when(orderService.getOrdersByRestaurantId(any(Long.class)))
+        when(restaurantOrderFacade.getOrdersByRestaurantId(any(Long.class)))
                 .thenThrow(RestaurantEntityNotFoundException.class);
         //when
         //then

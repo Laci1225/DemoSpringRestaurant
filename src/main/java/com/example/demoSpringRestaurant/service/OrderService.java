@@ -1,7 +1,6 @@
 package com.example.demoSpringRestaurant.service;
 
 import com.example.demoSpringRestaurant.exception.OrderEntityNotFoundException;
-import com.example.demoSpringRestaurant.exception.RestaurantEntityNotFoundException;
 import com.example.demoSpringRestaurant.mapper.OrderMapper;
 import com.example.demoSpringRestaurant.model.OrderDto;
 import com.example.demoSpringRestaurant.persistance.entity.OrderEntity;
@@ -19,16 +18,10 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
 
-    public List<OrderDto> getOrdersByRestaurantId(Long restaurantId) throws RestaurantEntityNotFoundException {
-        log.trace("All orders with Restaurant ID: " + restaurantId + " listed.");
-        if (orderRepository.numberOfRestaurantFound(restaurantId).equals(0))
-            throw new RestaurantEntityNotFoundException("Restaurant not found");
-        return orderRepository.findAllByRestaurantId(restaurantId).stream()
-                .map(orderMapper::fromEntityToOrderDto)
-                .toList();
-    }
 
     public OrderDto deleteOrder(Long orderId) throws OrderEntityNotFoundException {
+        log.trace("Deleting order with ID: " + orderId);
+
         var order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new OrderEntityNotFoundException("Order not found"));
         orderRepository.deleteById(orderId);
@@ -37,19 +30,20 @@ public class OrderService {
     }
 
     public OrderDto setNextState(Long orderId) throws OrderEntityNotFoundException {
+        log.trace("Changing order status to order with ID: " + orderId);
 
         var order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new OrderEntityNotFoundException("Order not found"));
         var logStatus = order.getOrderStatus();
         order.setOrderStatus(order.getOrderStatus().getNextStatus());
         orderRepository.save(order);
-        log.trace("Order's status with ID: " + orderId + " changed from " +
-                logStatus + "to" + order.getOrderStatus());
+        log.trace("Order status changed for ID: " + orderId + ". Previous status: " + logStatus + ". " +
+                "New status: " + order.getOrderStatus());
         return orderMapper.fromEntityToOrderDto(order);
     }
 
-    public void saveOrder(OrderEntity orderEntity) {
-        orderRepository.save(orderEntity);
+    public OrderDto saveOrder(OrderEntity orderEntity) {
+        return orderMapper.fromEntityToOrderDto(orderRepository.save(orderEntity));
     }
 
     public void deleteAllOrder(List<OrderEntity> orders) {

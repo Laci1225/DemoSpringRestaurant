@@ -57,7 +57,7 @@ public class OrderController {
     public List<OrderDto> getOrdersByRestaurantId(@PathVariable("restaurantId") Long restaurantId) {
         try {
             log.debug("Requested all order");
-            var orderList = orderService.getOrdersByRestaurantId(restaurantId);
+            var orderList = restaurantOrderFacade.getOrdersByRestaurantId(restaurantId);
             log.debug("Orders returned successfully");
             return orderList;
         } catch (RestaurantEntityNotFoundException e) {

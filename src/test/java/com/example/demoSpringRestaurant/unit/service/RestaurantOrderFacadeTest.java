@@ -18,7 +18,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertThrows;
@@ -39,14 +38,39 @@ public class RestaurantOrderFacadeTest {
     private RestaurantService restaurantService;
 
     @Test
+    void getOrdersByRestaurantIdShouldReturnOneOrder() throws RestaurantEntityNotFoundException {
+        when(orderMapper.fromEntityToOrderDto(any(OrderEntity.class)))
+                .thenReturn(OrderFixture.getOrderDto());
+        when(orderService.findAllByRestaurantId(anyLong()))
+                .thenReturn(OrderFixture.getOrderEntityList());
+
+        var orderDtoList = restaurantOrderFacade.getOrdersByRestaurantId(RestaurantFixture.getRestaurantDto().getId());
+
+        assertThat(orderDtoList).usingRecursiveComparison().isEqualTo(OrderFixture.getOrderDtoList());
+        assertThat(orderDtoList).usingRecursiveComparison().isEqualTo(OrderFixture.getOrderDtoList());
+        verify(orderService, times(1)).findAllByRestaurantId(anyLong());
+    }
+
+    @Test
+    void getOrdersByRestaurantIdShouldThrowRestaurantEntityNotFoundException() throws RestaurantEntityNotFoundException {
+        Mockito.doThrow(RestaurantEntityNotFoundException.class).when(restaurantService).restaurantExist(anyLong());
+
+        assertThrows(RestaurantEntityNotFoundException.class, () ->
+                restaurantOrderFacade.getOrdersByRestaurantId(1L));
+
+        verify(restaurantService, times(1)).restaurantExist(anyLong());
+    }
+
+    @Test
     void createOrderShouldCreateOneOrderEntity() throws RestaurantEntityNotFoundException {
         when(orderMapper.fromEntityToOrderDto(any(OrderEntity.class)))
                 .thenReturn(OrderFixture.getOrderDto());
         when(orderMapper.fromOrderCreationDtoToEntity(any(OrderCreationDto.class)))
                 .thenReturn(OrderFixture.getOrderEntity(false));
         when(restaurantService.findRestaurantById(anyLong()))
-                .thenReturn(Optional.of(RestaurantFixture.getRestaurantEntity(true)));
-        Mockito.doNothing().when(orderService).saveOrder(Mockito.any(OrderEntity.class));
+                .thenReturn((RestaurantFixture.getRestaurantEntity(true)));
+        when(orderService.saveOrder(any(OrderEntity.class)))
+                .thenReturn(OrderFixture.getOrderDto());
 
         var orderDto = restaurantOrderFacade.createOrder(OrderFixture.getOrderCreationDto(), 1L);
 
@@ -58,12 +82,12 @@ public class RestaurantOrderFacadeTest {
     }
 
     @Test
-    void createOrderShouldThrowRestaurantNotFoundException() {
+    void createOrderShouldThrowRestaurantNotFoundException() throws RestaurantEntityNotFoundException {
         when(restaurantService.findRestaurantById(anyLong()))
-                .thenReturn(Optional.empty());
+                .thenThrow(RestaurantEntityNotFoundException.class);
 
         assertThrows(RestaurantEntityNotFoundException.class, () ->
-                restaurantOrderFacade.createOrder(OrderFixture.getOrderCreationDto(),1L));
+                restaurantOrderFacade.createOrder(OrderFixture.getOrderCreationDto(), 1L));
 
         verify(restaurantService, times(1)).findRestaurantById(anyLong());
         verifyNoMoreInteractions(restaurantService);
@@ -76,7 +100,7 @@ public class RestaurantOrderFacadeTest {
         when(orderService.findAllByRestaurantId(anyLong()))
                 .thenReturn(OrderFixture.getOrderEntityList());
         when(restaurantService.findRestaurantById(anyLong()))
-                .thenReturn(Optional.of(RestaurantFixture.getRestaurantEntity(true)));
+                .thenReturn(RestaurantFixture.getRestaurantEntity(true));
         Mockito.doNothing().when(orderService).deleteAllOrder(Mockito.anyList());
         Mockito.doNothing().when(restaurantService).deleteRestaurant(Mockito.any(RestaurantEntity.class));
 
@@ -91,9 +115,9 @@ public class RestaurantOrderFacadeTest {
     }
 
     @Test
-    void deleteRestaurantShouldThrowRestaurantNotFoundException() {
+    void deleteRestaurantShouldThrowRestaurantNotFoundException() throws RestaurantEntityNotFoundException {
         when(restaurantService.findRestaurantById(anyLong()))
-                .thenReturn(Optional.empty());
+                .thenThrow(RestaurantEntityNotFoundException.class);
 
         assertThrows(RestaurantEntityNotFoundException.class, () ->
                 restaurantOrderFacade.deleteRestaurant(1L));

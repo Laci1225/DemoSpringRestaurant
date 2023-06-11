@@ -12,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -29,28 +28,30 @@ public class RestaurantService {
     }
 
     public RestaurantDto createRestaurant(RestaurantCreationDto restaurantCreationDto) {
+        log.trace("Creating restaurant " + restaurantCreationDto);
         var restaurantEntity = restaurantRepository.save(restaurantMapper.
                 fromRestaurantCreationDtoToEntity(restaurantCreationDto));
-        log.trace("Restaurant created");
+        log.trace("Restaurant created with ID:" + restaurantEntity.getId());
         return restaurantMapper.fromEntityToRestaurantDto(restaurantEntity);
     }
 
     //@Transactional
-    public RestaurantDto updateRestaurant(Long id, RestaurantUpdateDto restaurantUpdateDto) throws RestaurantEntityNotFoundException {
-        //var restaurant = repository.findById(id).stream().map(restaurantMapper::fromEntityToRestaurantDto).findFirst();
-        if (restaurantRepository.existsById(id)) {
-            var updatedEntity = restaurantMapper.fromRestaurantUpdateDtoToEntity(restaurantUpdateDto);
-            updatedEntity.setId(id);
-            //repository.save(restaurantMapper.fromRestaurantDtoToEntity(restaurant.get()));
-            restaurantRepository.save(updatedEntity);
-            log.trace("Restaurant with ID: " + id + " updated");
-            return restaurantMapper.fromEntityToRestaurantDto(updatedEntity);
+    public RestaurantDto updateRestaurant(Long restaurantId, RestaurantUpdateDto restaurantUpdateDto) throws RestaurantEntityNotFoundException {
+        log.trace("Updating restaurant with ID: " + restaurantId + "to " + restaurantUpdateDto);
+        restaurantRepository.findById(restaurantId)
+                .orElseThrow(() -> new RestaurantEntityNotFoundException("Restaurant doesn't exist"));
 
-        } else throw new RestaurantEntityNotFoundException("Entity doesn't exist");
+        var updatedEntity = restaurantMapper.fromRestaurantUpdateDtoToEntity(restaurantUpdateDto);
+        updatedEntity.setId(restaurantId);
+        restaurantRepository.save(updatedEntity);
+        log.trace("Restaurant with ID: " + updatedEntity.getId() + " updated as" + updatedEntity);
+        return restaurantMapper.fromEntityToRestaurantDto(updatedEntity);
     }
 
-    public RestaurantDto updateParametersInRestaurant(Long id, RestaurantUpdateDto restaurantUpdateDto) throws RestaurantEntityNotFoundException {
-        var restaurant = restaurantRepository.findById(id)
+    public RestaurantDto updateParametersInRestaurant(Long restaurantId, RestaurantUpdateDto restaurantUpdateDto) throws RestaurantEntityNotFoundException {
+        log.trace("Updating restaurant's parameter with ID: " + restaurantId + "to " + restaurantUpdateDto);
+
+        var restaurant = restaurantRepository.findById(restaurantId)
                 .stream().map(restaurantMapper::fromEntityToRestaurantDto).findFirst()
                 .orElseThrow(() -> new RestaurantEntityNotFoundException("Restaurant not found"));
         restaurant.setId(restaurant.getId());
@@ -78,9 +79,10 @@ public class RestaurantService {
         if (restaurantUpdateDto.getIsVegan() != null) {
             restaurant.setIsVegan(restaurantUpdateDto.getIsVegan());
         }
-        restaurantRepository.save(restaurantMapper.fromRestaurantDtoToEntity(restaurant));
-        log.trace("Restaurant's parameter with ID: " + id + " updated");
-        return restaurant;
+        var updatedEntity = restaurantRepository.save(restaurantMapper.fromRestaurantDtoToEntity(restaurant));
+        log.trace("Restaurant's parameter with ID: " + updatedEntity.getId() + " updated as " + updatedEntity);
+        return restaurantMapper.fromEntityToRestaurantDto(updatedEntity);
+
     }
 
     public List<RestaurantDto> getVeganRestaurant() {
@@ -89,12 +91,19 @@ public class RestaurantService {
                 .stream().map(restaurantMapper::fromEntityToRestaurantDto).toList();
     }
 
-    public Optional<RestaurantEntity> findRestaurantById(Long restaurantId) {
-        return restaurantRepository.findById(restaurantId);
+    public RestaurantEntity findRestaurantById(Long restaurantId) throws RestaurantEntityNotFoundException {
+        return restaurantRepository.findById(restaurantId).orElseThrow(
+                () -> new RestaurantEntityNotFoundException("Restaurant not found")
+        );
     }
 
     public void deleteRestaurant(RestaurantEntity restaurantEntity) {
         restaurantRepository.delete(restaurantEntity);
 
+    }
+
+    public void restaurantExist(long restaurantId) throws RestaurantEntityNotFoundException {
+        if (!restaurantRepository.existsById(restaurantId))
+            throw new RestaurantEntityNotFoundException("Restaurant not found");
     }
 }

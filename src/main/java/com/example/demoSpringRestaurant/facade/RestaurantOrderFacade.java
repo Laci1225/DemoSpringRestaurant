@@ -24,24 +24,38 @@ public class RestaurantOrderFacade {
     private final OrderService orderService;
     private final RestaurantService restaurantService;
 
+    public List<OrderDto> getOrdersByRestaurantId(Long restaurantId) throws RestaurantEntityNotFoundException {
+        log.trace("Fetching orders for Restaurant ID: " + restaurantId);
+
+        restaurantService.restaurantExist(restaurantId);
+
+        log.trace("All orders with Restaurant ID: " + restaurantId + " listed.");
+        return orderService.findAllByRestaurantId(restaurantId).stream()
+                .map(orderMapper::fromEntityToOrderDto)
+                .toList();
+    }
 
     public OrderDto createOrder(OrderCreationDto orderCreationDto, Long restaurantId) throws RestaurantEntityNotFoundException {
-        var restaurantEntity = restaurantService.findRestaurantById(restaurantId)
-                .orElseThrow(() -> new RestaurantEntityNotFoundException("Restaurant not found"));
+        log.trace("Creating order " + orderCreationDto + "with Restaurant ID: " + restaurantId);
+
+        var restaurantEntity = restaurantService.findRestaurantById(restaurantId);
         orderCreationDto.setRestaurant(restaurantEntity);
         orderCreationDto.setCreateDate(LocalDateTime.now());
         var orderEntity = orderMapper.fromOrderCreationDtoToEntity(orderCreationDto);
-        orderService.saveOrder(orderEntity);
-        log.trace("Order with Restaurant ID: " + restaurantId + " created");
+        var orderDto = orderService.saveOrder(orderEntity);
+
+        log.trace("Order" + orderDto + " with Restaurant ID: " + orderDto.getId() + " created");
         return orderMapper.fromEntityToOrderDto(orderEntity);
     }
 
     public RestaurantDto deleteRestaurant(Long restaurantId) throws RestaurantEntityNotFoundException {
+        log.trace("Deleting restaurant with ID: " + restaurantId);
+
         var orders = orderService.findAllByRestaurantId(restaurantId);
         orderService.deleteAllOrder(orders);
-        var restaurantEntity = restaurantService.findRestaurantById(restaurantId)
-                .orElseThrow(() -> new RestaurantEntityNotFoundException("Restaurant not found"));
+        var restaurantEntity = restaurantService.findRestaurantById(restaurantId);
         restaurantService.deleteRestaurant(restaurantEntity);
+
         log.trace("Restaurant with ID: " + restaurantId + " deleted");
         return restaurantMapper.fromEntityToRestaurantDto(restaurantEntity);
     }
