@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Entity
-@Table
+@Table(name = "orders")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -47,6 +47,8 @@ public class OrderEntity {
     @Enumerated(EnumType.STRING)
     @NotNull
     private OrderStatus orderStatus = OrderStatus.SENT;
+
+    //TODO new fields
 
 
     /*private double getDrinkPrice(DrinkType drinkType) {

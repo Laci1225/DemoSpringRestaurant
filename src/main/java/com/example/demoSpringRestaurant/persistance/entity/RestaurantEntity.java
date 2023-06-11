@@ -8,7 +8,7 @@ import lombok.*;
 
 
 @Entity
-@Table
+@Table(name = "restaurants")
 @Data
 @AllArgsConstructor
 @Builder
@@ -33,6 +33,9 @@ public class RestaurantEntity {
     private Boolean isVegan = false;
     @NotNull
     private Boolean canDeliver;
+
+    // @NotNull
+    // private Boolean isOnWolt;
 
     // @OneToMany private List<OrderEntity> orderEntity;
 }
