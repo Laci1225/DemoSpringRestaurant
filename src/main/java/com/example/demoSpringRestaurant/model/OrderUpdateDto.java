@@ -13,6 +13,7 @@ import com.example.demoSpringRestaurant.constant.OrderStatus;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Data
 @AllArgsConstructor
@@ -38,34 +39,12 @@ public class OrderUpdateDto {
     @NotNull
     private OrderStatus orderStatus = OrderStatus.SENT;
 
-
-    /*private double getDrinkPrice(DrinkType drinkType) {
-        if (drinkType == null) return 0;
-        return switch (drinkType) {
-            case COLA -> 3.1;
-            case WATER -> 1.0;
-            case JUICE, LEMONADE -> 2.6;
-            case TEA -> 1.1;
-        };
-    }
-
-    private double getMealPrice(MealType mealType) {
-        if (mealType == null) return 0;
-        return switch (mealType) {
-            case RICEANDFISH -> 10.1;
-            case FISHANDCHIPS -> 12.1;
-            case CHICKENANDFISH -> 20.1;
-            case CHICKENANDRICE -> 15.1;
-        };
-    }*/
+    private LocalTime estimatedDeliveryTime;
 
     public double getPrice() {
         return getMealType().getValue() + getDrinkType().getValue();
     }
 
-    //public LocalDateTime getCreateDate() {
-    //    return LocalDateTime.now();
-    //}
 
 }
 

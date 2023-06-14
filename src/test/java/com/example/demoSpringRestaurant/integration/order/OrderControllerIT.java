@@ -87,6 +87,7 @@ public class OrderControllerIT {
                 .extract().as(OrderDto.class);
 
         expectedResult.setCreateDate(response.getCreateDate());
+        expectedResult.setEstimatedDeliveryTime(response.getEstimatedDeliveryTime());
         expectedResult.setId(response.getId());
         assertThat(response).isEqualTo(expectedResult);
     }
@@ -120,6 +121,7 @@ public class OrderControllerIT {
                 .extract().as(OrderDto.class);
 
         expectedResult.setCreateDate(response.getCreateDate());
+        expectedResult.setEstimatedDeliveryTime(response.getEstimatedDeliveryTime());
         expectedResult.setId(response.getId());
         assertThat(response).isEqualTo(expectedResult);
     }
@@ -144,6 +146,7 @@ public class OrderControllerIT {
                 .extract().as(OrderDto.class);
 
         expectedResult.setCreateDate(response.getCreateDate());
+        expectedResult.setEstimatedDeliveryTime(response.getEstimatedDeliveryTime());
         expectedResult.setId(response.getId());
         assertThat(response).isEqualTo(expectedResult);
     }

@@ -9,8 +9,10 @@ import com.example.demoSpringRestaurant.model.OrderUpdateDto;
 import com.example.demoSpringRestaurant.persistance.entity.OrderEntity;
 import com.example.demoSpringRestaurant.persistance.entity.RestaurantEntity;
 import jakarta.persistence.ManyToOne;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +27,10 @@ public class OrderFixture {
     private static final LocalDateTime CREATE_DATE = LocalDateTime.now();
     private static final OrderStatus ORDER_STATUS = OrderStatus.SENT;
 
+    @DateTimeFormat(pattern = "HH:mm:ss")
+    private static final LocalTime ESTIMATED_DELIVERY_TIME = CREATE_DATE.toLocalTime()
+            .plusMinutes(30);
+
 
     public static OrderDto getOrderDto() {
         return OrderDto.builder()
@@ -36,6 +42,7 @@ public class OrderFixture {
                 .deliveryAddress(DELIVERY_ADDRESS)
                 .createDate(CREATE_DATE)
                 .orderStatus(ORDER_STATUS)
+                .estimatedDeliveryTime(ESTIMATED_DELIVERY_TIME)
                 .build();
     }
 
@@ -49,6 +56,7 @@ public class OrderFixture {
                 .deliveryAddress(DELIVERY_ADDRESS)
                 .createDate(CREATE_DATE)
                 .orderStatus(fromStatus.getNextStatus())
+                .estimatedDeliveryTime(ESTIMATED_DELIVERY_TIME)
                 .build();
     }
 
@@ -61,6 +69,7 @@ public class OrderFixture {
                 .deliveryAddress(DELIVERY_ADDRESS)
                 .createDate(CREATE_DATE)
                 .orderStatus(ORDER_STATUS)
+                .estimatedDeliveryTime(ESTIMATED_DELIVERY_TIME)
                 .build();
         if (withId)
             orderEntity.setId(1L);
@@ -76,6 +85,7 @@ public class OrderFixture {
                 .deliveryAddress(DELIVERY_ADDRESS)
                 .createDate(CREATE_DATE)
                 .orderStatus(ORDER_STATUS)
+                .estimatedDeliveryTime(ESTIMATED_DELIVERY_TIME)
                 .build();
     }
 
@@ -90,6 +100,7 @@ public class OrderFixture {
                 .deliveryAddress(DELIVERY_ADDRESS)
                 .createDate(CREATE_DATE)
                 .orderStatus(ORDER_STATUS)
+                .estimatedDeliveryTime(ESTIMATED_DELIVERY_TIME)
                 .build());
         return list;
     }
@@ -103,10 +114,11 @@ public class OrderFixture {
                 .deliveryAddress(DELIVERY_ADDRESS)
                 .createDate(CREATE_DATE)
                 .orderStatus(ORDER_STATUS)
+                .estimatedDeliveryTime(ESTIMATED_DELIVERY_TIME)
                 .build();
     }
 
-    public static OrderEntity getOrderEntityToGivenRestaurant(boolean withId,RestaurantEntity restaurantEntity) {
+    public static OrderEntity getOrderEntityToGivenRestaurant(boolean withId, RestaurantEntity restaurantEntity) {
         var orderEntity = OrderEntity.builder()
                 .restaurant(restaurantEntity)
                 .mealType(MEAL_TYPE)
@@ -115,11 +127,13 @@ public class OrderFixture {
                 .deliveryAddress(DELIVERY_ADDRESS)
                 .createDate(CREATE_DATE)
                 .orderStatus(ORDER_STATUS)
+                .estimatedDeliveryTime(ESTIMATED_DELIVERY_TIME)
                 .build();
         if (withId)
             orderEntity.setId(1L);
         return orderEntity;
     }
+
     public static OrderDto getOrderDtoToGivenRestaurant(RestaurantEntity restaurantEntity) {
         return OrderDto.builder()
                 .restaurant(restaurantEntity)
@@ -129,9 +143,11 @@ public class OrderFixture {
                 .deliveryAddress(DELIVERY_ADDRESS)
                 .createDate(CREATE_DATE)
                 .orderStatus(ORDER_STATUS)
+                .estimatedDeliveryTime(ESTIMATED_DELIVERY_TIME)
                 .build();
     }
-    public static OrderDto getOrderDtoGetNextStatusToGivenRestaurant(OrderStatus fromStatus,RestaurantEntity restaurantEntity) {
+
+    public static OrderDto getOrderDtoGetNextStatusToGivenRestaurant(OrderStatus fromStatus, RestaurantEntity restaurantEntity) {
         return OrderDto.builder()
                 .id(1L)
                 .restaurant(restaurantEntity)
@@ -141,6 +157,7 @@ public class OrderFixture {
                 .deliveryAddress(DELIVERY_ADDRESS)
                 .createDate(CREATE_DATE)
                 .orderStatus(fromStatus.getNextStatus())
+                .estimatedDeliveryTime(ESTIMATED_DELIVERY_TIME)
                 .build();
     }
 
@@ -155,6 +172,7 @@ public class OrderFixture {
                 .deliveryAddress(DELIVERY_ADDRESS)
                 .createDate(CREATE_DATE)
                 .orderStatus(ORDER_STATUS)
+                .estimatedDeliveryTime(ESTIMATED_DELIVERY_TIME)
                 .build());
         return list;
     }

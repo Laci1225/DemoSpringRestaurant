@@ -40,7 +40,9 @@ public class RestaurantOrderFacade {
 
         var restaurantEntity = restaurantService.findRestaurantById(restaurantId);
         orderCreationDto.setRestaurant(restaurantEntity);
-        orderCreationDto.setCreateDate(LocalDateTime.now());
+        orderCreationDto.setCreateDate(LocalDateTime.now().truncatedTo(java.time.temporal.ChronoUnit.SECONDS));
+        var estimated = orderCreationDto.getCreateDate().plusMinutes(30).toLocalTime();
+        orderCreationDto.setEstimatedDeliveryTime(estimated);
         var orderEntity = orderMapper.fromOrderCreationDtoToEntity(orderCreationDto);
         var orderDto = orderService.saveOrder(orderEntity);
 
