@@ -21,6 +21,7 @@ public class RestaurantFixture {
     private static final Integer NUMBER_OF_TABLES = 45;
     private static final Boolean IS_VEGAN = false;
     private static final Boolean CAN_DELIVER = false;
+    private static final Boolean IS_ON_WOLT = false;
 
     public static RestaurantCreationDto getRestaurantCreationDto() {
         return RestaurantCreationDto.builder()
@@ -32,6 +33,7 @@ public class RestaurantFixture {
                 .numberOfTables(NUMBER_OF_TABLES)
                 .isVegan(IS_VEGAN)
                 .canDeliver(CAN_DELIVER)
+                .isOnWolt(IS_ON_WOLT)
                 .build();
     }
 
@@ -45,8 +47,10 @@ public class RestaurantFixture {
                 .numberOfTables(NUMBER_OF_TABLES)
                 .isVegan(IS_VEGAN)
                 .canDeliver(CAN_DELIVER)
+                .isOnWolt(IS_ON_WOLT)
                 .build();
     }
+
     public static RestaurantUpdateDto getRestaurantUpdateDtoSetEverythingToNull() {
         return RestaurantUpdateDto.builder()
                 .name(null)
@@ -57,6 +61,7 @@ public class RestaurantFixture {
                 .numberOfTables(null)
                 .isVegan(null)
                 .canDeliver(null)
+                .isOnWolt(null)
                 .build();
     }
 
@@ -71,6 +76,7 @@ public class RestaurantFixture {
                 .numberOfTables(NUMBER_OF_TABLES)
                 .isVegan(IS_VEGAN)
                 .canDeliver(CAN_DELIVER)
+                .isOnWolt(IS_ON_WOLT)
                 .build();
         if (withId)
             restaurantEntity.setId(1L);
@@ -88,8 +94,10 @@ public class RestaurantFixture {
                 .numberOfTables(NUMBER_OF_TABLES)
                 .isVegan(IS_VEGAN)
                 .canDeliver(CAN_DELIVER)
+                .isOnWolt(IS_ON_WOLT)
                 .build();
     }
+
     public static RestaurantDto getRestaurantDto(Long id) {
         return RestaurantDto.builder()
                 .id(id)
@@ -101,6 +109,7 @@ public class RestaurantFixture {
                 .numberOfTables(NUMBER_OF_TABLES)
                 .isVegan(IS_VEGAN)
                 .canDeliver(CAN_DELIVER)
+                .isOnWolt(IS_ON_WOLT)
                 .build();
     }
 
@@ -116,6 +125,7 @@ public class RestaurantFixture {
                 .numberOfTables(NUMBER_OF_TABLES)
                 .isVegan(IS_VEGAN)
                 .canDeliver(CAN_DELIVER)
+                .isOnWolt(IS_ON_WOLT)
                 .build());
         return list;
     }
@@ -132,9 +142,11 @@ public class RestaurantFixture {
                 .numberOfTables(NUMBER_OF_TABLES)
                 .isVegan(IS_VEGAN)
                 .canDeliver(CAN_DELIVER)
+                .isOnWolt(IS_ON_WOLT)
                 .build());
         return list;
     }
+
     public static RestaurantUpdateDto getUpdatedRestaurantUpdateDto() {
         return RestaurantUpdateDto.builder()
                 .name(NAME + "Updated")
@@ -145,6 +157,7 @@ public class RestaurantFixture {
                 .numberOfTables(NUMBER_OF_TABLES)
                 .isVegan(IS_VEGAN)
                 .canDeliver(CAN_DELIVER)
+                .isOnWolt(IS_ON_WOLT)
                 .build();
     }
 
@@ -159,6 +172,7 @@ public class RestaurantFixture {
                 .numberOfTables(NUMBER_OF_TABLES)
                 .isVegan(true)
                 .canDeliver(CAN_DELIVER)
+                .isOnWolt(IS_ON_WOLT)
                 .build();
         if (withId)
             restaurantEntity.setId(1L);

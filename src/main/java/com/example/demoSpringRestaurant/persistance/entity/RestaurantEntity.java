@@ -34,8 +34,8 @@ public class RestaurantEntity {
     @NotNull
     private Boolean canDeliver;
 
-    // @NotNull
-    // private Boolean isOnWolt;
+     @NotNull
+     private Boolean isOnWolt;
 
     // @OneToMany private List<OrderEntity> orderEntity;
 }
