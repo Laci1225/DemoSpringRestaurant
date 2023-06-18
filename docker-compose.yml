@@ -8,10 +8,13 @@ services:
       - psql-net
     environment:
       - POSTGRES_PASSWORD=1234
+      - POSTGRES_DB=foodpanda
+      - PGDATA=/data/postgres
     ports:
       - 5432:5432
     volumes:
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./data/sqldata:/data/postgres
+    #  - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     restart: unless-stopped
 
   springboot:
