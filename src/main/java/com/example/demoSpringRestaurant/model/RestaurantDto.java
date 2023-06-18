@@ -14,4 +14,5 @@ public class RestaurantDto {
     private Integer numberOfTables;
     private Boolean isVegan;
     private Boolean canDeliver;
+    private Boolean isOnWolt;
 }

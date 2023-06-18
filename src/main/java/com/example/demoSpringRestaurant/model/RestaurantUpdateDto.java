@@ -24,4 +24,7 @@ public class RestaurantUpdateDto {
     private Boolean isVegan;
     @NotNull
     private Boolean canDeliver;
+    @NotNull
+    private Boolean isOnWolt;
+    
 }

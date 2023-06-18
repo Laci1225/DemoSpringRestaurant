@@ -1,0 +1,35 @@
+version: '3'
+
+services:
+  postgres:
+    image: postgres
+    container_name: my-postgres
+    networks:
+      - psql-net
+    environment:
+      - POSTGRES_PASSWORD=1234
+      - POSTGRES_DB=foodpanda
+      - PGDATA=/data/postgres
+    ports:
+      - 5432:5432
+    volumes:
+      - ./data/sqldata:/data/postgres
+    #  - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    restart: unless-stopped
+
+  springboot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: springboot-container
+    networks:
+      - psql-net
+    ports:
+      - 8080:8080
+    restart: unless-stopped
+    depends_on:
+      - postgres
+
+networks:
+  psql-net:
+    driver: bridge

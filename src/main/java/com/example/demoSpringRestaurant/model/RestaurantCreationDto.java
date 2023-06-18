@@ -5,7 +5,6 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
 
 @Data
 @Builder
@@ -25,5 +24,7 @@ public class RestaurantCreationDto {
     private Boolean isVegan;
     @NotNull
     private Boolean canDeliver;
+    @NotNull
+    private Boolean isOnWolt;
 
 }
