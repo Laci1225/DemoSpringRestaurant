@@ -1,50 +1,32 @@
-package com.example.demoSpringRestaurant.model;
+package com.example.demoSpringRestaurant.persistance.document;
 
 import com.example.demoSpringRestaurant.constant.DrinkType;
 import com.example.demoSpringRestaurant.constant.MealType;
 import com.example.demoSpringRestaurant.constant.OrderStatus;
-import com.example.demoSpringRestaurant.persistance.entity.RestaurantEntity;
-import jakarta.annotation.Nullable;
-import jakarta.validation.constraints.NotNull;
-import lombok.*;
+import lombok.Data;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Data
-@NoArgsConstructor
-@Builder
-@AllArgsConstructor
-public class OrderCreationDto {
-
-    //@ManyToOne
-    private RestaurantDto restaurant;
-
-    @Nullable
-    //@Enumerated(EnumType.STRING)
+@Document(collection = "orders")
+public class OrderDocument {
+    @Id
+    private String id;
+    @DocumentReference
+    private RestaurantDocument restaurant;
     private MealType mealType;
-
-    @Nullable
-    //@Enumerated(EnumType.STRING)
     private DrinkType drinkType;
-    //@Transient
     private double price;
-
-    @NotNull
     private String deliveryAddress;
-
     private LocalDateTime createDate;
-
-    //Enumerated(EnumType.STRING)
-    @NotNull
     private OrderStatus orderStatus = OrderStatus.SENT;
-
     private LocalTime estimatedDeliveryTime;
+
     public double getPrice() {
         return getMealType().getValue() + getDrinkType().getValue();
     }
-
-
-
 }
-

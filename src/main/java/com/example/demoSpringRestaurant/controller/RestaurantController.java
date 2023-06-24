@@ -100,7 +100,7 @@ public class RestaurantController {
                     content = @Content)})
     @ResponseStatus(HttpStatus.ACCEPTED)
     @DeleteMapping(path = "{restaurantId}")
-    public RestaurantDto deleteRestaurant(@PathVariable("restaurantId") Long restaurantId) {
+    public RestaurantDto deleteRestaurant(@PathVariable("restaurantId") String restaurantId) {
         try {
             log.debug("Deleting a restaurant");
             var restaurant = restaurantOrderFacade.deleteRestaurant(restaurantId);
@@ -135,7 +135,7 @@ public class RestaurantController {
     @ResponseStatus(HttpStatus.OK)
     @PutMapping(path = "{restaurantId}")
     public RestaurantDto updateRestaurant(
-            @PathVariable("restaurantId") Long restaurantId,
+            @PathVariable("restaurantId") String restaurantId,
             @Valid @RequestBody RestaurantUpdateDto restaurantUpdateDto) {
         try {
             log.debug("Updating restaurant with ID: " + restaurantId);
@@ -171,7 +171,7 @@ public class RestaurantController {
     @ResponseStatus(HttpStatus.OK)
     @PatchMapping(path = "{restaurantId}")
     public RestaurantDto updateParametersInRestaurant(
-            @PathVariable("restaurantId") Long restaurantId,
+            @PathVariable("restaurantId") String restaurantId,
             @Valid @RequestBody RestaurantUpdateDto restaurantUpdateDto) {
         try {
             log.debug("Updating restaurant's parameter with ID: " + restaurantId);

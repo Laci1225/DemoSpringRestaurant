@@ -3,21 +3,22 @@ package com.example.demoSpringRestaurant.mapper;
 import com.example.demoSpringRestaurant.model.OrderCreationDto;
 import com.example.demoSpringRestaurant.model.OrderDto;
 import com.example.demoSpringRestaurant.model.OrderUpdateDto;
-import com.example.demoSpringRestaurant.persistance.entity.OrderEntity;
+import com.example.demoSpringRestaurant.persistance.document.OrderDocument;
 import org.mapstruct.Mapper;
 
-@Mapper(componentModel = "spring", uses = {RestaurantMapper.class})
+@Mapper(componentModel = "spring", uses = {RestaurantWithoutOrderMapper.class})
 public interface OrderMapper {
-    OrderEntity fromOrderDtoToEntity(OrderDto OrderDto);
 
-    OrderDto fromEntityToOrderDto(OrderEntity OrderEntity);
+    OrderDocument fromOrderDtoToDocument(OrderDto OrderDto);
 
-    OrderCreationDto fromEntityToOrderCreationDto(OrderEntity OrderEntity);
+    OrderDto fromDocumentToOrderDto(OrderDocument orderDocument);
 
-    OrderEntity fromOrderCreationDtoToEntity(OrderCreationDto OrderCreationDto);
+    OrderCreationDto fromDocumentToOrderCreationDto(OrderDocument orderDocument);
 
-    OrderUpdateDto fromEntityToOrderUpdateDto(OrderEntity OrderEntity);
+    OrderDocument fromOrderCreationDtoToDocument(OrderCreationDto OrderCreationDto);
 
-    OrderEntity fromOrderUpdateDtoToEntity(OrderUpdateDto OrderUpdateDto);
+    OrderUpdateDto fromDocumentToOrderUpdateDto(OrderDocument orderDocument);
+
+    OrderDocument fromOrderUpdateDtoToDocument(OrderUpdateDto OrderUpdateDto);
 
 }

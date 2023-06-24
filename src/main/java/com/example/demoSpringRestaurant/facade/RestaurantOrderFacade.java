@@ -24,33 +24,33 @@ public class RestaurantOrderFacade {
     private final OrderService orderService;
     private final RestaurantService restaurantService;
 
-    public List<OrderDto> getOrdersByRestaurantId(Long restaurantId) throws RestaurantEntityNotFoundException {
+    public List<OrderDto> getOrdersByRestaurantId(String restaurantId) throws RestaurantEntityNotFoundException {
         log.trace("Fetching orders for Restaurant ID: " + restaurantId);
 
         restaurantService.restaurantExist(restaurantId);
 
         log.trace("All orders with Restaurant ID: " + restaurantId + " listed.");
         return orderService.findAllByRestaurantId(restaurantId).stream()
-                .map(orderMapper::fromEntityToOrderDto)
+                .map(orderMapper::fromDocumentToOrderDto)
                 .toList();
     }
 
-    public OrderDto createOrder(OrderCreationDto orderCreationDto, Long restaurantId) throws RestaurantEntityNotFoundException {
+    public OrderDto createOrder(OrderCreationDto orderCreationDto, String restaurantId) throws RestaurantEntityNotFoundException {
         log.trace("Creating order " + orderCreationDto + "with Restaurant ID: " + restaurantId);
 
-        var restaurantEntity = restaurantService.findRestaurantById(restaurantId);
-        orderCreationDto.setRestaurant(restaurantEntity);
+        var restaurantDocument = restaurantService.findRestaurantById(restaurantId);
+        orderCreationDto.setRestaurant(restaurantMapper.fromDocumentToRestaurantDto(restaurantDocument));
         orderCreationDto.setCreateDate(LocalDateTime.now().truncatedTo(java.time.temporal.ChronoUnit.SECONDS));
         var estimated = orderCreationDto.getCreateDate().plusMinutes(30).toLocalTime();
         orderCreationDto.setEstimatedDeliveryTime(estimated);
-        var orderEntity = orderMapper.fromOrderCreationDtoToEntity(orderCreationDto);
+        var orderEntity = orderMapper.fromOrderCreationDtoToDocument(orderCreationDto);
         var orderDto = orderService.saveOrder(orderEntity);
 
         log.trace("Order" + orderDto + " with Restaurant ID: " + orderDto.getId() + " created");
-        return orderMapper.fromEntityToOrderDto(orderEntity);
+        return orderMapper.fromDocumentToOrderDto(orderEntity);
     }
 
-    public RestaurantDto deleteRestaurant(Long restaurantId) throws RestaurantEntityNotFoundException {
+    public RestaurantDto deleteRestaurant(String restaurantId) throws RestaurantEntityNotFoundException {
         log.trace("Deleting restaurant with ID: " + restaurantId);
 
         var orders = orderService.findAllByRestaurantId(restaurantId);
@@ -59,6 +59,6 @@ public class RestaurantOrderFacade {
         restaurantService.deleteRestaurant(restaurantEntity);
 
         log.trace("Restaurant with ID: " + restaurantId + " deleted");
-        return restaurantMapper.fromEntityToRestaurantDto(restaurantEntity);
+        return restaurantMapper.fromDocumentToRestaurantDto(restaurantEntity);
     }
 }

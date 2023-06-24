@@ -2,10 +2,13 @@ package com.example.demoSpringRestaurant.model;
 
 import lombok.*;
 
+import java.util.List;
+
 @Data
 @Builder
 public class RestaurantDto {
-    private Long id;
+    private String id;
+    private List<OrderDto> orders;
     private String name;
     private String owner;
     private String address;

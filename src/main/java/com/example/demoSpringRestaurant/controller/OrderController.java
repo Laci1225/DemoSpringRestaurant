@@ -54,7 +54,7 @@ public class OrderController {
                     content = @Content)})
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(path = "orders/{restaurantId}")
-    public List<OrderDto> getOrdersByRestaurantId(@PathVariable("restaurantId") Long restaurantId) {
+    public List<OrderDto> getOrdersByRestaurantId(@PathVariable("restaurantId") String restaurantId) {
         try {
             log.debug("Requested all order");
             var orderList = restaurantOrderFacade.getOrdersByRestaurantId(restaurantId);
@@ -88,7 +88,7 @@ public class OrderController {
                     content = @Content)})
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(path = "orders/{restaurantId}")
-    public OrderDto createOrder(@Valid @RequestBody OrderCreationDto orderCreationDto, @PathVariable("restaurantId") Long restaurantId) {
+    public OrderDto createOrder(@Valid @RequestBody OrderCreationDto orderCreationDto, @PathVariable("restaurantId") String restaurantId) {
         try {
             log.debug("Creating an order");
             var order = restaurantOrderFacade.createOrder(orderCreationDto, restaurantId);
@@ -119,7 +119,7 @@ public class OrderController {
                     content = @Content)})
     @ResponseStatus(HttpStatus.ACCEPTED)
     @DeleteMapping(path = "orders/{orderId}")
-    public OrderDto deleteOrder(@PathVariable("orderId") Long orderId) {
+    public OrderDto deleteOrder(@PathVariable("orderId") String orderId) {
         try {
             log.debug("Deleting an order");
             var order = orderService.deleteOrder(orderId);
@@ -152,7 +152,7 @@ public class OrderController {
                     content = @Content)})
     @ResponseStatus(HttpStatus.OK)
     @PostMapping(path = "orders/{orderId}/next-state")
-    public OrderDto setNextState(@PathVariable("orderId") Long orderId) {
+    public OrderDto setNextState(@PathVariable("orderId") String orderId) {
         try {
             log.debug("Setting order with ID: " + orderId + " to the next status");
             var order = orderService.setNextState(orderId);
