@@ -3,7 +3,7 @@ package com.example.demoSpringRestaurant.fixtures;
 import com.example.demoSpringRestaurant.model.RestaurantCreationDto;
 import com.example.demoSpringRestaurant.model.RestaurantDto;
 import com.example.demoSpringRestaurant.model.RestaurantUpdateDto;
-import com.example.demoSpringRestaurant.persistance.entity.RestaurantEntity;
+import com.example.demoSpringRestaurant.persistance.document.RestaurantDocument;
 import jakarta.validation.constraints.Email;
 
 import java.util.ArrayList;
@@ -65,9 +65,9 @@ public class RestaurantFixture {
                 .build();
     }
 
-    public static RestaurantEntity getRestaurantEntity(boolean withId) {
+    public static RestaurantDocument getRestaurantDocument(boolean withId) {
 
-        var restaurantEntity = RestaurantEntity.builder()
+        var restaurantDocument = RestaurantDocument.builder()
                 .name(NAME)
                 .owner(OWNER)
                 .address(ADDRESS)
@@ -79,13 +79,13 @@ public class RestaurantFixture {
                 .isOnWolt(IS_ON_WOLT)
                 .build();
         if (withId)
-            restaurantEntity.setId(1L);
-        return restaurantEntity;
+            restaurantDocument.setId("1L");
+        return restaurantDocument;
     }
 
     public static RestaurantDto getRestaurantDto() {
         return RestaurantDto.builder()
-                .id(1L)
+                .id("1L")
                 .name(NAME)
                 .owner(OWNER)
                 .address(ADDRESS)
@@ -98,7 +98,7 @@ public class RestaurantFixture {
                 .build();
     }
 
-    public static RestaurantDto getRestaurantDto(Long id) {
+    public static RestaurantDto getRestaurantDto(String id) {
         return RestaurantDto.builder()
                 .id(id)
                 .name(NAME)
@@ -113,10 +113,10 @@ public class RestaurantFixture {
                 .build();
     }
 
-    public static List<RestaurantEntity> getRestaurantEntityList() {
-        var list = new ArrayList<RestaurantEntity>();
-        list.add(RestaurantEntity.builder()
-                .id(1L)
+    public static List<RestaurantDocument> getRestaurantDocumentList() {
+        var list = new ArrayList<RestaurantDocument>();
+        list.add(RestaurantDocument.builder()
+                .id("1L")
                 .name(NAME)
                 .owner(OWNER)
                 .address(ADDRESS)
@@ -133,7 +133,7 @@ public class RestaurantFixture {
     public static List<RestaurantDto> getRestaurantDtoList() {
         var list = new ArrayList<RestaurantDto>();
         list.add(RestaurantDto.builder()
-                .id(1L)
+                .id("1L")
                 .name(NAME)
                 .owner(OWNER)
                 .address(ADDRESS)
@@ -161,9 +161,9 @@ public class RestaurantFixture {
                 .build();
     }
 
-    public static RestaurantEntity getRestaurantEntityIsVegan(boolean withId) {
+    public static RestaurantDocument getRestaurantDocumentIsVegan(boolean withId) {
 
-        var restaurantEntity = RestaurantEntity.builder()
+        var restaurantDocument = RestaurantDocument.builder()
                 .name(NAME)
                 .owner(OWNER)
                 .address(ADDRESS)
@@ -175,7 +175,7 @@ public class RestaurantFixture {
                 .isOnWolt(IS_ON_WOLT)
                 .build();
         if (withId)
-            restaurantEntity.setId(1L);
-        return restaurantEntity;
+            restaurantDocument.setId("1L");
+        return restaurantDocument;
     }
 }
