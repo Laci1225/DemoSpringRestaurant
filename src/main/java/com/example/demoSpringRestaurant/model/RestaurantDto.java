@@ -6,6 +6,7 @@ import java.util.List;
 
 @Data
 @Builder
+@RequiredArgsConstructor
 public class RestaurantDto {
     private String id;
     private List<OrderDto> orders;

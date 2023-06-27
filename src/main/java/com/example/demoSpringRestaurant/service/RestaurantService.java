@@ -1,6 +1,6 @@
 package com.example.demoSpringRestaurant.service;
 
-import com.example.demoSpringRestaurant.exception.RestaurantEntityNotFoundException;
+import com.example.demoSpringRestaurant.exception.RestaurantDocumentNotFoundException;
 import com.example.demoSpringRestaurant.model.RestaurantCreationDto;
 import com.example.demoSpringRestaurant.model.RestaurantDto;
 import com.example.demoSpringRestaurant.model.RestaurantUpdateDto;
@@ -36,10 +36,10 @@ public class RestaurantService {
     }
 
     //@Transactional
-    public RestaurantDto updateRestaurant(String restaurantId, RestaurantUpdateDto restaurantUpdateDto) throws RestaurantEntityNotFoundException {
+    public RestaurantDto updateRestaurant(String restaurantId, RestaurantUpdateDto restaurantUpdateDto) throws RestaurantDocumentNotFoundException {
         log.trace("Updating restaurant with ID: " + restaurantId + "to " + restaurantUpdateDto);
         restaurantRepository.findById(restaurantId)
-                .orElseThrow(() -> new RestaurantEntityNotFoundException("Restaurant doesn't exist"));
+                .orElseThrow(() -> new RestaurantDocumentNotFoundException("Restaurant doesn't exist"));
 
         var updatedEntity = restaurantMapper.fromRestaurantUpdateDtoToDocument(restaurantUpdateDto);
         updatedEntity.setId(restaurantId);
@@ -54,18 +54,18 @@ public class RestaurantService {
                 .stream().map(restaurantMapper::fromDocumentToRestaurantDto).toList();
     }
 
-    public RestaurantDocument findRestaurantById(String restaurantId) throws RestaurantEntityNotFoundException {
+    public RestaurantDocument findRestaurantById(String restaurantId) throws RestaurantDocumentNotFoundException {
         return restaurantRepository.findById(restaurantId).orElseThrow(
-                () -> new RestaurantEntityNotFoundException("Restaurant not found")
+                () -> new RestaurantDocumentNotFoundException("Restaurant not found")
         );
     }
 
-    public RestaurantDto updateParametersInRestaurant(String restaurantId, RestaurantUpdateDto restaurantUpdateDto) throws RestaurantEntityNotFoundException {
+    public RestaurantDto updateParametersInRestaurant(String restaurantId, RestaurantUpdateDto restaurantUpdateDto) throws RestaurantDocumentNotFoundException {
         log.trace("Updating restaurant's parameter with ID: " + restaurantId + "to " + restaurantUpdateDto);
 
         var restaurant = restaurantRepository.findById(restaurantId)
                 .stream().map(restaurantMapper::fromDocumentToRestaurantDto).findFirst()
-                .orElseThrow(() -> new RestaurantEntityNotFoundException("Restaurant not found"));
+                .orElseThrow(() -> new RestaurantDocumentNotFoundException("Restaurant not found"));
         restaurant.setId(restaurant.getId());
         if (restaurantUpdateDto.getName() != null) {
             restaurant.setName(restaurantUpdateDto.getName());
@@ -102,8 +102,8 @@ public class RestaurantService {
 
     }
 
-    public void restaurantExist(String restaurantId) throws RestaurantEntityNotFoundException {
+    public void restaurantExist(String restaurantId) throws RestaurantDocumentNotFoundException {
         if (!restaurantRepository.existsById(restaurantId))
-            throw new RestaurantEntityNotFoundException("Restaurant not found");
+            throw new RestaurantDocumentNotFoundException("Restaurant not found");
     }
 }

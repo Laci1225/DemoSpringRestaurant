@@ -1,6 +1,6 @@
 package com.example.demoSpringRestaurant.facade;
 
-import com.example.demoSpringRestaurant.exception.RestaurantEntityNotFoundException;
+import com.example.demoSpringRestaurant.exception.RestaurantDocumentNotFoundException;
 import com.example.demoSpringRestaurant.mapper.OrderMapper;
 import com.example.demoSpringRestaurant.mapper.RestaurantMapper;
 import com.example.demoSpringRestaurant.model.OrderCreationDto;
@@ -24,7 +24,7 @@ public class RestaurantOrderFacade {
     private final OrderService orderService;
     private final RestaurantService restaurantService;
 
-    public List<OrderDto> getOrdersByRestaurantId(String restaurantId) throws RestaurantEntityNotFoundException {
+    public List<OrderDto> getOrdersByRestaurantId(String restaurantId) throws RestaurantDocumentNotFoundException {
         log.trace("Fetching orders for Restaurant ID: " + restaurantId);
 
         restaurantService.restaurantExist(restaurantId);
@@ -35,7 +35,7 @@ public class RestaurantOrderFacade {
                 .toList();
     }
 
-    public OrderDto createOrder(OrderCreationDto orderCreationDto, String restaurantId) throws RestaurantEntityNotFoundException {
+    public OrderDto createOrder(OrderCreationDto orderCreationDto, String restaurantId) throws RestaurantDocumentNotFoundException {
         log.trace("Creating order " + orderCreationDto + "with Restaurant ID: " + restaurantId);
 
         var restaurantDocument = restaurantService.findRestaurantById(restaurantId);
@@ -50,7 +50,7 @@ public class RestaurantOrderFacade {
         return orderMapper.fromDocumentToOrderDto(orderEntity);
     }
 
-    public RestaurantDto deleteRestaurant(String restaurantId) throws RestaurantEntityNotFoundException {
+    public RestaurantDto deleteRestaurant(String restaurantId) throws RestaurantDocumentNotFoundException {
         log.trace("Deleting restaurant with ID: " + restaurantId);
 
         var orders = orderService.findAllByRestaurantId(restaurantId);

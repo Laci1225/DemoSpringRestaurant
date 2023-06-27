@@ -1,11 +1,10 @@
 package com.example.demoSpringRestaurant.unit.service;
 
 import com.example.demoSpringRestaurant.constant.OrderStatus;
-import com.example.demoSpringRestaurant.exception.EntityNotFoundException;
-import com.example.demoSpringRestaurant.exception.OrderEntityNotFoundException;
+import com.example.demoSpringRestaurant.exception.OrderDocumentNotFoundException;
 import com.example.demoSpringRestaurant.fixtures.OrderFixture;
 import com.example.demoSpringRestaurant.mapper.OrderMapper;
-import com.example.demoSpringRestaurant.persistance.entity.OrderEntity;
+import com.example.demoSpringRestaurant.persistance.document.OrderDocument;
 import com.example.demoSpringRestaurant.persistance.repository.OrderRepository;
 import com.example.demoSpringRestaurant.service.OrderService;
 import org.junit.jupiter.api.Test;
@@ -35,92 +34,92 @@ class OrderServiceTest {
     private OrderMapper orderMapper;
 
     @Test
-    void deleteOrderShouldRemoveOneOrder() throws EntityNotFoundException {
+    void deleteOrderShouldRemoveOneOrder() throws OrderDocumentNotFoundException {
         //arrange / given
-        when(orderMapper.fromEntityToOrderDto(any(OrderEntity.class)))
+        when(orderMapper.fromDocumentToOrderDto(any(OrderDocument.class)))
                 .thenReturn(OrderFixture.getOrderDto());
-        when(orderRepository.findById(anyLong()))
-                .thenReturn(Optional.of(OrderFixture.getOrderEntity(true)));
-        Mockito.doNothing().when(orderRepository).deleteById(Mockito.anyLong());
+        when(orderRepository.findById(anyString()))
+                .thenReturn(Optional.of(OrderFixture.getOrderDocument(true)));
+        Mockito.doNothing().when(orderRepository).deleteById(Mockito.anyString());
 
         //act / when
-        var orderDto = orderService.deleteOrder(OrderFixture.getOrderEntity(true).getId());
+        var orderDto = orderService.deleteOrder(OrderFixture.getOrderDocument(true).getId());
 
         //assert / then
         assertThat(orderDto).usingRecursiveComparison().isEqualTo(OrderFixture.getOrderDto());
-        verify(orderRepository, times(1)).findById(anyLong());
-        verify(orderRepository, times(1)).deleteById(anyLong());
+        verify(orderRepository, times(1)).findById(anyString());
+        verify(orderRepository, times(1)).deleteById(anyString());
         verifyNoMoreInteractions(orderRepository);
     }
 
     @Test
-    void deleteOrderShouldThrowEntityNotFoundException() {
-        Long orderId = 1L;
+    void deleteOrderShouldOrderDocumentNotFoundException() {
+        String orderId = "1L";
         when(orderRepository.findById(orderId)).thenReturn(Optional.empty());
 
-        assertThrows(OrderEntityNotFoundException.class, () ->
+        assertThrows(OrderDocumentNotFoundException.class, () ->
                 orderService.deleteOrder(orderId));
 
-        verify(orderRepository, times(1)).findById(anyLong());
+        verify(orderRepository, times(1)).findById(anyString());
         verifyNoMoreInteractions(orderRepository);
     }
 
     @Test
-    void setNextStateShouldSetSENTToAPPROVED() throws EntityNotFoundException {
+    void setNextStateShouldSetSENTToAPPROVED() throws OrderDocumentNotFoundException {
         OrderStatus orderStatus = OrderStatus.SENT;
         var nextOrderDto = OrderFixture.getOrderDtoGetNextStatus(orderStatus);
-        when(orderRepository.findById(anyLong()))
-                .thenReturn(Optional.of(OrderFixture.getOrderEntity(true)));
-        when(orderMapper.fromEntityToOrderDto(any(OrderEntity.class)))
+        when(orderRepository.findById(anyString()))
+                .thenReturn(Optional.of(OrderFixture.getOrderDocument(true)));
+        when(orderMapper.fromDocumentToOrderDto(any(OrderDocument.class)))
                 .thenReturn(OrderFixture.getOrderDtoGetNextStatus(orderStatus));
-        when(orderRepository.save(any(OrderEntity.class)))
-                .thenReturn(OrderFixture.getOrderEntity(true));
+        when(orderRepository.save(any(OrderDocument.class)))
+                .thenReturn(OrderFixture.getOrderDocument(true));
 
         var orderDto = orderService.setNextState(nextOrderDto.getId());
 
         assertThat(orderDto.getOrderStatus()).isEqualTo(nextOrderDto.getOrderStatus());
-        verify(orderRepository, times(1)).findById(anyLong());
-        verify(orderRepository, times(1)).save(any(OrderEntity.class));
+        verify(orderRepository, times(1)).findById(anyString());
+        verify(orderRepository, times(1)).save(any(OrderDocument.class));
         verifyNoMoreInteractions(orderRepository);
     }
 
     @Test
-    void setNextStateShouldSetAPPROVEDToSHIPPING() throws EntityNotFoundException {
+    void setNextStateShouldSetAPPROVEDToSHIPPING() throws OrderDocumentNotFoundException {
         OrderStatus orderStatus = OrderStatus.APPROVED;
         var nextOrderDto = OrderFixture.getOrderDtoGetNextStatus(orderStatus);
 
-        when(orderRepository.findById(anyLong()))
-                .thenReturn(Optional.of(OrderFixture.getOrderEntity(true)));
-        when(orderMapper.fromEntityToOrderDto(any(OrderEntity.class)))
+        when(orderRepository.findById(anyString()))
+                .thenReturn(Optional.of(OrderFixture.getOrderDocument(true)));
+        when(orderMapper.fromDocumentToOrderDto(any(OrderDocument.class)))
                 .thenReturn(OrderFixture.getOrderDtoGetNextStatus(orderStatus));
-        when(orderRepository.save(any(OrderEntity.class)))
-                .thenReturn(OrderFixture.getOrderEntity(true));
+        when(orderRepository.save(any(OrderDocument.class)))
+                .thenReturn(OrderFixture.getOrderDocument(true));
 
         var orderDto = orderService.setNextState(nextOrderDto.getId());
 
         assertThat(orderDto.getOrderStatus()).isEqualTo(nextOrderDto.getOrderStatus());
-        verify(orderRepository, times(1)).findById(anyLong());
-        verify(orderRepository, times(1)).save(any(OrderEntity.class));
+        verify(orderRepository, times(1)).findById(anyString());
+        verify(orderRepository, times(1)).save(any(OrderDocument.class));
         verifyNoMoreInteractions(orderRepository);
     }
 
     @Test
-    void setNextStateShouldSetSHIPPINGToSHIPPED() throws EntityNotFoundException {
+    void setNextStateShouldSetSHIPPINGToSHIPPED() throws OrderDocumentNotFoundException {
         OrderStatus orderStatus = OrderStatus.SHIPPING;
         var nextOrderDto = OrderFixture.getOrderDtoGetNextStatus(orderStatus);
 
-        when(orderRepository.findById(anyLong()))
-                .thenReturn(Optional.of(OrderFixture.getOrderEntity(true)));
-        when(orderMapper.fromEntityToOrderDto(any(OrderEntity.class)))
+        when(orderRepository.findById(anyString()))
+                .thenReturn(Optional.of(OrderFixture.getOrderDocument(true)));
+        when(orderMapper.fromDocumentToOrderDto(any(OrderDocument.class)))
                 .thenReturn(OrderFixture.getOrderDtoGetNextStatus(orderStatus));
-        when(orderRepository.save(any(OrderEntity.class)))
-                .thenReturn(OrderFixture.getOrderEntity(true));
+        when(orderRepository.save(any(OrderDocument.class)))
+                .thenReturn(OrderFixture.getOrderDocument(true));
 
         var orderDto = orderService.setNextState(nextOrderDto.getId());
 
         assertThat(orderDto.getOrderStatus()).isEqualTo(nextOrderDto.getOrderStatus());
-        verify(orderRepository, times(1)).findById(anyLong());
-        verify(orderRepository, times(1)).save(any(OrderEntity.class));
+        verify(orderRepository, times(1)).findById(anyString());
+        verify(orderRepository, times(1)).save(any(OrderDocument.class));
         verifyNoMoreInteractions(orderRepository);
     }
 
@@ -133,14 +132,14 @@ class OrderServiceTest {
     }
 
     @Test
-    void setNextStateShouldThrowEntityNotFoundException() {
-        Long orderId = 1L;
+    void setNextStateShouldOrderDocumentNotFoundException() {
+        String orderId = "1L";
         when(orderRepository.findById(orderId)).thenReturn(Optional.empty());
 
-        assertThrows(OrderEntityNotFoundException.class, () ->
+        assertThrows(OrderDocumentNotFoundException.class, () ->
                 orderService.setNextState(orderId));
 
-        verify(orderRepository, times(1)).findById(anyLong());
+        verify(orderRepository, times(1)).findById(anyString());
         verifyNoMoreInteractions(orderRepository);
     }
 

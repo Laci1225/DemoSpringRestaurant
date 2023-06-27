@@ -1,7 +1,7 @@
 package com.example.demoSpringRestaurant.controller;
 
-import com.example.demoSpringRestaurant.exception.OrderEntityNotFoundException;
-import com.example.demoSpringRestaurant.exception.RestaurantEntityNotFoundException;
+import com.example.demoSpringRestaurant.exception.OrderDocumentNotFoundException;
+import com.example.demoSpringRestaurant.exception.RestaurantDocumentNotFoundException;
 import com.example.demoSpringRestaurant.facade.RestaurantOrderFacade;
 import com.example.demoSpringRestaurant.model.OrderCreationDto;
 import com.example.demoSpringRestaurant.model.OrderDto;
@@ -19,8 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import com.example.demoSpringRestaurant.persistance.entity.RestaurantEntity;
-import com.example.demoSpringRestaurant.persistance.entity.OrderEntity;
+import com.example.demoSpringRestaurant.persistance.document.OrderDocument;
 
 import java.util.List;
 
@@ -40,7 +39,7 @@ public class OrderController {
      *
      * @param restaurantId The ID of the restaurant.
      * @return A list of OrderDto objects representing the orders.
-     * @throws ResponseStatusException If the {@link RestaurantEntity} is not found with 404 status code
+     * @throws ResponseStatusException If the {@link OrderDocument} is not found with 404 status code
      *                                 or if there is a server error with 500 status code.
      */
     @Operation(summary = "Returns all orders in a restaurant")
@@ -60,7 +59,7 @@ public class OrderController {
             var orderList = restaurantOrderFacade.getOrdersByRestaurantId(restaurantId);
             log.debug("Orders returned successfully");
             return orderList;
-        } catch (RestaurantEntityNotFoundException e) {
+        } catch (RestaurantDocumentNotFoundException e) {
             log.warn("Getting orders were unsuccessful due to: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
@@ -72,7 +71,7 @@ public class OrderController {
      * @param orderCreationDto The OrderCreationDto object containing the order details.
      * @param restaurantId     The ID of the restaurant.
      * @return The created OrderDto object representing the new order.
-     * @throws ResponseStatusException If the {@link RestaurantEntity} is not found with 404 status code
+     * @throws ResponseStatusException If the {@link OrderDocument} is not found with 404 status code
      *                                 or if there is a server error with 500 status code.
      */
     @Operation(summary = "Creates an order in a restaurant")
@@ -94,7 +93,7 @@ public class OrderController {
             var order = restaurantOrderFacade.createOrder(orderCreationDto, restaurantId);
             log.debug("Created an order successfully");
             return order;
-        } catch (RestaurantEntityNotFoundException e) {
+        } catch (RestaurantDocumentNotFoundException e) {
             log.warn("Creating an order was unsuccessful due to: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
@@ -105,7 +104,7 @@ public class OrderController {
      *
      * @param orderId The ID of the order to be deleted.
      * @return The deleted OrderDto object representing the deleted order.
-     * @throws ResponseStatusException If the {@link OrderEntity} is not found with 404 status code
+     * @throws ResponseStatusException If the {@link OrderDocument} is not found with 404 status code
      *                                 or if there is a server error with 500 status code.
      */
     @Operation(summary = "Deletes an order from a restaurant")
@@ -125,7 +124,7 @@ public class OrderController {
             var order = orderService.deleteOrder(orderId);
             log.debug("Order with ID: " + orderId + " deleted successfully");
             return order;
-        } catch (OrderEntityNotFoundException e) {
+        } catch (OrderDocumentNotFoundException e) {
             log.warn("Deleting an order were unsuccessful due to: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
@@ -136,7 +135,7 @@ public class OrderController {
      *
      * @param orderId The ID of the order.
      * @return The updated OrderDto object representing the order with the next state.
-     * @throws ResponseStatusException If the {@link OrderEntity} is not found with 404 status code
+     * @throws ResponseStatusException If the {@link OrderDocument} is not found with 404 status code
      *                                 or if there is a server error with 500 status code.
      */
     @Operation(summary = "Sets an order state to the next state")
@@ -158,7 +157,7 @@ public class OrderController {
             var order = orderService.setNextState(orderId);
             log.debug("Setting order with ID: " + orderId + " was successful");
             return order;
-        } catch (OrderEntityNotFoundException e) {
+        } catch (OrderDocumentNotFoundException e) {
             log.warn("Setting an order's next stage was unsuccessful due to: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         } catch (UnsupportedOperationException e) {

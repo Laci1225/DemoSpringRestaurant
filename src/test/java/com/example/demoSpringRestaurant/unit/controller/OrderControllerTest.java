@@ -2,8 +2,8 @@ package com.example.demoSpringRestaurant.unit.controller;
 
 import com.example.demoSpringRestaurant.constant.OrderStatus;
 import com.example.demoSpringRestaurant.controller.OrderController;
-import com.example.demoSpringRestaurant.exception.OrderEntityNotFoundException;
-import com.example.demoSpringRestaurant.exception.RestaurantEntityNotFoundException;
+import com.example.demoSpringRestaurant.exception.OrderDocumentNotFoundException;
+import com.example.demoSpringRestaurant.exception.RestaurantDocumentNotFoundException;
 import com.example.demoSpringRestaurant.facade.RestaurantOrderFacade;
 import com.example.demoSpringRestaurant.fixtures.OrderFixture;
 import com.example.demoSpringRestaurant.fixtures.RestaurantFixture;
@@ -38,7 +38,7 @@ public class OrderControllerTest {
     @Test
     void createOrderShouldReturnCreatedOrder() throws Exception {
         //given
-        when(restaurantOrderFacade.createOrder(any(OrderCreationDto.class), any(Long.class)))
+        when(restaurantOrderFacade.createOrder(any(OrderCreationDto.class), anyString()))
                 .thenReturn(OrderFixture.getOrderDto());
 
         //when
@@ -56,22 +56,22 @@ public class OrderControllerTest {
     void createOrderShouldThrowOrderEntityNotFoundExceptionWith400() throws Exception {
 
         //given
-        when(restaurantOrderFacade.createOrder(any(OrderCreationDto.class), any(Long.class)))
-                .thenThrow(RestaurantEntityNotFoundException.class);
+        when(restaurantOrderFacade.createOrder(any(OrderCreationDto.class), anyString()))
+                .thenThrow(RestaurantDocumentNotFoundException.class);
         //when
         //then
         this.mockMvc.perform(
                 post("/orders/1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(RestaurantFixture.getRestaurantEntity(true)))
+                        .content(objectMapper.writeValueAsString(RestaurantFixture.getRestaurantDocument(true)))
         ).andExpect(status().isBadRequest());
     }
 
     @Test
     void createOrderShouldThrowOrderEntityNotFoundExceptionWith404() throws Exception {
         //given
-        when(restaurantOrderFacade.createOrder(any(OrderCreationDto.class), any(Long.class)))
-                .thenThrow(RestaurantEntityNotFoundException.class);
+        when(restaurantOrderFacade.createOrder(any(OrderCreationDto.class), anyString()))
+                .thenThrow(RestaurantDocumentNotFoundException.class);
         //when
         //then
         this.mockMvc.perform(
@@ -85,7 +85,7 @@ public class OrderControllerTest {
     @Test
     void getOrdersByRestaurantIdShouldReturnAllOrder() throws Exception {
         //given
-        when(restaurantOrderFacade.getOrdersByRestaurantId(any(Long.class)))
+        when(restaurantOrderFacade.getOrdersByRestaurantId(anyString()))
                 .thenReturn(OrderFixture.getOrderDtoList());
 
         //when
@@ -101,8 +101,8 @@ public class OrderControllerTest {
     @Test
     void getOrdersByRestaurantIdShouldThrowOrderEntityNotFoundExceptionWith404() throws Exception {
         //given
-        when(restaurantOrderFacade.getOrdersByRestaurantId(any(Long.class)))
-                .thenThrow(RestaurantEntityNotFoundException.class);
+        when(restaurantOrderFacade.getOrdersByRestaurantId(anyString()))
+                .thenThrow(RestaurantDocumentNotFoundException.class);
         //when
         //then
         this.mockMvc.perform(
@@ -113,7 +113,7 @@ public class OrderControllerTest {
     @Test
     void deleteOrderShouldRemoveOneOrder() throws Exception {
         //given
-        when(orderService.deleteOrder(any(Long.class)))
+        when(orderService.deleteOrder(anyString()))
                 .thenReturn(OrderFixture.getOrderDto());
         //when
         //then
@@ -128,8 +128,8 @@ public class OrderControllerTest {
     @Test
     void deleteOrderShouldThrowOrderEntityNotFoundExceptionWith404() throws Exception {
         //given
-        when(orderService.deleteOrder(any(Long.class)))
-                .thenThrow(OrderEntityNotFoundException.class);
+        when(orderService.deleteOrder(anyString()))
+                .thenThrow(OrderDocumentNotFoundException.class);
         //when
         //then
         this.mockMvc.perform(
@@ -140,7 +140,7 @@ public class OrderControllerTest {
     @Test
     void setNextStateShouldSetToTheNextStateFromSENTTOAPPROVED() throws Exception {
         OrderStatus orderStatus = OrderStatus.SENT;
-        when(orderService.setNextState(any(Long.class)))
+        when(orderService.setNextState(anyString()))
                 .thenReturn(OrderFixture.getOrderDtoGetNextStatus(orderStatus));
         //when
         //then
@@ -154,7 +154,7 @@ public class OrderControllerTest {
     @Test
     void setNextStateShouldSetToTheNextStateFromAPPROVEDToSHIPPING() throws Exception {
         OrderStatus orderStatus = OrderStatus.APPROVED;
-        when(orderService.setNextState(any(Long.class)))
+        when(orderService.setNextState(anyString()))
                 .thenReturn(OrderFixture.getOrderDtoGetNextStatus(orderStatus));
         //when
         //then
@@ -168,7 +168,7 @@ public class OrderControllerTest {
     @Test
     void setNextStateShouldSetToTheNextStateFromSHIPPINGToSHIPPED() throws Exception {
         OrderStatus orderStatus = OrderStatus.SHIPPING;
-        when(orderService.setNextState(any(Long.class)))
+        when(orderService.setNextState(anyString()))
                 .thenReturn(OrderFixture.getOrderDtoGetNextStatus(orderStatus));
         //when
         //then
@@ -181,7 +181,7 @@ public class OrderControllerTest {
 
     @Test
     void setNextStateShouldThrowResponseStatusException() throws Exception {
-        when(orderService.setNextState(any(Long.class)))
+        when(orderService.setNextState(anyString()))
                 .thenThrow(UnsupportedOperationException.class);
         //when
         //then
@@ -192,8 +192,8 @@ public class OrderControllerTest {
 
     @Test
     void setNextStateShouldThrowEntityNotFoundExceptionWith404() throws Exception {
-        when(orderService.setNextState(any(Long.class)))
-                .thenThrow(OrderEntityNotFoundException.class);
+        when(orderService.setNextState(anyString()))
+                .thenThrow(OrderDocumentNotFoundException.class);
         //when
         //then
         this.mockMvc.perform(

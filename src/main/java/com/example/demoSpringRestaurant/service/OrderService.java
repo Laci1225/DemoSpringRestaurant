@@ -1,6 +1,6 @@
 package com.example.demoSpringRestaurant.service;
 
-import com.example.demoSpringRestaurant.exception.OrderEntityNotFoundException;
+import com.example.demoSpringRestaurant.exception.OrderDocumentNotFoundException;
 import com.example.demoSpringRestaurant.mapper.OrderMapper;
 import com.example.demoSpringRestaurant.model.OrderDto;
 import com.example.demoSpringRestaurant.persistance.document.OrderDocument;
@@ -19,21 +19,21 @@ public class OrderService {
     private final OrderMapper orderMapper;
 
 
-    public OrderDto deleteOrder(String orderId) throws OrderEntityNotFoundException {
+    public OrderDto deleteOrder(String orderId) throws OrderDocumentNotFoundException {
         log.trace("Deleting order with ID: " + orderId);
 
         var order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new OrderEntityNotFoundException("Order not found"));
+                .orElseThrow(() -> new OrderDocumentNotFoundException("Order not found"));
         orderRepository.deleteById(orderId);
         log.trace("Order deleted with ID: " + orderId);
         return orderMapper.fromDocumentToOrderDto(order);
     }
 
-    public OrderDto setNextState(String orderId) throws OrderEntityNotFoundException {
+    public OrderDto setNextState(String orderId) throws OrderDocumentNotFoundException {
         log.trace("Changing order status to order with ID: " + orderId);
 
         var order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new OrderEntityNotFoundException("Order not found"));
+                .orElseThrow(() -> new OrderDocumentNotFoundException("Order not found"));
         var logStatus = order.getOrderStatus();
         order.setOrderStatus(order.getOrderStatus().getNextStatus());
         orderRepository.save(order);
