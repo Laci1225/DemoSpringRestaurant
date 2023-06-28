@@ -1,13 +1,15 @@
 package com.example.demoSpringRestaurant.model;
 
 import lombok.*;
+import org.springframework.data.annotation.Id;
 
 import java.util.List;
 
 @Data
 @Builder
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class RestaurantDto {
+    @Id
     private String id;
     private List<OrderDto> orders;
     private String name;
@@ -19,4 +21,8 @@ public class RestaurantDto {
     private Boolean isVegan;
     private Boolean canDeliver;
     private Boolean isOnWolt;
+
+    public RestaurantDto() {
+    }
+
 }

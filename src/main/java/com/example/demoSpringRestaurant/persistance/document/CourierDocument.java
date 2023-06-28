@@ -3,11 +3,13 @@ package com.example.demoSpringRestaurant.persistance.document;
 import com.example.demoSpringRestaurant.constant.Vehicle;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
 import java.util.List;
 
 @Data
+@Document(collection = "courier")
 public class CourierDocument {
     @Id
     private String id;

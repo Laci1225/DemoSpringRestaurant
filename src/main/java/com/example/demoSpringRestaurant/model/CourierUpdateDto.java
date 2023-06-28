@@ -4,16 +4,13 @@ import com.example.demoSpringRestaurant.constant.Vehicle;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import org.springframework.data.annotation.Id;
 
 import java.util.List;
 
 @Data
 @Builder
 @AllArgsConstructor
-public class CourierDto {
-    @Id
-    private String id;
+public class CourierUpdateDto {
     private String name;
     private boolean isActive;
     private List<OrderDto> orders;
@@ -21,6 +18,6 @@ public class CourierDto {
     private double paymentPerOrder;
     private Vehicle vehicle;
 
-    public CourierDto() {
+    public CourierUpdateDto() {
     }
 }

@@ -29,10 +29,10 @@ public class RestaurantService {
 
     public RestaurantDto createRestaurant(RestaurantCreationDto restaurantCreationDto) {
         log.trace("Creating restaurant " + restaurantCreationDto);
-        var restaurantEntity = restaurantRepository.insert(restaurantMapper.
+        var restaurantDocument = restaurantRepository.save(restaurantMapper.
                 fromRestaurantCreationDtoToDocument(restaurantCreationDto));
-        log.trace("Restaurant created with ID:" + restaurantEntity.getId());
-        return restaurantMapper.fromDocumentToRestaurantDto(restaurantEntity);
+        log.trace("Restaurant created with ID:" + restaurantDocument.getId());
+        return restaurantMapper.fromDocumentToRestaurantDto(restaurantDocument);
     }
 
     //@Transactional
@@ -41,11 +41,11 @@ public class RestaurantService {
         restaurantRepository.findById(restaurantId)
                 .orElseThrow(() -> new RestaurantDocumentNotFoundException("Restaurant doesn't exist"));
 
-        var updatedEntity = restaurantMapper.fromRestaurantUpdateDtoToDocument(restaurantUpdateDto);
-        updatedEntity.setId(restaurantId);
-        restaurantRepository.save(updatedEntity);
-        log.trace("Restaurant with ID: " + updatedEntity.getId() + " updated as" + updatedEntity);
-        return restaurantMapper.fromDocumentToRestaurantDto(updatedEntity);
+        var updatedDocument = restaurantMapper.fromRestaurantUpdateDtoToDocument(restaurantUpdateDto);
+        updatedDocument.setId(restaurantId);
+        restaurantRepository.save(updatedDocument);
+        log.trace("Restaurant with ID: " + updatedDocument.getId() + " updated as" + updatedDocument);
+        return restaurantMapper.fromDocumentToRestaurantDto(updatedDocument);
     }
 
     public List<RestaurantDto> getVeganRestaurant() {
@@ -91,9 +91,9 @@ public class RestaurantService {
         if (restaurantUpdateDto.getIsVegan() != null) {
             restaurant.setIsVegan(restaurantUpdateDto.getIsVegan());
         }
-        var updatedEntity = restaurantRepository.save(restaurantMapper.fromRestaurantDtoToDocument(restaurant));
-        log.trace("Restaurant's parameter with ID: " + updatedEntity.getId() + " updated as " + updatedEntity);
-        return restaurantMapper.fromDocumentToRestaurantDto(updatedEntity);
+        var updatedDocument = restaurantRepository.save(restaurantMapper.fromRestaurantDtoToDocument(restaurant));
+        log.trace("Restaurant's parameter with ID: " + updatedDocument.getId() + " updated as " + updatedDocument);
+        return restaurantMapper.fromDocumentToRestaurantDto(updatedDocument);
 
     }
 

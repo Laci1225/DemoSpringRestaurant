@@ -3,7 +3,6 @@ package com.example.demoSpringRestaurant.fixtures;
 import com.example.demoSpringRestaurant.constant.DrinkType;
 import com.example.demoSpringRestaurant.constant.MealType;
 import com.example.demoSpringRestaurant.constant.OrderStatus;
-import com.example.demoSpringRestaurant.mapper.RestaurantMapper;
 import com.example.demoSpringRestaurant.model.OrderCreationDto;
 import com.example.demoSpringRestaurant.model.OrderDto;
 import com.example.demoSpringRestaurant.model.OrderUpdateDto;
@@ -21,9 +20,8 @@ import java.util.List;
 @Data
 public class OrderFixture {
 
-    private static RestaurantMapper restaurantMapper;
     private static final RestaurantDocument RESTAURANT_DOCUMENT = new RestaurantDocument();
-    private static final RestaurantDto RESTAURANT_DTO = restaurantMapper.fromDocumentToRestaurantDto(RESTAURANT_DOCUMENT);
+    private static final RestaurantDto RESTAURANT_DTO = new RestaurantDto();//restaurantMapper.fromDocumentToRestaurantDto(RESTAURANT_DOCUMENT);
     private static final MealType MEAL_TYPE = MealType.RICEANDFISH;
     private static final DrinkType DRINK_TYPE = DrinkType.COLA;
     private static final double PRICE = MEAL_TYPE.getValue() + DRINK_TYPE.getValue();
