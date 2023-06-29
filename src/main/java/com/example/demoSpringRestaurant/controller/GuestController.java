@@ -1,5 +1,6 @@
 package com.example.demoSpringRestaurant.controller;
 
+import com.example.demoSpringRestaurant.facade.OrderGuestFacade;
 import com.example.demoSpringRestaurant.model.GuestCreationDto;
 import com.example.demoSpringRestaurant.model.GuestDto;
 import com.example.demoSpringRestaurant.service.GuestService;
@@ -17,6 +18,7 @@ import java.util.List;
 public class GuestController {
 
     private final GuestService guestService;
+    private final OrderGuestFacade orderGuestFacade;
 
     @GetMapping
     public List<GuestDto> getGuests() {
@@ -25,10 +27,12 @@ public class GuestController {
         log.debug("Guests returned successfully");
         return guestList;
     }
-    @PostMapping
-    public GuestDto createGuest(@Valid @RequestBody GuestCreationDto GuestCreationDto) {
+
+    @PostMapping("{orderId}")
+    public GuestDto createGuest(@Valid @RequestBody GuestCreationDto GuestCreationDto,
+                                @PathVariable("orderId") String orderId) {
         log.debug("Creating a guest");
-        var guest = guestService.createGuest(GuestCreationDto);
+        var guest = orderGuestFacade.createGuest(GuestCreationDto, orderId);
         log.debug("Created a guest successfully");
         return guest;
     }

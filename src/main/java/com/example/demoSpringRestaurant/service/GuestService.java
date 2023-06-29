@@ -1,14 +1,15 @@
 package com.example.demoSpringRestaurant.service;
 
 import com.example.demoSpringRestaurant.mapper.GuestMapper;
-import com.example.demoSpringRestaurant.model.GuestCreationDto;
 import com.example.demoSpringRestaurant.model.GuestDto;
+import com.example.demoSpringRestaurant.persistance.document.GuestDocument;
 import com.example.demoSpringRestaurant.persistance.repository.GuestRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -24,11 +25,20 @@ public class GuestService {
                 .map(guestMapper::fromDocumentToGuestDto).toList();
     }
 
-    public GuestDto createGuest(GuestCreationDto GuestCreationDto) {
-        log.trace("Creating Guest " + GuestCreationDto);
-        var guestDocument = guestRepository.save(guestMapper.
-                fromGuestCreationDtoToDocument(GuestCreationDto));
-        log.trace("Guest created with ID:" + guestDocument.getId());
-        return guestMapper.fromDocumentToGuestDto(guestDocument);
+
+    public Optional<GuestDocument> findGuestDocumentByActiveOrder_Id(String id) {
+       return guestRepository.findGuestDocumentByActiveOrder_Id(id);
+    }
+
+    public void deleteByOrderId(String id) {
+        guestRepository.deleteById(id);
+    }
+
+    public Optional<GuestDocument> findById(String courierId) {
+        return guestRepository.findById(courierId);
+    }
+
+    public GuestDocument saveGuest(GuestDocument guestDocument) {
+        return guestRepository.save(guestDocument);
     }
 }

@@ -44,7 +44,7 @@ public class OrderFixture {
                 .deliveryAddress(DELIVERY_ADDRESS)
                 .createDate(CREATE_DATE)
                 .orderStatus(ORDER_STATUS)
-                .estimatedDeliveryTime(ESTIMATED_DELIVERY_TIME)
+                .estimatedPreparationTime(ESTIMATED_DELIVERY_TIME)
                 .build();
     }
 
@@ -58,7 +58,7 @@ public class OrderFixture {
                 .deliveryAddress(DELIVERY_ADDRESS)
                 .createDate(CREATE_DATE)
                 .orderStatus(fromStatus.getNextStatus())
-                .estimatedDeliveryTime(ESTIMATED_DELIVERY_TIME)
+                .estimatedPreparationTime(ESTIMATED_DELIVERY_TIME)
                 .build();
     }
 
@@ -71,7 +71,7 @@ public class OrderFixture {
                 .deliveryAddress(DELIVERY_ADDRESS)
                 .createDate(CREATE_DATE)
                 .orderStatus(ORDER_STATUS)
-                .estimatedDeliveryTime(ESTIMATED_DELIVERY_TIME)
+                .estimatedPreparationTime(ESTIMATED_DELIVERY_TIME)
                 .build();
         if (withId)
             orderDocument.setId("1L");
@@ -87,7 +87,7 @@ public class OrderFixture {
                 .deliveryAddress(DELIVERY_ADDRESS)
                 .createDate(CREATE_DATE)
                 .orderStatus(ORDER_STATUS)
-                .estimatedDeliveryTime(ESTIMATED_DELIVERY_TIME)
+                .estimatedPreparationTime(ESTIMATED_DELIVERY_TIME)
                 .build();
     }
 
@@ -102,7 +102,7 @@ public class OrderFixture {
                 .deliveryAddress(DELIVERY_ADDRESS)
                 .createDate(CREATE_DATE)
                 .orderStatus(ORDER_STATUS)
-                .estimatedDeliveryTime(ESTIMATED_DELIVERY_TIME)
+                .estimatedPreparationTime(ESTIMATED_DELIVERY_TIME)
                 .build());
         return list;
     }
@@ -116,7 +116,7 @@ public class OrderFixture {
                 .deliveryAddress(DELIVERY_ADDRESS)
                 .createDate(CREATE_DATE)
                 .orderStatus(ORDER_STATUS)
-                .estimatedDeliveryTime(ESTIMATED_DELIVERY_TIME)
+                .estimatedPreparationTime(ESTIMATED_DELIVERY_TIME)
                 .build();
     }
 
@@ -129,7 +129,7 @@ public class OrderFixture {
                 .deliveryAddress(DELIVERY_ADDRESS)
                 .createDate(CREATE_DATE)
                 .orderStatus(ORDER_STATUS)
-                .estimatedDeliveryTime(ESTIMATED_DELIVERY_TIME)
+                .estimatedPreparationTime(ESTIMATED_DELIVERY_TIME)
                 .build();
         if (withId)
             orderDocument.setId("1L");
@@ -145,7 +145,7 @@ public class OrderFixture {
                 .deliveryAddress(DELIVERY_ADDRESS)
                 .createDate(CREATE_DATE)
                 .orderStatus(ORDER_STATUS)
-                .estimatedDeliveryTime(ESTIMATED_DELIVERY_TIME)
+                .estimatedPreparationTime(ESTIMATED_DELIVERY_TIME)
                 .build();
     }
 
@@ -159,7 +159,7 @@ public class OrderFixture {
                 .deliveryAddress(DELIVERY_ADDRESS)
                 .createDate(CREATE_DATE)
                 .orderStatus(fromStatus.getNextStatus())
-                .estimatedDeliveryTime(ESTIMATED_DELIVERY_TIME)
+                .estimatedPreparationTime(ESTIMATED_DELIVERY_TIME)
                 .build();
     }
 
@@ -174,7 +174,7 @@ public class OrderFixture {
                 .deliveryAddress(DELIVERY_ADDRESS)
                 .createDate(CREATE_DATE)
                 .orderStatus(ORDER_STATUS)
-                .estimatedDeliveryTime(ESTIMATED_DELIVERY_TIME)
+                .estimatedPreparationTime(ESTIMATED_DELIVERY_TIME)
                 .build());
         return list;
     }

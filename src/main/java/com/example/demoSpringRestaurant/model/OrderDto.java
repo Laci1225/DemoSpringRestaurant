@@ -14,19 +14,17 @@ public class OrderDto {
 
     @Id
     private String id;
-   // @ManyToOne
     private RestaurantDto restaurant;
     private MealType mealType;
-
     private DrinkType drinkType;
     private double price;
+    private boolean isDelivery;
     private String deliveryAddress;
-
+    private CourierDto courierDto;
     private LocalDateTime createDate;
-
     private OrderStatus orderStatus = OrderStatus.SENT;
-
-    private LocalTime estimatedDeliveryTime;
+    private LocalTime estimatedPreparationTime;
+    private GuestDto guestDto;
 
     public double getPrice() {
         return getMealType().getValue() + getDrinkType().getValue();

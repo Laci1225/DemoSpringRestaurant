@@ -1,11 +1,18 @@
 package com.example.demoSpringRestaurant.controller;
 
+import com.example.demoSpringRestaurant.exception.DocumentNotFoundException;
 import com.example.demoSpringRestaurant.exception.OrderDocumentNotFoundException;
 import com.example.demoSpringRestaurant.exception.RestaurantDocumentNotFoundException;
+import com.example.demoSpringRestaurant.facade.OrderGuestCourierFacade;
 import com.example.demoSpringRestaurant.facade.RestaurantOrderFacade;
+import com.example.demoSpringRestaurant.facade.RestaurantOrderGuestCourierFacade;
+import com.example.demoSpringRestaurant.model.CourierDto;
+import com.example.demoSpringRestaurant.model.GuestDto;
 import com.example.demoSpringRestaurant.model.OrderCreationDto;
 import com.example.demoSpringRestaurant.model.OrderDto;
 import com.example.demoSpringRestaurant.service.OrderService;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -14,6 +21,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -33,6 +41,8 @@ import java.util.List;
 public class OrderController {
     private final OrderService orderService;
     private final RestaurantOrderFacade restaurantOrderFacade;
+    private final RestaurantOrderGuestCourierFacade restaurantOrderGuestCourierFacade;
+    private final OrderGuestCourierFacade orderGuestCourierFacade;
 
     /**
      * Returns a list of orders by restaurant ID.
@@ -64,12 +74,12 @@ public class OrderController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
     }
-
     /**
      * Creates a new order for a given restaurant.
+     * <p>
+     * //@param orderCreationDto The OrderCreationDto object containing the order details.
      *
-     * @param orderCreationDto The OrderCreationDto object containing the order details.
-     * @param restaurantId     The ID of the restaurant.
+     * @param restaurantId The ID of the restaurant.
      * @return The created OrderDto object representing the new order.
      * @throws ResponseStatusException If the {@link OrderDocument} is not found with 404 status code
      *                                 or if there is a server error with 500 status code.
@@ -87,10 +97,12 @@ public class OrderController {
                     content = @Content)})
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(path = "orders/{restaurantId}")
-    public OrderDto createOrder(@Valid @RequestBody OrderCreationDto orderCreationDto, @PathVariable("restaurantId") String restaurantId) {
+    public OrderDto createOrder(@RequestBody OrderCreationDto orderCreationDto,
+                                @PathVariable("restaurantId") String restaurantId) {
         try {
             log.debug("Creating an order");
-            var order = restaurantOrderFacade.createOrder(orderCreationDto, restaurantId);
+            var order = restaurantOrderGuestCourierFacade.createOrder(
+                    orderCreationDto, restaurantId);
             log.debug("Created an order successfully");
             return order;
         } catch (RestaurantDocumentNotFoundException e) {
@@ -121,12 +133,14 @@ public class OrderController {
     public OrderDto deleteOrder(@PathVariable("orderId") String orderId) {
         try {
             log.debug("Deleting an order");
-            var order = orderService.deleteOrder(orderId);
+            var order = orderGuestCourierFacade.deleteOrder(orderId);
             log.debug("Order with ID: " + orderId + " deleted successfully");
             return order;
         } catch (OrderDocumentNotFoundException e) {
             log.warn("Deleting an order were unsuccessful due to: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        } catch (DocumentNotFoundException e) {
+            throw new RuntimeException(e);
         }
     }
 

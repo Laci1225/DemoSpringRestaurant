@@ -23,10 +23,16 @@ public class OrderDocument {
     private MealType mealType;
     private DrinkType drinkType;
     private double price;
+    private boolean isDelivery;
     private String deliveryAddress;
+    @DocumentReference
+    private CourierDocument courierDocument;
     private LocalDateTime createDate;
     private OrderStatus orderStatus = OrderStatus.SENT;
-    private LocalTime estimatedDeliveryTime;
+
+    private LocalTime estimatedPreparationTime;
+    @DocumentReference
+    private GuestDocument guestDocument;
 
     public double getPrice() {
         return getMealType().getValue() + getDrinkType().getValue();

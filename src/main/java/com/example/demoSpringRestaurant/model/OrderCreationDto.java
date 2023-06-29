@@ -6,6 +6,7 @@ import com.example.demoSpringRestaurant.constant.OrderStatus;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.springframework.data.annotation.Id;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -16,29 +17,19 @@ import java.time.LocalTime;
 @AllArgsConstructor
 public class OrderCreationDto {
 
-    //@ManyToOne
+    @Id
+    private String id;
     private RestaurantDto restaurant;
-
-    @Nullable
-    //@Enumerated(EnumType.STRING)
     private MealType mealType;
-
-    @Nullable
-    //@Enumerated(EnumType.STRING)
     private DrinkType drinkType;
-    //@Transient
     private double price;
-
-    @NotNull
+    private boolean isDelivery;
     private String deliveryAddress;
-
+    private CourierDto courierDto;
     private LocalDateTime createDate;
-
-    //Enumerated(EnumType.STRING)
-    @NotNull
     private OrderStatus orderStatus = OrderStatus.SENT;
-
-    private LocalTime estimatedDeliveryTime;
+    private LocalTime estimatedPreparationTime;
+    private GuestDto guestDto;
     public double getPrice() {
         return getMealType().getValue() + getDrinkType().getValue();
     }

@@ -35,20 +35,7 @@ public class RestaurantOrderFacade {
                 .toList();
     }
 
-    public OrderDto createOrder(OrderCreationDto orderCreationDto, String restaurantId) throws RestaurantDocumentNotFoundException {
-        log.trace("Creating order " + orderCreationDto + "with Restaurant ID: " + restaurantId);
 
-        var restaurantDocument = restaurantService.findRestaurantById(restaurantId);
-        orderCreationDto.setRestaurant(restaurantMapper.fromDocumentToRestaurantDto(restaurantDocument));
-        orderCreationDto.setCreateDate(LocalDateTime.now().truncatedTo(java.time.temporal.ChronoUnit.SECONDS));
-        var estimated = orderCreationDto.getCreateDate().plusMinutes(30).toLocalTime();
-        orderCreationDto.setEstimatedDeliveryTime(estimated);
-        var orderEntity = orderMapper.fromOrderCreationDtoToDocument(orderCreationDto);
-        var orderDto = orderService.saveOrder(orderEntity);
-
-        log.trace("Order" + orderDto + " with Restaurant ID: " + orderDto.getId() + " created");
-        return orderMapper.fromDocumentToOrderDto(orderEntity);
-    }
 
     public RestaurantDto deleteRestaurant(String restaurantId) throws RestaurantDocumentNotFoundException {
         log.trace("Deleting restaurant with ID: " + restaurantId);

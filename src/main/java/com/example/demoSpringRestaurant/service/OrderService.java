@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -18,16 +19,6 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
 
-
-    public OrderDto deleteOrder(String orderId) throws OrderDocumentNotFoundException {
-        log.trace("Deleting order with ID: " + orderId);
-
-        var order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new OrderDocumentNotFoundException("Order not found"));
-        orderRepository.deleteById(orderId);
-        log.trace("Order deleted with ID: " + orderId);
-        return orderMapper.fromDocumentToOrderDto(order);
-    }
 
     public OrderDto setNextState(String orderId) throws OrderDocumentNotFoundException {
         log.trace("Changing order status to order with ID: " + orderId);
@@ -52,6 +43,14 @@ public class OrderService {
 
     public List<OrderDocument> findAllByRestaurantId(String restaurantId) {
         return orderRepository.findAllByRestaurantId(restaurantId);
+    }
+
+    public Optional<OrderDocument> findById(String orderId) {
+        return orderRepository.findById(orderId);
+    }
+
+    public void deleteById(String orderId) {
+        orderRepository.deleteById(orderId);
     }
 
     //TODO nem kell integration és workflowban sem kiegészíteni guest modellel
