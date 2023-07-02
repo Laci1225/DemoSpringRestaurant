@@ -10,6 +10,8 @@ import com.example.demoSpringRestaurant.model.RestaurantDto;
 import com.example.demoSpringRestaurant.persistance.document.OrderDocument;
 import com.example.demoSpringRestaurant.persistance.document.RestaurantDocument;
 import lombok.Data;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
@@ -26,11 +28,14 @@ public class OrderFixture {
     private static final DrinkType DRINK_TYPE = DrinkType.COLA;
     private static final double PRICE = MEAL_TYPE.getValue() + DRINK_TYPE.getValue();
     private static final String DELIVERY_ADDRESS = "Budapest Heroes' Square";
-    private static final LocalDateTime CREATE_DATE = LocalDateTime.now();
     private static final OrderStatus ORDER_STATUS = OrderStatus.SENT;
+    @CreatedDate
+    private static final LocalDateTime CREATED_DATE = LocalDateTime.now();
+    @LastModifiedDate
+    private static final LocalDateTime MODIFIED_DATE = CREATED_DATE;
 
     @DateTimeFormat(pattern = "HH:mm:ss")
-    private static final LocalTime ESTIMATED_DELIVERY_TIME = CREATE_DATE.toLocalTime()
+    private static final LocalTime ESTIMATED_DELIVERY_TIME = CREATED_DATE.toLocalTime()
             .plusMinutes(30);
 
 
@@ -42,9 +47,10 @@ public class OrderFixture {
                 .drinkType(DRINK_TYPE)
                 .price(PRICE)
                 .deliveryAddress(DELIVERY_ADDRESS)
-                .createDate(CREATE_DATE)
                 .orderStatus(ORDER_STATUS)
                 .estimatedPreparationTime(ESTIMATED_DELIVERY_TIME)
+                .createdDate(CREATED_DATE)
+                .modifiedDate(MODIFIED_DATE)
                 .build();
     }
 
@@ -56,9 +62,10 @@ public class OrderFixture {
                 .drinkType(DRINK_TYPE)
                 .price(PRICE)
                 .deliveryAddress(DELIVERY_ADDRESS)
-                .createDate(CREATE_DATE)
                 .orderStatus(fromStatus.getNextStatus())
                 .estimatedPreparationTime(ESTIMATED_DELIVERY_TIME)
+                .createdDate(CREATED_DATE)
+                .modifiedDate(MODIFIED_DATE)
                 .build();
     }
 
@@ -69,9 +76,10 @@ public class OrderFixture {
                 .drinkType(DRINK_TYPE)
                 .price(PRICE)
                 .deliveryAddress(DELIVERY_ADDRESS)
-                .createDate(CREATE_DATE)
                 .orderStatus(ORDER_STATUS)
                 .estimatedPreparationTime(ESTIMATED_DELIVERY_TIME)
+                .createdDate(CREATED_DATE)
+                .modifiedDate(MODIFIED_DATE)
                 .build();
         if (withId)
             orderDocument.setId("1L");
@@ -85,9 +93,10 @@ public class OrderFixture {
                 .drinkType(DRINK_TYPE)
                 .price(PRICE)
                 .deliveryAddress(DELIVERY_ADDRESS)
-                .createDate(CREATE_DATE)
                 .orderStatus(ORDER_STATUS)
                 .estimatedPreparationTime(ESTIMATED_DELIVERY_TIME)
+                .createdDate(CREATED_DATE)
+                .modifiedDate(MODIFIED_DATE)
                 .build();
     }
 
@@ -100,9 +109,10 @@ public class OrderFixture {
                 .drinkType(DRINK_TYPE)
                 .price(PRICE)
                 .deliveryAddress(DELIVERY_ADDRESS)
-                .createDate(CREATE_DATE)
                 .orderStatus(ORDER_STATUS)
                 .estimatedPreparationTime(ESTIMATED_DELIVERY_TIME)
+                .createdDate(CREATED_DATE)
+                .modifiedDate(MODIFIED_DATE)
                 .build());
         return list;
     }
@@ -114,9 +124,10 @@ public class OrderFixture {
                 .drinkType(DRINK_TYPE)
                 .price(PRICE)
                 .deliveryAddress(DELIVERY_ADDRESS)
-                .createDate(CREATE_DATE)
                 .orderStatus(ORDER_STATUS)
                 .estimatedPreparationTime(ESTIMATED_DELIVERY_TIME)
+                .createdDate(CREATED_DATE)
+                .modifiedDate(MODIFIED_DATE)
                 .build();
     }
 
@@ -127,9 +138,10 @@ public class OrderFixture {
                 .drinkType(DRINK_TYPE)
                 .price(PRICE)
                 .deliveryAddress(DELIVERY_ADDRESS)
-                .createDate(CREATE_DATE)
                 .orderStatus(ORDER_STATUS)
                 .estimatedPreparationTime(ESTIMATED_DELIVERY_TIME)
+                .createdDate(CREATED_DATE)
+                .modifiedDate(MODIFIED_DATE)
                 .build();
         if (withId)
             orderDocument.setId("1L");
@@ -143,9 +155,10 @@ public class OrderFixture {
                 .drinkType(DRINK_TYPE)
                 .price(PRICE)
                 .deliveryAddress(DELIVERY_ADDRESS)
-                .createDate(CREATE_DATE)
                 .orderStatus(ORDER_STATUS)
                 .estimatedPreparationTime(ESTIMATED_DELIVERY_TIME)
+                .createdDate(CREATED_DATE)
+                .modifiedDate(MODIFIED_DATE)
                 .build();
     }
 
@@ -157,9 +170,10 @@ public class OrderFixture {
                 .drinkType(DRINK_TYPE)
                 .price(PRICE)
                 .deliveryAddress(DELIVERY_ADDRESS)
-                .createDate(CREATE_DATE)
                 .orderStatus(fromStatus.getNextStatus())
                 .estimatedPreparationTime(ESTIMATED_DELIVERY_TIME)
+                .createdDate(CREATED_DATE)
+                .modifiedDate(MODIFIED_DATE)
                 .build();
     }
 
@@ -172,9 +186,10 @@ public class OrderFixture {
                 .drinkType(DRINK_TYPE)
                 .price(PRICE)
                 .deliveryAddress(DELIVERY_ADDRESS)
-                .createDate(CREATE_DATE)
                 .orderStatus(ORDER_STATUS)
                 .estimatedPreparationTime(ESTIMATED_DELIVERY_TIME)
+                .createdDate(CREATED_DATE)
+                .modifiedDate(MODIFIED_DATE)
                 .build());
         return list;
     }

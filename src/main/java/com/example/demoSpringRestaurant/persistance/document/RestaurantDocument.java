@@ -1,16 +1,21 @@
 package com.example.demoSpringRestaurant.persistance.document;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.annotation.ReadOnlyProperty;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
 @Builder
+@AllArgsConstructor
 @Document(collection = "restaurants")
 public class RestaurantDocument {
 
@@ -29,20 +34,13 @@ public class RestaurantDocument {
     private Boolean canDeliver;
     private Boolean isOnWolt;
 
+    @CreatedDate
+    private LocalDateTime createdDate;
+    @LastModifiedDate
+    private LocalDateTime modifiedDate;
+
     public RestaurantDocument() {
     }
 
-    public RestaurantDocument(String id, List<OrderDocument> orders, String name, String owner, String address, String email, String phoneNumber, Integer numberOfTables, Boolean isVegan, Boolean canDeliver, Boolean isOnWolt) {
-        this.id = id;
-        this.orders = orders;
-        this.name = name;
-        this.owner = owner;
-        this.address = address;
-        this.email = email;
-        this.phoneNumber = phoneNumber;
-        this.numberOfTables = numberOfTables;
-        this.isVegan = isVegan;
-        this.canDeliver = canDeliver;
-        this.isOnWolt = isOnWolt;
-    }
+
 }

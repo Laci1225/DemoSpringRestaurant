@@ -53,10 +53,8 @@ public class OrderService {
         orderRepository.deleteById(orderId);
     }
 
-    //TODO nem kell integration és workflowban sem kiegészíteni guest modellel
-    // TODO unit teszt a guest emberrre
-    // TODO audit mező 4 mező /creadedby/ createdat /modifyedby/ modifyedat orderre restaurantra questre
-    // TODO java springboot config mongo configja
-    // TODO resten és httpn kívül mivel lehet kommunikálni
-    //TODO esetleg druver mint futár
+    // TODO unit test a guest courier
+    // TODO audit createdBy (createdDate) modifiedBy (modifiedDate)
+    // TODO java springboot config mongo configja ??
+    // TODO REST & HTTP other communications
 }

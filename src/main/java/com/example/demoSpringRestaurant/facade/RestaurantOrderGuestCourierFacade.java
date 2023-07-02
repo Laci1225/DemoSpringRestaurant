@@ -5,11 +5,8 @@ import com.example.demoSpringRestaurant.mapper.CourierMapper;
 import com.example.demoSpringRestaurant.mapper.GuestMapper;
 import com.example.demoSpringRestaurant.mapper.OrderMapper;
 import com.example.demoSpringRestaurant.mapper.RestaurantMapper;
-import com.example.demoSpringRestaurant.model.CourierDto;
-import com.example.demoSpringRestaurant.model.GuestDto;
 import com.example.demoSpringRestaurant.model.OrderCreationDto;
 import com.example.demoSpringRestaurant.model.OrderDto;
-import com.example.demoSpringRestaurant.persistance.document.GuestDocument;
 import com.example.demoSpringRestaurant.service.CourierService;
 import com.example.demoSpringRestaurant.service.GuestService;
 import com.example.demoSpringRestaurant.service.OrderService;
@@ -39,9 +36,9 @@ public class RestaurantOrderGuestCourierFacade {
 
         var restaurantDocument = restaurantService.findRestaurantById(restaurantId);
         orderCreationDto.setRestaurant(restaurantMapper.fromDocumentToRestaurantDto(restaurantDocument));
-        orderCreationDto.setCreateDate(LocalDateTime.now().truncatedTo(java.time.temporal.ChronoUnit.SECONDS));
-        var estimated = orderCreationDto.getCreateDate().plusMinutes(30).toLocalTime();
-        orderCreationDto.setEstimatedPreparationTime(estimated);
+        //orderCreationDto.setCreateDate(LocalDateTime.now().truncatedTo(java.time.temporal.ChronoUnit.SECONDS));
+        //var estimated = orderCreationDto.getCreatedDate().plusMinutes(30).toLocalTime();
+        //orderCreationDto.setEstimatedPreparationTime(estimated);
         var orderDocument = orderMapper.fromOrderCreationDtoToDocument(orderCreationDto);
 
         var orderDto = orderService.saveOrder(orderDocument);
