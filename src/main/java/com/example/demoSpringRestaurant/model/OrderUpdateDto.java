@@ -24,11 +24,11 @@ public class OrderUpdateDto {
     private double price;
     private boolean isDelivery;
     private String deliveryAddress;
-    private CourierDto courierDto;
+    private String courierId;
     private OrderStatus orderStatus = OrderStatus.SENT;
     @DateTimeFormat(pattern = "HH:mm:ss")
     private LocalTime estimatedPreparationTime;
-    private GuestDto guestDto;
+    private String guestId;
     @CreatedDate
     private LocalDateTime createdDate;
     @LastModifiedDate

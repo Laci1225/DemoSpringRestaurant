@@ -1,8 +1,10 @@
 package com.example.demoSpringRestaurant.service;
 
+import com.example.demoSpringRestaurant.exception.DocumentNotFoundException;
 import com.example.demoSpringRestaurant.mapper.GuestMapper;
 import com.example.demoSpringRestaurant.model.GuestDto;
 import com.example.demoSpringRestaurant.persistance.document.GuestDocument;
+import com.example.demoSpringRestaurant.persistance.document.OrderDocument;
 import com.example.demoSpringRestaurant.persistance.repository.GuestRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,5 +42,13 @@ public class GuestService {
 
     public GuestDocument saveGuest(GuestDocument guestDocument) {
         return guestRepository.save(guestDocument);
+    }
+
+
+    public void deleteById(String id) throws DocumentNotFoundException {
+        if (guestRepository.existsById(id))
+            guestRepository.deleteById(id);
+        else throw new DocumentNotFoundException("sad");
+
     }
 }

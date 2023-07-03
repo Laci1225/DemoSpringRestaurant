@@ -1,5 +1,6 @@
 package com.example.demoSpringRestaurant.facade;
 
+import com.example.demoSpringRestaurant.exception.DocumentNotFoundException;
 import com.example.demoSpringRestaurant.exception.RestaurantDocumentNotFoundException;
 import com.example.demoSpringRestaurant.mapper.CourierMapper;
 import com.example.demoSpringRestaurant.mapper.GuestMapper;
@@ -31,16 +32,21 @@ public class RestaurantOrderGuestCourierFacade {
     private final OrderService orderService;
 
     public OrderDto createOrder(OrderCreationDto orderCreationDto,
-                                String restaurantId) throws RestaurantDocumentNotFoundException {
+                                String restaurantId) throws DocumentNotFoundException {
         log.trace("Creating order " + orderCreationDto + "with Restaurant ID: " + restaurantId);
 
         var restaurantDocument = restaurantService.findRestaurantById(restaurantId);
         orderCreationDto.setRestaurant(restaurantMapper.fromDocumentToRestaurantDto(restaurantDocument));
-        //orderCreationDto.setCreateDate(LocalDateTime.now().truncatedTo(java.time.temporal.ChronoUnit.SECONDS));
-        //var estimated = orderCreationDto.getCreatedDate().plusMinutes(30).toLocalTime();
-        //orderCreationDto.setEstimatedPreparationTime(estimated);
+        var estimated = LocalDateTime.now().toLocalTime().plusMinutes(30);
+        orderCreationDto.setEstimatedPreparationTime(estimated);
         var orderDocument = orderMapper.fromOrderCreationDtoToDocument(orderCreationDto);
 
+        var guest = guestService.findById(orderCreationDto.getGuestId())
+                .orElseThrow(() -> new DocumentNotFoundException("Guest not found"));
+        var courier = courierService.findById(orderCreationDto.getCourierId());
+
+        orderDocument.setGuestDocument(guest);
+        courier.ifPresent(orderDocument::setCourierDocument);
         var orderDto = orderService.saveOrder(orderDocument);
 
         log.trace("Order" + orderDto + " with Restaurant ID: " + orderDto.getId() + " created");

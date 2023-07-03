@@ -108,6 +108,8 @@ public class OrderController {
         } catch (RestaurantDocumentNotFoundException e) {
             log.warn("Creating an order was unsuccessful due to: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        } catch (DocumentNotFoundException e) {
+            throw new RuntimeException(e);
         }
     }
 

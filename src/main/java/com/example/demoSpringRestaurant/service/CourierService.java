@@ -1,5 +1,6 @@
 package com.example.demoSpringRestaurant.service;
 
+import com.example.demoSpringRestaurant.exception.DocumentNotFoundException;
 import com.example.demoSpringRestaurant.mapper.CourierMapper;
 import com.example.demoSpringRestaurant.model.CourierCreationDto;
 import com.example.demoSpringRestaurant.model.CourierDto;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @Service
 @AllArgsConstructor
@@ -24,6 +26,12 @@ public class CourierService {
         return courierRepository.findAll().stream()
                 .map(courierMapper::fromDocumentToCourierDto).toList();
     }
+
+    public CourierDto getCourier(String courierId) {
+        return courierRepository.findById(courierId)
+                .map(courierMapper::fromDocumentToCourierDto).orElseThrow();
+    }
+
     public CourierDto createCourier(CourierCreationDto CourierCreationDto) {
         log.trace("Creating Courier " + CourierCreationDto);
         var courierEntity = courierRepository.save(courierMapper.
@@ -42,5 +50,12 @@ public class CourierService {
 
     public Optional<CourierDocument> findById(String courierId) {
         return courierRepository.findById(courierId);
+    }
+
+
+    public void deleteById(String id) throws DocumentNotFoundException {
+        if (courierRepository.existsById(id))
+            courierRepository.deleteById(id);
+        else throw new DocumentNotFoundException("sa");
     }
 }
