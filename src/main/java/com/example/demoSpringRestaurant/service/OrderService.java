@@ -3,6 +3,7 @@ package com.example.demoSpringRestaurant.service;
 import com.example.demoSpringRestaurant.exception.OrderDocumentNotFoundException;
 import com.example.demoSpringRestaurant.mapper.OrderMapper;
 import com.example.demoSpringRestaurant.model.OrderDto;
+import com.example.demoSpringRestaurant.model.OrderUpdateDto;
 import com.example.demoSpringRestaurant.persistance.document.OrderDocument;
 import com.example.demoSpringRestaurant.persistance.repository.OrderRepository;
 import lombok.AllArgsConstructor;
@@ -33,6 +34,18 @@ public class OrderService {
         return orderMapper.fromDocumentToOrderDto(order);
     }
 
+    public OrderDto updateOrder(String orderId, OrderUpdateDto orderUpdateDto) throws OrderDocumentNotFoundException {
+        log.trace("Updating order with ID: " + orderId + "to " + orderUpdateDto);
+        orderRepository.findById(orderId)
+                .orElseThrow(() -> new OrderDocumentNotFoundException("order doesn't exist"));
+
+        var updatedDocument = orderMapper.fromOrderUpdateDtoToDocument(orderUpdateDto);
+        updatedDocument.setId(orderId);
+        orderRepository.save(updatedDocument);
+        log.trace("order with ID: " + updatedDocument.getId() + " updated as" + updatedDocument);
+        return orderMapper.fromDocumentToOrderDto(updatedDocument);
+    }
+
     public OrderDto saveOrder(OrderDocument orderDocument) {
         return orderMapper.fromDocumentToOrderDto(orderRepository.save(orderDocument));
     }
@@ -52,6 +65,7 @@ public class OrderService {
     public void deleteById(String orderId) {
         orderRepository.deleteById(orderId);
     }
+
 
     // TODO unit test a guest courier
     // TODO audit createdBy (createdDate) modifiedBy (modifiedDate) nem működik

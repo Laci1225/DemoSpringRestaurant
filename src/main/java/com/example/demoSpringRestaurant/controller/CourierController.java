@@ -1,7 +1,6 @@
 package com.example.demoSpringRestaurant.controller;
 
 import com.example.demoSpringRestaurant.exception.DocumentNotFoundException;
-import com.example.demoSpringRestaurant.exception.OrderDocumentNotFoundException;
 import com.example.demoSpringRestaurant.facade.OrderCourierFacade;
 import com.example.demoSpringRestaurant.model.*;
 import com.example.demoSpringRestaurant.service.CourierService;
@@ -55,6 +54,22 @@ public class CourierController {
             return courier;
         } catch (DocumentNotFoundException e) {
             log.warn("Deleting a courier were unsuccessful due to: " + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        }
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @PutMapping(path = "{courierId}")
+    public CourierDto updatecourier(
+            @PathVariable("courierId") String courierId,
+            @Valid @RequestBody CourierUpdateDto courierUpdateDto) {
+        try {
+            log.debug("Updating courier with ID: " + courierId);
+            var courier = courierService.updateCourier(courierId, courierUpdateDto);
+            log.debug("Updating courier with ID: " + courierId + " was successful");
+            return courier;
+        } catch (DocumentNotFoundException e) {
+            log.warn("Updating a courier was unsuccessful due to: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
     }

@@ -1,10 +1,11 @@
 package com.example.demoSpringRestaurant.service;
 
 import com.example.demoSpringRestaurant.exception.DocumentNotFoundException;
+import com.example.demoSpringRestaurant.exception.GuestDocumentNotFoundException;
 import com.example.demoSpringRestaurant.mapper.GuestMapper;
 import com.example.demoSpringRestaurant.model.GuestDto;
+import com.example.demoSpringRestaurant.model.GuestUpdateDto;
 import com.example.demoSpringRestaurant.persistance.document.GuestDocument;
-import com.example.demoSpringRestaurant.persistance.document.OrderDocument;
 import com.example.demoSpringRestaurant.persistance.repository.GuestRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +26,17 @@ public class GuestService {
         log.trace("All guests listed");
         return guestRepository.findAll().stream()
                 .map(guestMapper::fromDocumentToGuestDto).toList();
+    }
+    public GuestDto updateGuest(String guestId, GuestUpdateDto guestUpdateDto) throws GuestDocumentNotFoundException {
+        log.trace("Updating order with ID: " + guestId + "to " + guestUpdateDto);
+        guestRepository.findById(guestId)
+                .orElseThrow(() -> new GuestDocumentNotFoundException("guest doesn't exist"));
+
+        var updatedDocument = guestMapper.fromGuestUpdateDtoToDocument(guestUpdateDto);
+        updatedDocument.setId(guestId);
+        guestRepository.save(updatedDocument);
+        log.trace("guest with ID: " + updatedDocument.getId() + " updated as" + updatedDocument);
+        return guestMapper.fromDocumentToGuestDto(updatedDocument);
     }
 
 
@@ -51,4 +63,6 @@ public class GuestService {
         else throw new DocumentNotFoundException("sad");
 
     }
+
+
 }

@@ -6,13 +6,8 @@ import com.example.demoSpringRestaurant.exception.RestaurantDocumentNotFoundExce
 import com.example.demoSpringRestaurant.facade.OrderGuestCourierFacade;
 import com.example.demoSpringRestaurant.facade.RestaurantOrderFacade;
 import com.example.demoSpringRestaurant.facade.RestaurantOrderGuestCourierFacade;
-import com.example.demoSpringRestaurant.model.CourierDto;
-import com.example.demoSpringRestaurant.model.GuestDto;
-import com.example.demoSpringRestaurant.model.OrderCreationDto;
-import com.example.demoSpringRestaurant.model.OrderDto;
+import com.example.demoSpringRestaurant.model.*;
 import com.example.demoSpringRestaurant.service.OrderService;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -21,7 +16,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -178,6 +172,22 @@ public class OrderController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         } catch (UnsupportedOperationException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+        }
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @PutMapping(path = "{orderId}")
+    public OrderDto updateorder(
+            @PathVariable("orderId") String orderId,
+            @Valid @RequestBody OrderUpdateDto orderUpdateDto) {
+        try {
+            log.debug("Updating order with ID: " + orderId);
+            var order = orderService.updateOrder(orderId, orderUpdateDto);
+            log.debug("Updating order with ID: " + orderId + " was successful");
+            return order;
+        } catch (OrderDocumentNotFoundException e) {
+            log.warn("Updating a order was unsuccessful due to: " + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
     }
 }

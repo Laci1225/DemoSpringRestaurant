@@ -1,10 +1,8 @@
 package com.example.demoSpringRestaurant.controller;
 
 import com.example.demoSpringRestaurant.exception.DocumentNotFoundException;
-import com.example.demoSpringRestaurant.exception.DocumentNotFoundException;
 import com.example.demoSpringRestaurant.facade.OrderGuestFacade;
-import com.example.demoSpringRestaurant.model.GuestCreationDto;
-import com.example.demoSpringRestaurant.model.GuestDto;
+import com.example.demoSpringRestaurant.model.*;
 import com.example.demoSpringRestaurant.service.GuestService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -50,6 +48,22 @@ public class GuestController {
             return guest;
         } catch (DocumentNotFoundException e) {
             log.warn("Deleting an guest were unsuccessful due to: " + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        }
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @PutMapping(path = "{guestId}")
+    public GuestDto updateGuest(
+            @PathVariable("guestId") String guestId,
+            @Valid @RequestBody GuestUpdateDto guestUpdateDto) {
+        try {
+            log.debug("Updating guest with ID: " + guestId);
+            var guest = guestService.updateGuest(guestId, guestUpdateDto);
+            log.debug("Updating guest with ID: " + guestId + " was successful");
+            return guest;
+        } catch (DocumentNotFoundException e) {
+            log.warn("Updating a guest was unsuccessful due to: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
     }

@@ -1,9 +1,11 @@
 package com.example.demoSpringRestaurant.service;
 
+import com.example.demoSpringRestaurant.exception.CourierDocumentNotFoundException;
 import com.example.demoSpringRestaurant.exception.DocumentNotFoundException;
 import com.example.demoSpringRestaurant.mapper.CourierMapper;
 import com.example.demoSpringRestaurant.model.CourierCreationDto;
 import com.example.demoSpringRestaurant.model.CourierDto;
+import com.example.demoSpringRestaurant.model.CourierUpdateDto;
 import com.example.demoSpringRestaurant.persistance.document.CourierDocument;
 import com.example.demoSpringRestaurant.persistance.repository.CourierRepository;
 import lombok.AllArgsConstructor;
@@ -12,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 @Service
 @AllArgsConstructor
@@ -40,6 +41,18 @@ public class CourierService {
         return courierMapper.fromDocumentToCourierDto(courierEntity);
     }
 
+    public CourierDto updateCourier(String courierId, CourierUpdateDto courierUpdateDto) throws CourierDocumentNotFoundException {
+        log.trace("Updating order with ID: " + courierId + "to " + courierUpdateDto);
+        courierRepository.findById(courierId)
+                .orElseThrow(() -> new CourierDocumentNotFoundException("courier doesn't exist"));
+
+        var updatedDocument = courierMapper.fromCourierUpdateDtoToDocument(courierUpdateDto);
+        updatedDocument.setId(courierId);
+        courierRepository.save(updatedDocument);
+        log.trace("courier with ID: " + updatedDocument.getId() + " updated as" + updatedDocument);
+        return courierMapper.fromDocumentToCourierDto(updatedDocument);
+    }
+
     public Optional<CourierDocument> findCourierDocumentByActiveOrder_Id(String id) {
         return courierRepository.findCourierDocumentByActiveOrder_Id(id);
     }
@@ -58,4 +71,6 @@ public class CourierService {
             courierRepository.deleteById(id);
         else throw new DocumentNotFoundException("sa");
     }
+
+
 }
