@@ -3,10 +3,9 @@ package com.example.demoSpringRestaurant.fixtures;
 import com.example.demoSpringRestaurant.constant.DrinkType;
 import com.example.demoSpringRestaurant.constant.MealType;
 import com.example.demoSpringRestaurant.constant.OrderStatus;
-import com.example.demoSpringRestaurant.model.OrderCreationDto;
-import com.example.demoSpringRestaurant.model.OrderDto;
-import com.example.demoSpringRestaurant.model.OrderUpdateDto;
-import com.example.demoSpringRestaurant.model.RestaurantDto;
+import com.example.demoSpringRestaurant.model.*;
+import com.example.demoSpringRestaurant.persistance.document.CourierDocument;
+import com.example.demoSpringRestaurant.persistance.document.GuestDocument;
 import com.example.demoSpringRestaurant.persistance.document.OrderDocument;
 import com.example.demoSpringRestaurant.persistance.document.RestaurantDocument;
 import lombok.Data;
@@ -23,12 +22,19 @@ import java.util.List;
 public class OrderFixture {
 
     private static final RestaurantDocument RESTAURANT_DOCUMENT = new RestaurantDocument();
-    private static final RestaurantDto RESTAURANT_DTO = new RestaurantDto();//restaurantMapper.fromDocumentToRestaurantDto(RESTAURANT_DOCUMENT);
+    private static final RestaurantDto RESTAURANT_DTO = new RestaurantDto();
     private static final MealType MEAL_TYPE = MealType.RICEANDFISH;
     private static final DrinkType DRINK_TYPE = DrinkType.COLA;
     private static final double PRICE = MEAL_TYPE.getValue() + DRINK_TYPE.getValue();
     private static final String DELIVERY_ADDRESS = "Budapest Heroes' Square";
     private static final OrderStatus ORDER_STATUS = OrderStatus.SENT;
+    private static final String GUEST_ID = "1234";
+    private static final String COURIER_ID = "1234";
+    private static final CourierDocument COURIER_DOCUMENT = null;
+    private static final CourierDto COURIER_DTO = null;
+    private static final GuestDocument GUEST_DOCUMENT =  null;
+    private static final GuestDto GUEST_DTO =  null;
+
     @CreatedDate
     private static final LocalDateTime CREATED_DATE = LocalDateTime.now();
     @LastModifiedDate
@@ -49,6 +55,8 @@ public class OrderFixture {
                 .deliveryAddress(DELIVERY_ADDRESS)
                 .orderStatus(ORDER_STATUS)
                 .estimatedPreparationTime(ESTIMATED_DELIVERY_TIME)
+                .guestDto(GUEST_DTO)
+                .courierDto(COURIER_DTO)
                 .createdDate(CREATED_DATE)
                 .modifiedDate(MODIFIED_DATE)
                 .build();
@@ -64,6 +72,8 @@ public class OrderFixture {
                 .deliveryAddress(DELIVERY_ADDRESS)
                 .orderStatus(fromStatus.getNextStatus())
                 .estimatedPreparationTime(ESTIMATED_DELIVERY_TIME)
+                .guestDto(GUEST_DTO)
+                .courierDto(COURIER_DTO)
                 .createdDate(CREATED_DATE)
                 .modifiedDate(MODIFIED_DATE)
                 .build();
@@ -78,6 +88,8 @@ public class OrderFixture {
                 .deliveryAddress(DELIVERY_ADDRESS)
                 .orderStatus(ORDER_STATUS)
                 .estimatedPreparationTime(ESTIMATED_DELIVERY_TIME)
+                .guestDocument(GUEST_DOCUMENT)
+                .courierDocument(COURIER_DOCUMENT)
                 .createdDate(CREATED_DATE)
                 .modifiedDate(MODIFIED_DATE)
                 .build();
@@ -95,6 +107,8 @@ public class OrderFixture {
                 .deliveryAddress(DELIVERY_ADDRESS)
                 .orderStatus(ORDER_STATUS)
                 .estimatedPreparationTime(ESTIMATED_DELIVERY_TIME)
+                .guestId(GUEST_ID)
+                .courierId(COURIER_ID)
                 .createdDate(CREATED_DATE)
                 .modifiedDate(MODIFIED_DATE)
                 .build();
@@ -111,6 +125,8 @@ public class OrderFixture {
                 .deliveryAddress(DELIVERY_ADDRESS)
                 .orderStatus(ORDER_STATUS)
                 .estimatedPreparationTime(ESTIMATED_DELIVERY_TIME)
+                .guestDto(GUEST_DTO)
+                .courierDto(COURIER_DTO )
                 .createdDate(CREATED_DATE)
                 .modifiedDate(MODIFIED_DATE)
                 .build());
@@ -126,6 +142,8 @@ public class OrderFixture {
                 .deliveryAddress(DELIVERY_ADDRESS)
                 .orderStatus(ORDER_STATUS)
                 .estimatedPreparationTime(ESTIMATED_DELIVERY_TIME)
+                .guestDto(GUEST_DTO)
+                .courierDto(COURIER_DTO)
                 .createdDate(CREATED_DATE)
                 .modifiedDate(MODIFIED_DATE)
                 .build();
@@ -140,6 +158,8 @@ public class OrderFixture {
                 .deliveryAddress(DELIVERY_ADDRESS)
                 .orderStatus(ORDER_STATUS)
                 .estimatedPreparationTime(ESTIMATED_DELIVERY_TIME)
+                .guestDocument(GUEST_DOCUMENT)
+                .courierDocument(COURIER_DOCUMENT)
                 .createdDate(CREATED_DATE)
                 .modifiedDate(MODIFIED_DATE)
                 .build();
@@ -157,6 +177,8 @@ public class OrderFixture {
                 .deliveryAddress(DELIVERY_ADDRESS)
                 .orderStatus(ORDER_STATUS)
                 .estimatedPreparationTime(ESTIMATED_DELIVERY_TIME)
+                .guestDto(GUEST_DTO)
+                .courierDto(COURIER_DTO)
                 .createdDate(CREATED_DATE)
                 .modifiedDate(MODIFIED_DATE)
                 .build();
@@ -172,6 +194,8 @@ public class OrderFixture {
                 .deliveryAddress(DELIVERY_ADDRESS)
                 .orderStatus(fromStatus.getNextStatus())
                 .estimatedPreparationTime(ESTIMATED_DELIVERY_TIME)
+                .guestDto(GUEST_DTO)
+                .courierDto(COURIER_DTO)
                 .createdDate(CREATED_DATE)
                 .modifiedDate(MODIFIED_DATE)
                 .build();
@@ -188,6 +212,8 @@ public class OrderFixture {
                 .deliveryAddress(DELIVERY_ADDRESS)
                 .orderStatus(ORDER_STATUS)
                 .estimatedPreparationTime(ESTIMATED_DELIVERY_TIME)
+                .guestDocument(GUEST_DOCUMENT)
+                .courierDocument(COURIER_DOCUMENT)
                 .createdDate(CREATED_DATE)
                 .modifiedDate(MODIFIED_DATE)
                 .build());

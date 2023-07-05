@@ -90,7 +90,7 @@ public class RestaurantOrderFacadeTest {
                 restaurantOrderFacade.createOrder(OrderFixture.getOrderCreationDto(), "1L"));
 
         verify(restaurantService, times(1)).findRestaurantById(anyString());
-        verifyNoMoreInteractions(restaurantService);TODO
+        verifyNoMoreInteractions(restaurantService);
     }*/
 
     @Test

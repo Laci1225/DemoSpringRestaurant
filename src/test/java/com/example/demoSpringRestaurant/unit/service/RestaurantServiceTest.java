@@ -54,7 +54,7 @@ public class RestaurantServiceTest {
     }
 
     @Test
-    void getRestaurantShouldGetAllRestaurant() {
+    void getRestaurantsShouldGetAllRestaurant() {
         when(restaurantMapper.fromDocumentToRestaurantDto(any(RestaurantDocument.class)))
                 .thenReturn(RestaurantFixture.getRestaurantDto());
         when(restaurantRepository.findAll()).thenReturn(RestaurantFixture.getRestaurantDocumentList());
@@ -65,6 +65,22 @@ public class RestaurantServiceTest {
         //assert / then
         assertThat(restaurantDtoList).usingRecursiveComparison().isEqualTo(RestaurantFixture.getRestaurantDtoList());
         verify(restaurantRepository, times(1)).findAll();
+        verifyNoMoreInteractions(restaurantRepository);
+    }
+
+    @Test
+    void getRestaurantShouldGetARestaurant() {
+        when(restaurantMapper.fromDocumentToRestaurantDto(any(RestaurantDocument.class)))
+                .thenReturn(RestaurantFixture.getRestaurantDto());
+        when(restaurantRepository.findById(anyString()))
+                .thenReturn(Optional.ofNullable(RestaurantFixture.getRestaurantDocument(true)));
+
+        //act / when
+        var restaurantDto = restaurantService.getRestaurant("1234");
+
+        //assert / then
+        assertThat(restaurantDto).usingRecursiveComparison().isEqualTo(RestaurantFixture.getRestaurantDto());
+        verify(restaurantRepository, times(1)).findById(anyString());
         verifyNoMoreInteractions(restaurantRepository);
     }
 

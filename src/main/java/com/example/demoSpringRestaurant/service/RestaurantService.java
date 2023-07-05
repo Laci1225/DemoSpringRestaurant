@@ -27,6 +27,12 @@ public class RestaurantService {
                 .map(restaurantMapper::fromDocumentToRestaurantDto).toList();
     }
 
+    public RestaurantDto getRestaurant(String id) {
+        log.trace("A restaurant ");
+        return restaurantRepository.findById(id).map(restaurantMapper::fromDocumentToRestaurantDto)
+                .orElseThrow();
+    }
+
     public RestaurantDto createRestaurant(RestaurantCreationDto restaurantCreationDto) {
         log.trace("Creating restaurant " + restaurantCreationDto);
         var restaurantDocument = restaurantRepository.save(restaurantMapper.
@@ -106,4 +112,6 @@ public class RestaurantService {
         if (!restaurantRepository.existsById(restaurantId))
             throw new RestaurantDocumentNotFoundException("Restaurant not found");
     }
+
+
 }

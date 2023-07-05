@@ -56,6 +56,15 @@ public class RestaurantController {
         return restaurantList;
     }
 
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping(path = "{restaurantId}")
+    public RestaurantDto getRestaurant(@PathVariable("restaurantId") String id) {
+        log.debug("Requested a restaurant");
+        var restaurant = restaurantService.getRestaurant(id);
+        log.debug("Restaurants returned successfully");
+        return restaurant;
+    }
+
     /**
      * Creates a new restaurant.
      *

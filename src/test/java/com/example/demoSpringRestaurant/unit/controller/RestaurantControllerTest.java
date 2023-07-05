@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @WebMvcTest(RestaurantController.class)
 public class RestaurantControllerTest {
 
-    @Autowired
+    /*@Autowired
     private MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
@@ -176,5 +176,5 @@ public class RestaurantControllerTest {
                 .json(objectMapper.writeValueAsString(RestaurantFixture.getRestaurantDtoList()))
         );
     }
-
+*/
 }

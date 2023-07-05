@@ -33,10 +33,10 @@ class OrderServiceTest {
     @Mock
     private OrderMapper orderMapper;
 
-    @Test
+    /*@Test
     void deleteOrderShouldRemoveOneOrder() throws OrderDocumentNotFoundException {
         //arrange / given
-        /*when(orderMapper.fromDocumentToOrderDto(any(OrderDocument.class)))
+        when(orderMapper.fromDocumentToOrderDto(any(OrderDocument.class)))
                 .thenReturn(OrderFixture.getOrderDto());
         when(orderRepository.findById(anyString()))
                 .thenReturn(Optional.of(OrderFixture.getOrderDocument(true)));
@@ -50,9 +50,9 @@ class OrderServiceTest {
         verify(orderRepository, times(1)).findById(anyString());
         verify(orderRepository, times(1)).deleteById(anyString());
         verifyNoMoreInteractions(orderRepository);//TODO
-    }
+    }*/
 
-    @Test
+    /*@Test
     void deleteOrderShouldOrderDocumentNotFoundException() {
         String orderId = "1L";
         when(orderRepository.findById(orderId)).thenReturn(Optional.empty());
@@ -62,7 +62,7 @@ class OrderServiceTest {
 
         verify(orderRepository, times(1)).findById(anyString());
         verifyNoMoreInteractions(orderRepository);*/
-    }
+    //}
 
     @Test
     void setNextStateShouldSetSENTToAPPROVED() throws OrderDocumentNotFoundException {

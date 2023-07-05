@@ -27,6 +27,12 @@ public class GuestService {
         return guestRepository.findAll().stream()
                 .map(guestMapper::fromDocumentToGuestDto).toList();
     }
+    public GuestDto getGuest(String id) {
+        log.trace("All guests listed");
+        return guestRepository.findById(id)
+                .map(guestMapper::fromDocumentToGuestDto)
+                .orElseThrow();
+    }
     public GuestDto updateGuest(String guestId, GuestUpdateDto guestUpdateDto) throws GuestDocumentNotFoundException {
         log.trace("Updating order with ID: " + guestId + "to " + guestUpdateDto);
         guestRepository.findById(guestId)
