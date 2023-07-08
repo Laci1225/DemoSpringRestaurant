@@ -29,7 +29,7 @@ import java.util.List;
  * The OrderController class handles HTTP requests related to orders.
  * It provides endpoints for getting, creating, deleting, and updating orders
  */
-@RestController
+@RestController("orders")
 @AllArgsConstructor
 @Slf4j
 public class OrderController {
@@ -56,7 +56,7 @@ public class OrderController {
             @ApiResponse(responseCode = "500", description = "Server error",
                     content = @Content)})
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping(path = "orders/{restaurantId}")
+    @GetMapping(path = "{restaurantId}")
     public List<OrderDto> getOrdersByRestaurantId(@PathVariable("restaurantId") String restaurantId) {
         try {
             log.debug("Requested all order");
@@ -65,6 +65,29 @@ public class OrderController {
             return orderList;
         } catch (RestaurantDocumentNotFoundException e) {
             log.warn("Getting orders were unsuccessful due to: " + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        }
+    }
+
+    @Operation(summary = "Returns an order in a restaurant")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "An order in a restaurant found",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = OrderDto.class))),
+            @ApiResponse(responseCode = "404", description = "Restaurant not found",
+                    content = @Content),
+            @ApiResponse(responseCode = "500", description = "Server error",
+                    content = @Content)})
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping(path = "order/{orderId}")
+    public OrderDto getOrder(@PathVariable("orderId") String orderId) {
+        try {
+            log.debug("Requested an order");
+            var order = orderService.getOrdersById(orderId);
+            log.debug("An order returned successfully");
+            return order;
+        } catch (OrderDocumentNotFoundException e) {
+            log.warn("Getting an order were unsuccessful due to: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
     }
@@ -90,7 +113,7 @@ public class OrderController {
             @ApiResponse(responseCode = "500", description = "Server error",
                     content = @Content)})
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping(path = "orders/{restaurantId}")
+    @PostMapping(path = "{restaurantId}")
     public OrderDto createOrder(@RequestBody OrderCreationDto orderCreationDto,
                                 @PathVariable("restaurantId") String restaurantId) {
         try {
@@ -125,7 +148,7 @@ public class OrderController {
             @ApiResponse(responseCode = "500", description = "Server error",
                     content = @Content)})
     @ResponseStatus(HttpStatus.ACCEPTED)
-    @DeleteMapping(path = "orders/{orderId}")
+    @DeleteMapping(path = "{orderId}")
     public OrderDto deleteOrder(@PathVariable("orderId") String orderId) {
         try {
             log.debug("Deleting an order");
@@ -160,7 +183,7 @@ public class OrderController {
             @ApiResponse(responseCode = "500", description = "Server error",
                     content = @Content)})
     @ResponseStatus(HttpStatus.OK)
-    @PostMapping(path = "orders/{orderId}/next-state")
+    @PostMapping(path = "{orderId}/next-state")
     public OrderDto setNextState(@PathVariable("orderId") String orderId) {
         try {
             log.debug("Setting order with ID: " + orderId + " to the next status");
@@ -177,7 +200,7 @@ public class OrderController {
 
     @ResponseStatus(HttpStatus.OK)
     @PutMapping(path = "{orderId}")
-    public OrderDto updateorder(
+    public OrderDto updateOrder(
             @PathVariable("orderId") String orderId,
             @Valid @RequestBody OrderUpdateDto orderUpdateDto) {
         try {

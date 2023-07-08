@@ -56,6 +56,14 @@ public class RestaurantController {
         return restaurantList;
     }
 
+
+    @Operation(summary = "Returns a restaurant")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "A restaurant found",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = RestaurantDto.class))),
+            @ApiResponse(responseCode = "500", description = "Server error",
+                    content = @Content)})
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(path = "{restaurantId}")
     public RestaurantDto getRestaurant(@PathVariable("restaurantId") String id) {
