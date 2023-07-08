@@ -34,9 +34,6 @@ public class RestaurantOrderFacade {
                 .map(orderMapper::fromDocumentToOrderDto)
                 .toList();
     }
-
-
-
     public RestaurantDto deleteRestaurant(String restaurantId) throws RestaurantDocumentNotFoundException {
         log.trace("Deleting restaurant with ID: " + restaurantId);
 

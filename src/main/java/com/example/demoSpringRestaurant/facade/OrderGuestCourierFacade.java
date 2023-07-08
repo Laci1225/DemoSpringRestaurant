@@ -1,6 +1,8 @@
 package com.example.demoSpringRestaurant.facade;
 
+import com.example.demoSpringRestaurant.exception.CourierDocumentNotFoundException;
 import com.example.demoSpringRestaurant.exception.DocumentNotFoundException;
+import com.example.demoSpringRestaurant.exception.GuestDocumentNotFoundException;
 import com.example.demoSpringRestaurant.exception.OrderDocumentNotFoundException;
 import com.example.demoSpringRestaurant.mapper.OrderMapper;
 import com.example.demoSpringRestaurant.mapper.RestaurantMapper;
@@ -30,10 +32,10 @@ public class OrderGuestCourierFacade {
                 .orElseThrow(() -> new OrderDocumentNotFoundException("Order not found"));
 
         var guest = guestService.findGuestDocumentByActiveOrder_Id(order.getId())
-                .orElseThrow(() -> new DocumentNotFoundException("Guest not found"));
+                .orElseThrow(() -> new GuestDocumentNotFoundException("Guest not found"));
 
         var courier = courierService.findCourierDocumentByActiveOrder_Id(order.getId())
-                .orElseThrow(() -> new DocumentNotFoundException("Courier not found"));
+                .orElseThrow(() -> new CourierDocumentNotFoundException("Courier not found"));
 
         guestService.deleteByOrderId(guest.getId());
         courierService.deleteByOrderId(courier.getId());

@@ -2,6 +2,7 @@ package com.example.demoSpringRestaurant.unit.mapper;
 
 import com.example.demoSpringRestaurant.fixtures.OrderFixture;
 import com.example.demoSpringRestaurant.mapper.OrderMapper;
+import com.example.demoSpringRestaurant.model.OrderCreationDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mapstruct.factory.Mappers;
@@ -10,7 +11,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import static org.junit.jupiter.api.Assertions.*;
 
 //TODO a módosítás miatt nem jó
-/*@ExtendWith(SpringExtension.class)
+@ExtendWith(SpringExtension.class)
 public class OrderMapperTest {
 
     OrderMapper orderMapper = Mappers.getMapper(OrderMapper.class);
@@ -63,14 +64,15 @@ public class OrderMapperTest {
     @Test
     public void fromOrderCreationDtoToDocument() {
         var result = orderMapper
-                .fromOrderCreationDtoToDocument(OrderFixture.getOrderCreationDto());
+                .fromOrderCreationDtoToDocument(OrderFixture.getOrderCreationDto(),
+                        OrderFixture.getOrderDocument(true).getCourierDocument());
 
         assertEquals(result, OrderFixture.getOrderDocument(false));
     }
     @Test
     public void fromOrderCreationDtoToDocumentReturnsNull() {
         var result = orderMapper
-                .fromOrderCreationDtoToDocument(null);
+                .fromOrderCreationDtoToDocument((OrderCreationDto) null,null);
 
         assertNull(result);
     }
@@ -104,4 +106,4 @@ public class OrderMapperTest {
 
         assertNull(result);
     }
-}*/
+}

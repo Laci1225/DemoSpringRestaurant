@@ -1,6 +1,8 @@
 package com.example.demoSpringRestaurant.controller;
 
+import com.example.demoSpringRestaurant.exception.CourierDocumentNotFoundException;
 import com.example.demoSpringRestaurant.exception.DocumentNotFoundException;
+import com.example.demoSpringRestaurant.exception.OrderDocumentNotFoundException;
 import com.example.demoSpringRestaurant.facade.OrderCourierFacade;
 import com.example.demoSpringRestaurant.model.CourierCreationDto;
 import com.example.demoSpringRestaurant.model.CourierDto;
@@ -75,6 +77,44 @@ public class CourierController {
         var courier = courierService.createCourier(courierCreationDto);
         log.debug("Created a courier successfully");
         return courier;
+    }
+    @Operation(summary = "Add order to courier")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "An order added to a courier",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = CourierDto.class))),
+            @ApiResponse(responseCode = "404", description = "Courier not found",
+                    content = @Content),
+            @ApiResponse(responseCode = "500", description = "Server error",
+                    content = @Content)})
+    @ResponseStatus(HttpStatus.OK)
+    @PostMapping(path = "add/{courierId}/{orderId}")
+    public CourierDto addOrderToCourier(@PathVariable(value = "courierId") String courierId
+    ,@PathVariable(value = "orderId") String orderId){
+        try {
+            return orderCourierFacade.addOrderToCourier(courierId,orderId);
+        } catch (CourierDocumentNotFoundException | OrderDocumentNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        }
+    }
+    @Operation(summary = "Add order set to active")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "An order set active",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = CourierDto.class))),
+            @ApiResponse(responseCode = "404", description = "Courier not found",
+                    content = @Content),
+            @ApiResponse(responseCode = "500", description = "Server error",
+                    content = @Content)})
+    @ResponseStatus(HttpStatus.OK)
+    @PostMapping(path = "set/{courierId}/{orderId}")
+    public CourierDto setOrderActive(@PathVariable(value = "courierId") String courierId
+    ,@PathVariable(value = "orderId") String orderId){
+        try {
+            return orderCourierFacade.setOrderActive(courierId,orderId);
+        } catch (CourierDocumentNotFoundException | OrderDocumentNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        }
     }
     @Operation(summary = "Deletes a courier")
     @ApiResponses(value = {

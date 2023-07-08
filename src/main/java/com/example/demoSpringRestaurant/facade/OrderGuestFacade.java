@@ -1,12 +1,12 @@
 package com.example.demoSpringRestaurant.facade;
 
 import com.example.demoSpringRestaurant.exception.DocumentNotFoundException;
+import com.example.demoSpringRestaurant.exception.GuestDocumentNotFoundException;
+import com.example.demoSpringRestaurant.exception.OrderDocumentNotFoundException;
 import com.example.demoSpringRestaurant.mapper.GuestMapper;
 import com.example.demoSpringRestaurant.mapper.OrderMapper;
 import com.example.demoSpringRestaurant.model.GuestDto;
 import com.example.demoSpringRestaurant.model.GuestCreationDto;
-import com.example.demoSpringRestaurant.model.GuestDto;
-import com.example.demoSpringRestaurant.service.GuestService;
 import com.example.demoSpringRestaurant.service.GuestService;
 import com.example.demoSpringRestaurant.service.OrderService;
 import lombok.RequiredArgsConstructor;
@@ -23,11 +23,11 @@ public class OrderGuestFacade {
     private final GuestMapper guestMapper;
     private final GuestService guestService;
 
-    public GuestDto createGuest(GuestCreationDto guestCreationDto, String orderId) {
+    public GuestDto createGuest(GuestCreationDto guestCreationDto, String orderId) throws OrderDocumentNotFoundException {
         log.trace("Creating Guest " + guestCreationDto);
         var guestDocument = guestMapper.fromGuestCreationDtoToDocument(guestCreationDto);
         var orderDocument = orderService.findById(orderId)
-                .orElseThrow();
+                .orElseThrow(() -> new OrderDocumentNotFoundException("Order not found"));
         orderDocument.setGuestDocument(guestDocument);
         guestDocument.setActiveOrder(orderDocument);
 
@@ -41,7 +41,7 @@ public class OrderGuestFacade {
 
     public GuestDto deleteGuest(String guestId) throws DocumentNotFoundException {
         var guest = guestService.findById(guestId)
-                .orElseThrow(() -> new DocumentNotFoundException("Guest not found"));
+                .orElseThrow(() -> new GuestDocumentNotFoundException("Guest not found"));
         var order = guest.getActiveOrder();
         orderService.deleteById(order.getId());
         guestService.deleteById(guest.getId());

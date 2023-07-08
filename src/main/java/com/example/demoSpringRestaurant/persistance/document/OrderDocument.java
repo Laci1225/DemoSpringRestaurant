@@ -3,6 +3,7 @@ package com.example.demoSpringRestaurant.persistance.document;
 import com.example.demoSpringRestaurant.constant.DrinkType;
 import com.example.demoSpringRestaurant.constant.MealType;
 import com.example.demoSpringRestaurant.constant.OrderStatus;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
@@ -16,6 +17,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Data
+@AllArgsConstructor
 @Builder
 @Document(collection = "orders")
 public class OrderDocument {

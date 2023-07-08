@@ -1,6 +1,5 @@
 package com.example.demoSpringRestaurant.service;
 
-import com.example.demoSpringRestaurant.exception.DocumentNotFoundException;
 import com.example.demoSpringRestaurant.exception.GuestDocumentNotFoundException;
 import com.example.demoSpringRestaurant.mapper.GuestMapper;
 import com.example.demoSpringRestaurant.model.GuestDto;
@@ -63,10 +62,10 @@ public class GuestService {
     }
 
 
-    public void deleteById(String id) throws DocumentNotFoundException {
+    public void deleteById(String id) throws GuestDocumentNotFoundException {
         if (guestRepository.existsById(id))
             guestRepository.deleteById(id);
-        else throw new DocumentNotFoundException("sad");
+        else throw new GuestDocumentNotFoundException("Guest not found");
 
     }
 

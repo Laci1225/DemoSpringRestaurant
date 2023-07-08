@@ -20,6 +20,14 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
 
+    public OrderDto getOrderById(String orderId) throws OrderDocumentNotFoundException {
+        log.trace("Fetching an order with ID: " + orderId);
+        var order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new OrderDocumentNotFoundException("Order not found"));
+        log.trace("An order with  ID: " + orderId + " returned.");
+        return orderMapper.fromDocumentToOrderDto(order);
+    }
+
 
     public OrderDto setNextState(String orderId) throws OrderDocumentNotFoundException {
         log.trace("Changing order status to order with ID: " + orderId);
@@ -62,13 +70,11 @@ public class OrderService {
         return orderRepository.findById(orderId);
     }
 
-    public void deleteById(String orderId) {
-        orderRepository.deleteById(orderId);
+    public void deleteById(String id) throws OrderDocumentNotFoundException {
+        if (orderRepository.existsById(id))
+            orderRepository.deleteById(id);
+        else throw new OrderDocumentNotFoundException("Order not found");
     }
 
-
-    // TODO unit test a guest courier
-    // TODO audit createdBy (createdDate) modifiedBy (modifiedDate) nem működik
-    // TODO java springboot config mongo configja ??
     // TODO REST & HTTP other communications
 }

@@ -1,7 +1,6 @@
 package com.example.demoSpringRestaurant.service;
 
 import com.example.demoSpringRestaurant.exception.CourierDocumentNotFoundException;
-import com.example.demoSpringRestaurant.exception.DocumentNotFoundException;
 import com.example.demoSpringRestaurant.mapper.CourierMapper;
 import com.example.demoSpringRestaurant.model.CourierCreationDto;
 import com.example.demoSpringRestaurant.model.CourierDto;
@@ -66,11 +65,13 @@ public class CourierService {
     }
 
 
-    public void deleteById(String id) throws DocumentNotFoundException {
+    public void deleteById(String id) throws CourierDocumentNotFoundException {
         if (courierRepository.existsById(id))
             courierRepository.deleteById(id);
-        else throw new DocumentNotFoundException("sa");
+        else throw new CourierDocumentNotFoundException("Courier not found");
     }
 
-
+    public boolean existById(String courierId) {
+        return courierRepository.existsById(courierId);
+    }
 }

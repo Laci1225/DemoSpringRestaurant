@@ -1,6 +1,8 @@
 package com.example.demoSpringRestaurant.facade;
 
+import com.example.demoSpringRestaurant.exception.CourierDocumentNotFoundException;
 import com.example.demoSpringRestaurant.exception.DocumentNotFoundException;
+import com.example.demoSpringRestaurant.exception.GuestDocumentNotFoundException;
 import com.example.demoSpringRestaurant.exception.RestaurantDocumentNotFoundException;
 import com.example.demoSpringRestaurant.mapper.CourierMapper;
 import com.example.demoSpringRestaurant.mapper.GuestMapper;
@@ -8,6 +10,9 @@ import com.example.demoSpringRestaurant.mapper.OrderMapper;
 import com.example.demoSpringRestaurant.mapper.RestaurantMapper;
 import com.example.demoSpringRestaurant.model.OrderCreationDto;
 import com.example.demoSpringRestaurant.model.OrderDto;
+import com.example.demoSpringRestaurant.persistance.document.CourierDocument;
+import com.example.demoSpringRestaurant.persistance.document.GuestDocument;
+import com.example.demoSpringRestaurant.persistance.document.OrderDocument;
 import com.example.demoSpringRestaurant.service.CourierService;
 import com.example.demoSpringRestaurant.service.GuestService;
 import com.example.demoSpringRestaurant.service.OrderService;
@@ -39,14 +44,24 @@ public class RestaurantOrderGuestCourierFacade {
         orderCreationDto.setRestaurant(restaurantMapper.fromDocumentToRestaurantDto(restaurantDocument));
         var estimated = LocalDateTime.now().toLocalTime().plusMinutes(30);
         orderCreationDto.setEstimatedPreparationTime(estimated);
-        var orderDocument = orderMapper.fromOrderCreationDtoToDocument(orderCreationDto);
 
-        var guest = guestService.findById(orderCreationDto.getGuestId())
-                .orElseThrow(() -> new DocumentNotFoundException("Guest not found"));
-        var courier = courierService.findById(orderCreationDto.getCourierId());
+        //CourierDocument courier = null;
+        //if (orderCreationDto.getCourierId() != null)
+        var courier = courierService.findById(orderCreationDto.getCourierId())
+                .orElseThrow(() -> new CourierDocumentNotFoundException("Courier not found"));
+        log.trace("a  :" + courier);
+        var orderDocument = orderMapper.fromOrderCreationDtoToDocument(orderCreationDto
+        ,courier);
+        log.trace("a  :" + orderCreationDto);
 
-        orderDocument.setGuestDocument(guest);
-        courier.ifPresent(orderDocument::setCourierDocument);
+        /*GuestDocument guest = null;
+        if (orderCreationDto.getGuestId() != null)
+            guest = guestService.findById(orderCreationDto.getGuestId())
+                    .orElseThrow(() -> new GuestDocumentNotFoundException("Guest not found"));
+
+        orderDocument.setGuestDocument(guest);*/
+        if (orderDocument.isDelivery())
+            orderDocument.setCourierDocument(courier);
         var orderDto = orderService.saveOrder(orderDocument);
 
         log.trace("Order" + orderDto + " with Restaurant ID: " + orderDto.getId() + " created");

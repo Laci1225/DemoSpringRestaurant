@@ -1,8 +1,10 @@
 package com.example.demoSpringRestaurant.controller;
 
+import com.example.demoSpringRestaurant.exception.CourierDocumentNotFoundException;
 import com.example.demoSpringRestaurant.exception.DocumentNotFoundException;
 import com.example.demoSpringRestaurant.exception.OrderDocumentNotFoundException;
 import com.example.demoSpringRestaurant.exception.RestaurantDocumentNotFoundException;
+import com.example.demoSpringRestaurant.facade.OrderCourierFacade;
 import com.example.demoSpringRestaurant.facade.OrderGuestCourierFacade;
 import com.example.demoSpringRestaurant.facade.RestaurantOrderFacade;
 import com.example.demoSpringRestaurant.facade.RestaurantOrderGuestCourierFacade;
@@ -29,7 +31,8 @@ import java.util.List;
  * The OrderController class handles HTTP requests related to orders.
  * It provides endpoints for getting, creating, deleting, and updating orders
  */
-@RestController("orders")
+@RestController
+@RequestMapping(path = "orders")
 @AllArgsConstructor
 @Slf4j
 public class OrderController {
@@ -37,6 +40,7 @@ public class OrderController {
     private final RestaurantOrderFacade restaurantOrderFacade;
     private final RestaurantOrderGuestCourierFacade restaurantOrderGuestCourierFacade;
     private final OrderGuestCourierFacade orderGuestCourierFacade;
+    private final OrderCourierFacade orderCourierFacade;
 
     /**
      * Returns a list of orders by restaurant ID.
@@ -83,7 +87,7 @@ public class OrderController {
     public OrderDto getOrder(@PathVariable("orderId") String orderId) {
         try {
             log.debug("Requested an order");
-            var order = orderService.getOrdersById(orderId);
+            var order = orderService.getOrderById(orderId);
             log.debug("An order returned successfully");
             return order;
         } catch (OrderDocumentNotFoundException e) {
@@ -211,6 +215,16 @@ public class OrderController {
         } catch (OrderDocumentNotFoundException e) {
             log.warn("Updating a order was unsuccessful due to: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        }
+    }
+    @PostMapping("set/{orderId}/{courierId}")
+    public OrderDto setCourierToOrder(@PathVariable(value = "orderId") String orderId,
+                                      @PathVariable(value = "courierId") String courierId){
+        try {
+            return orderCourierFacade.setCourierToOrder(orderId,courierId);
+        } catch (CourierDocumentNotFoundException | OrderDocumentNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+
         }
     }
 }
