@@ -56,9 +56,6 @@ public class CourierService {
         return courierRepository.findCourierDocumentByActiveOrder_Id(id);
     }
 
-    public void deleteByOrderId(String id) {
-        courierRepository.deleteById(id);
-    }
 
     public Optional<CourierDocument> findById(String courierId) {
         return courierRepository.findById(courierId);
@@ -71,7 +68,4 @@ public class CourierService {
         else throw new CourierDocumentNotFoundException("Courier not found");
     }
 
-    public boolean existById(String courierId) {
-        return courierRepository.existsById(courierId);
-    }
 }

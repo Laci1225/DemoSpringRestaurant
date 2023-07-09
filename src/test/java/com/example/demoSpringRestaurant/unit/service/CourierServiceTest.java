@@ -1,7 +1,10 @@
 package com.example.demoSpringRestaurant.unit.service;
 
+import com.example.demoSpringRestaurant.exception.CourierDocumentNotFoundException;
 import com.example.demoSpringRestaurant.exception.DocumentNotFoundException;
+import com.example.demoSpringRestaurant.exception.RestaurantDocumentNotFoundException;
 import com.example.demoSpringRestaurant.fixtures.CourierFixture;
+import com.example.demoSpringRestaurant.fixtures.RestaurantFixture;
 import com.example.demoSpringRestaurant.mapper.CourierMapper;
 import com.example.demoSpringRestaurant.model.CourierCreationDto;
 import com.example.demoSpringRestaurant.model.CourierUpdateDto;
@@ -17,6 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
@@ -69,7 +73,6 @@ public class CourierServiceTest {
     }
 
 
-
     @Test
     void getCourierShouldGetACourier() {
         when(courierMapper.fromDocumentToCourierDto(any(CourierDocument.class)))
@@ -105,4 +108,53 @@ public class CourierServiceTest {
         verify(courierRepository, times(1)).save(any(CourierDocument.class));
         verifyNoMoreInteractions(courierRepository);
     }
+
+    @Test
+    void deleteByIdShouldThrowCourierDocumentNotFoundException() throws CourierDocumentNotFoundException {
+        when(courierRepository.existsById(anyString()))
+                .thenReturn(false);
+
+        assertThrows(CourierDocumentNotFoundException.class, () ->
+                courierService.deleteById(CourierFixture.getCourierDto().getId()));
+    }
+
+    @Test
+    void deleteByIdShouldDeleteOneCourier() throws CourierDocumentNotFoundException {
+        doNothing().when(courierRepository).deleteById(anyString());
+        when(courierRepository.existsById(anyString()))
+                .thenReturn(true);
+
+        courierService.deleteById(CourierFixture.getCourierDto().getId());
+
+        verify(courierRepository, times(1)).deleteById(anyString());
+        verifyNoMoreInteractions(courierRepository);
+    }
+
+    @Test
+    void findCourierDocumentByActiveOrder_Id() {
+        when(courierRepository.findCourierDocumentByActiveOrder_Id(anyString())).
+                thenReturn(Optional.of(CourierFixture.getCourierDocument(false)));
+
+        var courierDocumentOptional = courierService.findCourierDocumentByActiveOrder_Id(
+                "1234");
+
+        assertThat(courierDocumentOptional).usingRecursiveComparison().isEqualTo(
+                Optional.of(CourierFixture.getCourierDocument("1234")));
+        verify(courierRepository, times(1)).findCourierDocumentByActiveOrder_Id(anyString());
+        verifyNoMoreInteractions(courierRepository);
+    }
+
+    @Test
+    void findByIdShouldReturnOneCourier() {
+        when(courierRepository.findById(anyString())).
+                thenReturn(Optional.of(CourierFixture.getCourierDocument(false)));
+
+        var courierDocumentOptional = courierService.findById("1234");
+
+        assertThat(courierDocumentOptional).usingRecursiveComparison().isEqualTo(
+                Optional.of(CourierFixture.getCourierDocument("1234")));
+        verify(courierRepository, times(1)).findById(anyString());
+        verifyNoMoreInteractions(courierRepository);
+    }
+
 }

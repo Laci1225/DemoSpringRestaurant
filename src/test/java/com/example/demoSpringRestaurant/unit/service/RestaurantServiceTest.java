@@ -174,4 +174,59 @@ public class RestaurantServiceTest {
         verify(restaurantRepository, times(1)).findAllByIsVeganTrue();
         verifyNoMoreInteractions(restaurantRepository);
     }
+
+    @Test
+    void deleteRestaurantShouldRemoveOneRestaurant() {
+        doNothing().when(restaurantRepository).delete(any(RestaurantDocument.class));
+
+        restaurantService.deleteRestaurant(RestaurantFixture.getRestaurantDocument(false));
+
+        verify(restaurantRepository, times(1)).delete(any(RestaurantDocument.class));
+        verifyNoMoreInteractions(restaurantRepository);
+    }
+
+    @Test
+    void findRestaurantByIdShouldReturnARestaurant() throws RestaurantDocumentNotFoundException {
+        when(restaurantRepository.findById(anyString()))
+                .thenReturn(Optional.of(RestaurantFixture.getRestaurantDocument(false)));
+
+        var restaurantDocument = restaurantService.findRestaurantById(RestaurantFixture.getRestaurantDto().getId());
+
+        assertThat(restaurantDocument).usingRecursiveComparison().isEqualTo(RestaurantFixture.getRestaurantDocument(false));
+        verify(restaurantRepository, times(1)).findById(anyString());
+        verifyNoMoreInteractions(restaurantRepository);
+    }
+
+    @Test
+    void findRestaurantByIdShouldThrowRestaurantNotFoundException() throws RestaurantDocumentNotFoundException {
+        when(restaurantRepository.findById(anyString()))
+                .thenReturn(Optional.empty());
+
+        assertThrows(RestaurantDocumentNotFoundException.class, () ->
+                restaurantService.findRestaurantById(RestaurantFixture.getRestaurantDto().getId()));
+
+        verifyNoMoreInteractions(restaurantRepository);
+    }
+
+
+    @Test
+    void restaurantExistShouldReturnTrue() throws RestaurantDocumentNotFoundException {
+        when(restaurantRepository.existsById((anyString())))
+                .thenReturn(true);
+
+        var exist = restaurantService.restaurantExist(RestaurantFixture.getRestaurantDto().getId());
+
+        verify(restaurantRepository, times(1)).existsById(anyString());
+        verifyNoMoreInteractions(restaurantRepository);
+    }
+    @Test
+    void restaurantExistShouldThrowRestaurantNotFoundException(){
+        when(restaurantRepository.existsById((anyString())))
+                .thenReturn(false);
+
+        assertThrows(RestaurantDocumentNotFoundException.class, () ->
+                restaurantService.restaurantExist(RestaurantFixture.getRestaurantDto().getId()));
+
+        verifyNoMoreInteractions(restaurantRepository);
+    }
 }

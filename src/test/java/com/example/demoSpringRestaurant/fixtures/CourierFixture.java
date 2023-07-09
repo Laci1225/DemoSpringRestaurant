@@ -14,6 +14,8 @@ import org.springframework.data.mongodb.core.mapping.DocumentReference;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
 @Data
 
 public class CourierFixture {
@@ -118,6 +120,20 @@ public class CourierFixture {
                 modifiedDate(MODIFIED_DATE).
                 id(id).
                 build();
+    }
+    public static CourierDocument getCourierDocument(String id) {
+        return CourierDocument.builder().
+                id("1234").
+                name(NAME).
+                isActive(IS_ACTIVE).
+                orders(ORDERS).
+                activeOrder(ACTIVE_ORDER).
+                paymentPerOrder(PAYMENT_PER_ORDER).
+                vehicle(VEHICLE).
+                createdDate(CREATED_DATE).
+                modifiedDate(MODIFIED_DATE).
+                id(id).
+                build();
 
     }
 
@@ -167,6 +183,20 @@ public class CourierFixture {
                 modifiedDate(MODIFIED_DATE).
                 build();
 
+
+    }
+
+    public static Optional<CourierDto> getOptionalCourierDto() {
+        return Optional.of(CourierDto.builder().
+                name(NAME).
+                isActive(IS_ACTIVE).
+                orders(ORDERS_DTO).
+                activeOrder(ACTIVE_ORDER_DTO).
+                paymentPerOrder(PAYMENT_PER_ORDER).
+                vehicle(VEHICLE).
+                createdDate(CREATED_DATE).
+                modifiedDate(MODIFIED_DATE).
+                build());
 
     }
 }

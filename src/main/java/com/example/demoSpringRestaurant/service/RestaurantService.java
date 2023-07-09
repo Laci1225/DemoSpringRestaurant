@@ -108,9 +108,10 @@ public class RestaurantService {
 
     }
 
-    public void restaurantExist(String restaurantId) throws RestaurantDocumentNotFoundException {
+    public boolean restaurantExist(String restaurantId) throws RestaurantDocumentNotFoundException {
         if (!restaurantRepository.existsById(restaurantId))
             throw new RestaurantDocumentNotFoundException("Restaurant not found");
+        return true;
     }
 
 
