@@ -13,6 +13,8 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class OrderUpdateDto {
 

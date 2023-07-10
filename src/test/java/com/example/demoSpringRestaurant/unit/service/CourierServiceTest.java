@@ -133,7 +133,7 @@ public class CourierServiceTest {
     @Test
     void findCourierDocumentByActiveOrder_Id() {
         when(courierRepository.findCourierDocumentByActiveOrder_Id(anyString())).
-                thenReturn(Optional.of(CourierFixture.getCourierDocument(false)));
+                thenReturn(Optional.of(CourierFixture.getCourierDocument(true)));
 
         var courierDocumentOptional = courierService.findCourierDocumentByActiveOrder_Id(
                 "1234");
@@ -147,7 +147,7 @@ public class CourierServiceTest {
     @Test
     void findByIdShouldReturnOneCourier() {
         when(courierRepository.findById(anyString())).
-                thenReturn(Optional.of(CourierFixture.getCourierDocument(false)));
+                thenReturn(Optional.of(CourierFixture.getCourierDocument(true)));
 
         var courierDocumentOptional = courierService.findById("1234");
 

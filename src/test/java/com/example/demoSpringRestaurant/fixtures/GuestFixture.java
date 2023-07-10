@@ -5,6 +5,7 @@ import com.example.demoSpringRestaurant.model.GuestDto;
 import com.example.demoSpringRestaurant.model.GuestUpdateDto;
 import com.example.demoSpringRestaurant.model.OrderDto;
 import com.example.demoSpringRestaurant.persistance.document.GuestDocument;
+import com.example.demoSpringRestaurant.persistance.document.GuestDocument;
 import com.example.demoSpringRestaurant.persistance.document.OrderDocument;
 import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
@@ -58,7 +59,6 @@ public class GuestFixture {
     public static GuestDocument getGuestDocument(boolean withId) {
 
         var restaurantDocument = GuestDocument.builder().
-                id("1234").
                 activeOrder(ACTIVE_ORDER).
                 payed(PAYED).
                 createdDate(CREATED_DATE).
@@ -66,7 +66,7 @@ public class GuestFixture {
                 build();
 
         if (withId)
-            restaurantDocument.setId("1L");
+            restaurantDocument.setId("1234");
         return restaurantDocument;
     }
 
@@ -78,6 +78,17 @@ public class GuestFixture {
                 createdDate(CREATED_DATE).
                 modifiedDate(MODIFIED_DATE).
                 build();
+    }
+
+    public static GuestDocument getGuestDocument(String id) {
+        return GuestDocument.builder().
+                activeOrder(ACTIVE_ORDER).
+                payed(PAYED).
+                createdDate(CREATED_DATE).
+                modifiedDate(MODIFIED_DATE).
+                id(id).
+                build();
+
     }
 
     public static GuestDto getGuestDto(String id) {

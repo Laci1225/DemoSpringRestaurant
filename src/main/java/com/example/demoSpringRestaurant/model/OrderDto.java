@@ -12,7 +12,9 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Data
+@NoArgsConstructor
 @Builder
+@AllArgsConstructor
 public class OrderDto {
 
     @Id

@@ -47,7 +47,7 @@ public class OrderFixture {
 
     public static OrderDto getOrderDto() {
         return OrderDto.builder()
-                .id("1L")
+                .id("1234")
                 .restaurant(RESTAURANT_DTO)
                 .mealType(MEAL_TYPE)
                 .drinkType(DRINK_TYPE)
@@ -64,7 +64,7 @@ public class OrderFixture {
 
     public static OrderDto getOrderDtoGetNextStatus(OrderStatus fromStatus) {
         return OrderDto.builder()
-                .id("1L")
+                .id("1234")
                 .restaurant(RESTAURANT_DTO)
                 .mealType(MEAL_TYPE)
                 .drinkType(DRINK_TYPE)
@@ -94,8 +94,25 @@ public class OrderFixture {
                 .modifiedDate(MODIFIED_DATE)
                 .build();
         if (withId)
-            orderDocument.setId("1L");
+            orderDocument.setId("1234");
         return orderDocument;
+    }
+
+    public static OrderDocument getOrderDocument(String id) {
+        return OrderDocument.builder()
+                .restaurant(RESTAURANT_DOCUMENT)
+                .mealType(MEAL_TYPE)
+                .drinkType(DRINK_TYPE)
+                .price(PRICE)
+                .deliveryAddress(DELIVERY_ADDRESS)
+                .orderStatus(ORDER_STATUS)
+                .estimatedPreparationTime(ESTIMATED_DELIVERY_TIME)
+                .guestDocument(GUEST_DOCUMENT)
+                .courierDocument(COURIER_DOCUMENT)
+                .createdDate(CREATED_DATE)
+                .modifiedDate(MODIFIED_DATE)
+                .id(id)
+                .build();
     }
 
     public static OrderCreationDto getOrderCreationDto() {
@@ -113,11 +130,26 @@ public class OrderFixture {
                 .modifiedDate(MODIFIED_DATE)
                 .build();
     }
+    public static OrderUpdateDto getOrderUpdateDto() {
+        return OrderUpdateDto.builder()
+                .restaurant(RESTAURANT_DTO)
+                .mealType(MEAL_TYPE)
+                .drinkType(DRINK_TYPE)
+                .price(PRICE)
+                .deliveryAddress(DELIVERY_ADDRESS)
+                .orderStatus(ORDER_STATUS)
+                .estimatedPreparationTime(ESTIMATED_DELIVERY_TIME)
+                .guestDto(GUEST_DTO)
+                .courierDto(COURIER_DTO)
+                .createdDate(CREATED_DATE)
+                .modifiedDate(MODIFIED_DATE)
+                .build();
+    }
 
     public static List<OrderDto> getOrderDtoList() {
         var list = new ArrayList<OrderDto>();
         list.add(OrderDto.builder()
-                .id("1L")
+                .id("1234")
                 .restaurant(RESTAURANT_DTO)
                 .mealType(MEAL_TYPE)
                 .drinkType(DRINK_TYPE)
@@ -164,7 +196,7 @@ public class OrderFixture {
                 .modifiedDate(MODIFIED_DATE)
                 .build();
         if (withId)
-            orderDocument.setId("1L");
+            orderDocument.setId("1234");
         return orderDocument;
     }
 
@@ -186,7 +218,7 @@ public class OrderFixture {
 
     public static OrderDto getOrderDtoGetNextStatusToGivenRestaurant(OrderStatus fromStatus, RestaurantDto restaurantDto) {
         return OrderDto.builder()
-                .id("1L")
+                .id("1234")
                 .restaurant(restaurantDto)
                 .mealType(MEAL_TYPE)
                 .drinkType(DRINK_TYPE)
@@ -204,7 +236,7 @@ public class OrderFixture {
     public static List<OrderDocument> getOrderDocumentList() {
         var list = new ArrayList<OrderDocument>();
         list.add(OrderDocument.builder()
-                .id("1L")
+                .id("1234")
                 .restaurant(RESTAURANT_DOCUMENT)
                 .mealType(MEAL_TYPE)
                 .drinkType(DRINK_TYPE)

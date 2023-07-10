@@ -56,7 +56,7 @@ public class RestaurantOrderFacadeTest {
         Mockito.doThrow(RestaurantDocumentNotFoundException.class).when(restaurantService).restaurantExist(anyString());
 
         assertThrows(RestaurantDocumentNotFoundException.class, () ->
-                restaurantOrderFacade.getOrdersByRestaurantId("1L"));
+                restaurantOrderFacade.getOrdersByRestaurantId("1234"));
 
         verify(restaurantService, times(1)).restaurantExist(anyString());
     }
@@ -72,7 +72,7 @@ public class RestaurantOrderFacadeTest {
         when(orderService.saveOrder(any(OrderDocument.class)))
                 .thenReturn(OrderFixture.getOrderDto());
 
-        var orderDto = restaurantOrderFacade.createOrder(OrderFixture.getOrderCreationDto(), "1L");
+        var orderDto = restaurantOrderFacade.createOrder(OrderFixture.getOrderCreationDto(), "1234");
 
         assertThat(orderDto).usingRecursiveComparison().isEqualTo(OrderFixture.getOrderDto());
         verify(restaurantService, times(1)).findRestaurantById(anyString());
@@ -87,7 +87,7 @@ public class RestaurantOrderFacadeTest {
                 .thenThrow(RestaurantDocumentNotFoundException.class);
 
         assertThrows(RestaurantDocumentNotFoundException.class, () ->
-                restaurantOrderFacade.createOrder(OrderFixture.getOrderCreationDto(), "1L"));
+                restaurantOrderFacade.createOrder(OrderFixture.getOrderCreationDto(), "1234"));
 
         verify(restaurantService, times(1)).findRestaurantById(anyString());
         verifyNoMoreInteractions(restaurantService);
@@ -104,7 +104,7 @@ public class RestaurantOrderFacadeTest {
         Mockito.doNothing().when(orderService).deleteAllOrder(Mockito.anyList());
         Mockito.doNothing().when(restaurantService).deleteRestaurant(Mockito.any(RestaurantDocument.class));
 
-        var restaurantDto = restaurantOrderFacade.deleteRestaurant("1L");
+        var restaurantDto = restaurantOrderFacade.deleteRestaurant("1234");
 
         assertThat(restaurantDto).usingRecursiveComparison().isEqualTo(RestaurantFixture.getRestaurantDto());
         verify(restaurantMapper, times(1)).fromDocumentToRestaurantDto(any(RestaurantDocument.class));
@@ -120,7 +120,7 @@ public class RestaurantOrderFacadeTest {
                 .thenThrow(RestaurantDocumentNotFoundException.class);
 
         assertThrows(RestaurantDocumentNotFoundException.class, () ->
-                restaurantOrderFacade.deleteRestaurant("1L"));
+                restaurantOrderFacade.deleteRestaurant("1234"));
 
         verify(restaurantService, times(1)).findRestaurantById(anyString());
         verifyNoMoreInteractions(restaurantService);

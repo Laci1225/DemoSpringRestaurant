@@ -5,19 +5,27 @@ import com.example.demoSpringRestaurant.model.CourierDto;
 import com.example.demoSpringRestaurant.model.CourierUpdateDto;
 import com.example.demoSpringRestaurant.persistance.document.CourierDocument;
 import org.mapstruct.Mapper;
+import org.mapstruct.MapperConfig;
+import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring", uses = {OrderMapper.class})
 public interface CourierMapper {
 
-    CourierDocument fromCourierDtoToDocument(CourierDto CourierDto);
+    @Mapping(target = "isActive",source = "active") // TODO Why????
+    CourierDocument fromCourierDtoToDocument(CourierDto courierDto);
 
-    CourierDto fromDocumentToCourierDto(CourierDocument CourierDocument);
+    @Mapping(target = "isActive",source = "courierDocument.active")
+    CourierDto fromDocumentToCourierDto(CourierDocument courierDocument);
 
-    CourierCreationDto fromDocumentToCourierCreationDto(CourierDocument CourierDocument);
+    @Mapping(target = "isActive",source = "courierDocument.active")
+    CourierCreationDto fromDocumentToCourierCreationDto(CourierDocument courierDocument);
 
-    CourierDocument fromCourierCreationDtoToDocument(CourierCreationDto CourierCreationDto);
+    @Mapping(target = "isActive",source = "courierCreationDto.active")
+    CourierDocument fromCourierCreationDtoToDocument(CourierCreationDto courierCreationDto);
 
-    CourierUpdateDto fromDocumentToCourierUpdateDto(CourierDocument CourierDocument);
+    @Mapping(target = "isActive",source = "courierDocument.active")
+    CourierUpdateDto fromDocumentToCourierUpdateDto(CourierDocument courierDocument);
 
-    CourierDocument fromCourierUpdateDtoToDocument(CourierUpdateDto CourierUpdateDto);
+    @Mapping(target = "isActive",source = "courierUpdateDto.active")
+    CourierDocument fromCourierUpdateDtoToDocument(CourierUpdateDto courierUpdateDto);
 }

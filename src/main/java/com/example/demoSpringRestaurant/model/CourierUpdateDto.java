@@ -4,6 +4,7 @@ import com.example.demoSpringRestaurant.constant.Vehicle;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -11,6 +12,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
+@NoArgsConstructor
 @Builder
 @AllArgsConstructor
 public class CourierUpdateDto {
@@ -26,6 +28,4 @@ public class CourierUpdateDto {
     @LastModifiedDate
     private LocalDateTime modifiedDate;
 
-    public CourierUpdateDto() {
-    }
 }

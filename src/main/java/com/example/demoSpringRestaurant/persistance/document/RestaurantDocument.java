@@ -3,6 +3,7 @@ package com.example.demoSpringRestaurant.persistance.document;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -16,6 +17,7 @@ import java.util.List;
 @Data
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 @Document(collection = "restaurants")
 public class RestaurantDocument {
 
@@ -38,9 +40,5 @@ public class RestaurantDocument {
     private LocalDateTime createdDate;
     @LastModifiedDate
     private LocalDateTime modifiedDate;
-
-    public RestaurantDocument() {
-    }
-
 
 }

@@ -1,8 +1,10 @@
 package com.example.demoSpringRestaurant.fixtures;
 
+import com.example.demoSpringRestaurant.model.OrderDto;
 import com.example.demoSpringRestaurant.model.RestaurantCreationDto;
 import com.example.demoSpringRestaurant.model.RestaurantDto;
 import com.example.demoSpringRestaurant.model.RestaurantUpdateDto;
+import com.example.demoSpringRestaurant.persistance.document.OrderDocument;
 import com.example.demoSpringRestaurant.persistance.document.RestaurantDocument;
 import jakarta.validation.constraints.Email;
 
@@ -15,6 +17,8 @@ public class RestaurantFixture {
     private static final String NAME = "John's restaurant";
     private static final String OWNER = "John";
     private static final String ADDRESS = "Budapest xy street 6.";
+    private static final List<OrderDocument> orders = null;
+    private static final List<OrderDto> ordersDto = null;
     @Email
     private static final String EMAIL = "asd@dsa.com"; // TODO email not verified
     private static final String PHONE_NUMBER = "PhoneNumber";

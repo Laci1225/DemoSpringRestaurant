@@ -116,7 +116,7 @@ public class CourierController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
     }
-    @Operation(summary = "Deletes a courier")
+   /* @Operation(summary = "Deletes a courier")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "202", description = "A courier deleted",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
@@ -137,7 +137,7 @@ public class CourierController {
             log.warn("Deleting a courier were unsuccessful due to: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
-    }
+    }*/
 
     @Operation(summary = "Updates a courier")
     @ApiResponses(value = {

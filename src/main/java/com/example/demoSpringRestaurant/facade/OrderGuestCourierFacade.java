@@ -37,8 +37,8 @@ public class OrderGuestCourierFacade {
         var courier = courierService.findCourierDocumentByActiveOrder_Id(order.getId())
                 .orElseThrow(() -> new CourierDocumentNotFoundException("Courier not found"));
 
-        guestService.deleteByOrderId(guest.getId());
-        courierService.deleteByOrderId(courier.getId());
+        guestService.deleteById(guest.getId());
+        courierService.deleteById(courier.getId());
         orderService.deleteById(order.getId());
         log.trace("Order deleted with ID: " + orderId);
         return orderMapper.fromDocumentToOrderDto(order);

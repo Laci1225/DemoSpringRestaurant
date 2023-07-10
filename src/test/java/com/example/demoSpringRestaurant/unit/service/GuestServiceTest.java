@@ -1,12 +1,14 @@
 package com.example.demoSpringRestaurant.unit.service;
 
+import com.example.demoSpringRestaurant.exception.CourierDocumentNotFoundException;
 import com.example.demoSpringRestaurant.exception.DocumentNotFoundException;
+import com.example.demoSpringRestaurant.exception.GuestDocumentNotFoundException;
+import com.example.demoSpringRestaurant.fixtures.CourierFixture;
+import com.example.demoSpringRestaurant.fixtures.GuestFixture;
 import com.example.demoSpringRestaurant.fixtures.GuestFixture;
 import com.example.demoSpringRestaurant.fixtures.GuestFixture;
 import com.example.demoSpringRestaurant.mapper.GuestMapper;
 import com.example.demoSpringRestaurant.model.GuestUpdateDto;
-import com.example.demoSpringRestaurant.model.GuestCreationDto;
-import com.example.demoSpringRestaurant.persistance.document.GuestDocument;
 import com.example.demoSpringRestaurant.persistance.document.GuestDocument;
 import com.example.demoSpringRestaurant.persistance.repository.GuestRepository;
 import com.example.demoSpringRestaurant.service.GuestService;
@@ -19,6 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
@@ -88,5 +91,66 @@ public class GuestServiceTest {
         verifyNoMoreInteractions(guestRepository);
     }
 
+    @Test
+    void deleteByIdShouldDeleteOneGuest() throws GuestDocumentNotFoundException {
+        doNothing().when(guestRepository).deleteById(anyString());
+        when(guestRepository.existsById(anyString()))
+                .thenReturn(true);
 
+        guestService.deleteById(GuestFixture.getGuestDto().getId());
+
+        verify(guestRepository, times(1)).deleteById(anyString());
+        verifyNoMoreInteractions(guestRepository);
+    }
+
+    @Test
+    void deleteByIdShouldThrowGuestDocumentNotFoundException() throws GuestDocumentNotFoundException {
+        when(guestRepository.existsById(anyString()))
+                .thenReturn(false);
+
+        assertThrows(GuestDocumentNotFoundException.class, () ->
+                guestService.deleteById(CourierFixture.getCourierDto().getId()));
+    }
+
+    @Test
+    void saveGuestShouldSaveOneGuest() {
+        when(guestRepository.save(any(GuestDocument.class)))
+                .thenReturn(GuestFixture.getGuestDocument(true));
+
+        var guest = guestService.saveGuest(GuestFixture.getGuestDocument("1234"));
+
+        assertThat(guest).usingRecursiveComparison().isEqualTo(GuestFixture.getGuestDocument("1234"));
+
+        verify(guestRepository, times(1)).save(any(GuestDocument.class));
+        verifyNoMoreInteractions(guestRepository);
+    }
+
+    @Test
+    void findGuestDocumentByActiveOrder_Id() {
+        when(guestRepository.findGuestDocumentByActiveOrder_Id(anyString())).
+                thenReturn(Optional.of(GuestFixture.getGuestDocument(true)));
+
+        var guestDocumentOptional = guestService.findGuestDocumentByActiveOrder_Id(
+                "1234");
+
+        assertThat(guestDocumentOptional).usingRecursiveComparison().isEqualTo(
+                Optional.of(GuestFixture.getGuestDocument("1234")));
+        verify(guestRepository, times(1)).findGuestDocumentByActiveOrder_Id(anyString());
+        verifyNoMoreInteractions(guestRepository);
+    }
+
+    @Test
+    void findByIdShouldReturnOneGuest() {
+        when(guestRepository.findById(anyString())).
+                thenReturn(Optional.of(GuestFixture.getGuestDocument(true)));
+
+        var guestDocumentOptional = guestService.findById("1234");
+
+        assertThat(guestDocumentOptional).usingRecursiveComparison().isEqualTo(
+                Optional.of(GuestFixture.getGuestDocument("1234")));
+        verify(guestRepository, times(1)).findById(anyString());
+        verifyNoMoreInteractions(guestRepository);
+    }
 }
+
+

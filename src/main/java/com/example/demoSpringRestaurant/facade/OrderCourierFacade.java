@@ -20,21 +20,21 @@ public class OrderCourierFacade {
     private final CourierService courierService;
     private final CourierMapper courierMapper;
     private final OrderMapper orderMapper;
-    private final OrderService orderServices;
+    private final OrderService orderService;
 
-    public CourierDto deleteCourier(String courierId) throws DocumentNotFoundException {
+   /*- public CourierDto deleteCourier(String courierId) throws DocumentNotFoundException {
         var courier = courierService.findById(courierId)
                 .orElseThrow(() -> new CourierDocumentNotFoundException("Courier not found"));
         var orders = courier.getOrders();
-        orderServices.deleteAllOrder(orders);
-        courierService.deleteById(courier.getId());
+        orderService.deleteAllOrder(orders);
+        courierService.deleteById(courier.getId()); //TODO
         return courierMapper.fromDocumentToCourierDto(courier);
-    }
+    }*/
 
     public CourierDto addOrderToCourier(String courierId, String orderId) throws CourierDocumentNotFoundException, OrderDocumentNotFoundException {
         var courier = courierService.findById(courierId)
                 .orElseThrow(() -> new CourierDocumentNotFoundException("Courier not found"));
-        var order = orderServices.findById(orderId)
+        var order = orderService.findById(orderId)
                 .orElseThrow(() -> new OrderDocumentNotFoundException("Order not found"));
         var orders = courier.getOrders();
         orders.add(order);
@@ -45,7 +45,7 @@ public class OrderCourierFacade {
     public CourierDto setOrderActive(String courierId, String orderId) throws CourierDocumentNotFoundException, OrderDocumentNotFoundException {
         var courier = courierService.findById(courierId)
                 .orElseThrow(() -> new CourierDocumentNotFoundException("Courier not found"));
-        var order = orderServices.findById(orderId)
+        var order = orderService.findById(orderId)
                 .orElseThrow(() -> new OrderDocumentNotFoundException("Order not found"));
         courier.setActiveOrder(order);
         return courierMapper.fromDocumentToCourierDto(courier);
@@ -54,7 +54,7 @@ public class OrderCourierFacade {
     public OrderDto setCourierToOrder(String orderId, String courierId) throws CourierDocumentNotFoundException, OrderDocumentNotFoundException {
         var courier = courierService.findById(courierId)
                 .orElseThrow(() -> new CourierDocumentNotFoundException("Courier not found"));
-        var order = orderServices.findById(orderId)
+        var order = orderService.findById(orderId)
                 .orElseThrow(() -> new OrderDocumentNotFoundException("Order not found"));
         order.setCourierDocument(courier);
         return orderMapper.fromDocumentToOrderDto(order);

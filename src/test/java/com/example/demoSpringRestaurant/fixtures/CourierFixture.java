@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Optional;
 
 @Data
-
 public class CourierFixture {
     private static final String NAME = "Sam";
     private static final boolean IS_ACTIVE = true;
@@ -76,8 +75,7 @@ public class CourierFixture {
 
     public static CourierDocument getCourierDocument(boolean withId) {
 
-        var restaurantDocument = CourierDocument.builder().
-                id("1234").
+        var courierDocument = CourierDocument.builder().
                 name(NAME).
                 isActive(IS_ACTIVE).
                 orders(ORDERS).
@@ -89,8 +87,8 @@ public class CourierFixture {
                 build();
 
         if (withId)
-            restaurantDocument.setId("1L");
-        return restaurantDocument;
+            courierDocument.setId("1234");
+        return courierDocument;
     }
 
     public static CourierDto getCourierDto() {
@@ -123,7 +121,6 @@ public class CourierFixture {
     }
     public static CourierDocument getCourierDocument(String id) {
         return CourierDocument.builder().
-                id("1234").
                 name(NAME).
                 isActive(IS_ACTIVE).
                 orders(ORDERS).

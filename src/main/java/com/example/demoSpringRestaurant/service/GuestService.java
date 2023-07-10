@@ -49,9 +49,6 @@ public class GuestService {
        return guestRepository.findGuestDocumentByActiveOrder_Id(id);
     }
 
-    public void deleteByOrderId(String id) {
-        guestRepository.deleteById(id);
-    }
 
     public Optional<GuestDocument> findById(String courierId) {
         return guestRepository.findById(courierId);

@@ -49,19 +49,23 @@ public class RestaurantOrderGuestCourierFacade {
         //if (orderCreationDto.getCourierId() != null)
         var courier = courierService.findById(orderCreationDto.getCourierId())
                 .orElseThrow(() -> new CourierDocumentNotFoundException("Courier not found"));
+
+        //GuestDocument guest = null;
+        //if (orderCreationDto.getGuestId() != null)
+        var guest = guestService.findById(orderCreationDto.getGuestId())
+                .orElseThrow(() -> new GuestDocumentNotFoundException("Guest not found"));
+
+        //;
+
         log.trace("a  :" + courier);
         var orderDocument = orderMapper.fromOrderCreationDtoToDocument(orderCreationDto
-        ,courier);
+                , courier, guest);
         log.trace("a  :" + orderCreationDto);
 
-        /*GuestDocument guest = null;
-        if (orderCreationDto.getGuestId() != null)
-            guest = guestService.findById(orderCreationDto.getGuestId())
-                    .orElseThrow(() -> new GuestDocumentNotFoundException("Guest not found"));
 
-        orderDocument.setGuestDocument(guest);*/
-        if (orderDocument.isDelivery())
-            orderDocument.setCourierDocument(courier);
+        //if (orderDocument.isDelivery())
+        orderDocument.setCourierDocument(courier);
+        orderDocument.setGuestDocument(guest);
         var orderDto = orderService.saveOrder(orderDocument);
 
         log.trace("Order" + orderDto + " with Restaurant ID: " + orderDto.getId() + " created");

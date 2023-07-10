@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
+@NoArgsConstructor
 @Builder
 @AllArgsConstructor
 public class RestaurantDto {
@@ -29,8 +30,5 @@ public class RestaurantDto {
     private LocalDateTime createdDate;
     @LastModifiedDate
     private LocalDateTime modifiedDate;
-
-    public RestaurantDto() {
-    }
 
 }
