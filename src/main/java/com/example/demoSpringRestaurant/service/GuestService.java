@@ -11,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -45,17 +44,21 @@ public class GuestService {
     }
 
 
-    public Optional<GuestDocument> findGuestDocumentByActiveOrder_Id(String id) {
-       return guestRepository.findGuestDocumentByActiveOrder_Id(id);
+    public GuestDto findGuestDtoByActiveOrder_Id(String id) throws GuestDocumentNotFoundException {
+       var guest =  guestRepository.findGuestDocumentByActiveOrder_Id(id).
+               orElseThrow(() -> new GuestDocumentNotFoundException("Guest not found"));
+        return guestMapper.fromDocumentToGuestDto(guest);
     }
 
 
-    public Optional<GuestDocument> findById(String courierId) {
-        return guestRepository.findById(courierId);
+    public GuestDto findGuestById(String courierId) throws GuestDocumentNotFoundException {
+        var guestDocument = guestRepository.findById(courierId)
+                .orElseThrow(() -> new GuestDocumentNotFoundException("Guest not found"));
+        return guestMapper.fromDocumentToGuestDto(guestDocument);
     }
 
-    public GuestDocument saveGuest(GuestDocument guestDocument) {
-        return guestRepository.save(guestDocument);
+    public GuestDto saveGuest(GuestDocument guestDocument) {
+        return guestMapper.fromDocumentToGuestDto(guestRepository.save(guestDocument));
     }
 
 

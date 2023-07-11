@@ -66,8 +66,11 @@ public class OrderService {
         return orderRepository.findAllByRestaurantId(restaurantId);
     }
 
-    public Optional<OrderDocument> findById(String orderId) {
-        return orderRepository.findById(orderId);
+    public OrderDto findOrderById(String orderId) throws OrderDocumentNotFoundException {
+
+        var a = orderRepository.findById(orderId)
+                .orElseThrow(() -> new OrderDocumentNotFoundException("Order not found"));
+        return orderMapper.fromDocumentToOrderDto(a);
     }
 
     public void deleteById(String id) throws OrderDocumentNotFoundException {

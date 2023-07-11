@@ -1,7 +1,6 @@
 package com.example.demoSpringRestaurant.facade;
 
 import com.example.demoSpringRestaurant.exception.DocumentNotFoundException;
-import com.example.demoSpringRestaurant.exception.GuestDocumentNotFoundException;
 import com.example.demoSpringRestaurant.exception.OrderDocumentNotFoundException;
 import com.example.demoSpringRestaurant.mapper.GuestMapper;
 import com.example.demoSpringRestaurant.mapper.OrderMapper;
@@ -25,26 +24,24 @@ public class OrderGuestFacade {
 
     public GuestDto createGuest(GuestCreationDto guestCreationDto, String orderId) throws OrderDocumentNotFoundException {
         log.trace("Creating Guest " + guestCreationDto);
-        var guestDocument = guestMapper.fromGuestCreationDtoToDocument(guestCreationDto);
-        var orderDocument = orderService.findById(orderId)
-                .orElseThrow(() -> new OrderDocumentNotFoundException("Order not found"));
-        orderDocument.setGuestDocument(guestDocument);
-        guestDocument.setActiveOrder(orderDocument);
+        var guestDto = guestMapper.fromDocumentToGuestDto(guestMapper.fromGuestCreationDtoToDocument(guestCreationDto));
+        var orderDto = orderService.findOrderById(orderId);
+        orderDto.setGuestDto(guestDto);
+        guestDto.setActiveOrder(orderDto);
 
 
-        var guestDoc = guestService.saveGuest(guestDocument);
-        orderService.saveOrder(orderDocument);
+        var guestDoc = guestService.saveGuest(guestMapper.fromGuestDtoToDocument(guestDto));
+        orderService.saveOrder(orderMapper.fromOrderDtoToDocument(orderDto));
 
-        log.trace("Guest created with ID:" + guestDocument.getId());
-        return guestMapper.fromDocumentToGuestDto(guestDoc);
+        log.trace("Guest created with ID:" + guestDto.getId());
+        return guestDoc;
     }
 
     public GuestDto deleteGuest(String guestId) throws DocumentNotFoundException {
-        var guest = guestService.findById(guestId)
-                .orElseThrow(() -> new GuestDocumentNotFoundException("Guest not found"));
+        var guest = guestService.findGuestById(guestId);
         var order = guest.getActiveOrder();
         orderService.deleteById(order.getId());
         guestService.deleteById(guest.getId());
-        return guestMapper.fromDocumentToGuestDto(guest);
+        return guest;
     }
 }

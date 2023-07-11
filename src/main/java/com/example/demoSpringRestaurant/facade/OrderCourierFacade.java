@@ -7,6 +7,7 @@ import com.example.demoSpringRestaurant.mapper.CourierMapper;
 import com.example.demoSpringRestaurant.mapper.OrderMapper;
 import com.example.demoSpringRestaurant.model.CourierDto;
 import com.example.demoSpringRestaurant.model.OrderDto;
+import com.example.demoSpringRestaurant.persistance.document.OrderDocument;
 import com.example.demoSpringRestaurant.service.CourierService;
 import com.example.demoSpringRestaurant.service.OrderService;
 import lombok.RequiredArgsConstructor;
@@ -22,41 +23,37 @@ public class OrderCourierFacade {
     private final OrderMapper orderMapper;
     private final OrderService orderService;
 
-   /*- public CourierDto deleteCourier(String courierId) throws DocumentNotFoundException {
-        var courier = courierService.findById(courierId)
-                .orElseThrow(() -> new CourierDocumentNotFoundException("Courier not found"));
+    public CourierDto deleteCourier(String courierId) throws DocumentNotFoundException {
+        var courier = courierService.findCourierById(courierId);
+        var order = orderService.findOrderById(courier.getActiveOrder().getId());
+        order.setCourierDto(null); //TODO
         var orders = courier.getOrders();
-        orderService.deleteAllOrder(orders);
-        courierService.deleteById(courier.getId()); //TODO
-        return courierMapper.fromDocumentToCourierDto(courier);
-    }*/
+        orders.forEach(orderDto -> orderDto.setCourierDto(null));
+        //orderService.deleteAllOrder(orders);
+        courierService.deleteById(courier.getId());
+        return courier;
+    }
 
     public CourierDto addOrderToCourier(String courierId, String orderId) throws CourierDocumentNotFoundException, OrderDocumentNotFoundException {
-        var courier = courierService.findById(courierId)
-                .orElseThrow(() -> new CourierDocumentNotFoundException("Courier not found"));
-        var order = orderService.findById(orderId)
-                .orElseThrow(() -> new OrderDocumentNotFoundException("Order not found"));
+        var courier = courierService.findCourierById(courierId);
+        var order = orderService.findOrderById(orderId);
         var orders = courier.getOrders();
         orders.add(order);
         courier.setOrders(orders);
-        return courierMapper.fromDocumentToCourierDto(courier);
+        return courier;
     }
 
     public CourierDto setOrderActive(String courierId, String orderId) throws CourierDocumentNotFoundException, OrderDocumentNotFoundException {
-        var courier = courierService.findById(courierId)
-                .orElseThrow(() -> new CourierDocumentNotFoundException("Courier not found"));
-        var order = orderService.findById(orderId)
-                .orElseThrow(() -> new OrderDocumentNotFoundException("Order not found"));
+        var courier = courierService.findCourierById(courierId);
+        var order = orderService.findOrderById(orderId);
         courier.setActiveOrder(order);
-        return courierMapper.fromDocumentToCourierDto(courier);
+        return courier;
     }
 
     public OrderDto setCourierToOrder(String orderId, String courierId) throws CourierDocumentNotFoundException, OrderDocumentNotFoundException {
-        var courier = courierService.findById(courierId)
-                .orElseThrow(() -> new CourierDocumentNotFoundException("Courier not found"));
-        var order = orderService.findById(orderId)
-                .orElseThrow(() -> new OrderDocumentNotFoundException("Order not found"));
-        order.setCourierDocument(courier);
-        return orderMapper.fromDocumentToOrderDto(order);
+        var courier = courierService.findCourierById(courierId);
+        var order = orderService.findOrderById(orderId);
+        order.setCourierDto(courier);
+        return order;
     }
 }

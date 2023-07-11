@@ -52,20 +52,21 @@ public class CourierService {
         return courierMapper.fromDocumentToCourierDto(updatedDocument);
     }
 
-    public Optional<CourierDocument> findCourierDocumentByActiveOrder_Id(String id) {
-        return courierRepository.findCourierDocumentByActiveOrder_Id(id);
+    public CourierDto findCourierDtoByActiveOrder_Id(String id) throws CourierDocumentNotFoundException {
+        var courier =  courierRepository.findCourierDocumentByActiveOrder_Id(id).
+                orElseThrow(() -> new CourierDocumentNotFoundException("Courier not found"));
+        return courierMapper.fromDocumentToCourierDto(courier);
     }
 
-
-    public Optional<CourierDocument> findById(String courierId) {
-        return courierRepository.findById(courierId);
+    public CourierDto findCourierById(String courierId) throws CourierDocumentNotFoundException { //TODo üsszes többinél is
+        var courierDocument = courierRepository.findById(courierId)
+                .orElseThrow(() -> new CourierDocumentNotFoundException("Courier not found"));
+        return courierMapper.fromDocumentToCourierDto(courierDocument);
     }
-
 
     public void deleteById(String id) throws CourierDocumentNotFoundException {
         if (courierRepository.existsById(id))
             courierRepository.deleteById(id);
         else throw new CourierDocumentNotFoundException("Courier not found");
     }
-
 }

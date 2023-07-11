@@ -1,8 +1,10 @@
 package com.example.demoSpringRestaurant.persistance.document;
 
 import com.example.demoSpringRestaurant.constant.Vehicle;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -14,6 +16,8 @@ import java.util.List;
 
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Document(collection = "courier")
 public class CourierDocument {
     @Id

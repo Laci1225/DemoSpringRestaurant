@@ -6,6 +6,7 @@ import com.example.demoSpringRestaurant.constant.OrderStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -19,6 +20,7 @@ import java.time.LocalTime;
 @Data
 @AllArgsConstructor
 @Builder
+@NoArgsConstructor
 @Document(collection = "orders")
 public class OrderDocument {
     @Id

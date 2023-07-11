@@ -28,19 +28,16 @@ public class OrderGuestCourierFacade {
     public OrderDto deleteOrder(String orderId) throws DocumentNotFoundException {
         log.trace("Deleting order with ID: " + orderId);
 
-        var order = orderService.findById(orderId)
-                .orElseThrow(() -> new OrderDocumentNotFoundException("Order not found"));
+        var order = orderService.findOrderById(orderId);
 
-        var guest = guestService.findGuestDocumentByActiveOrder_Id(order.getId())
-                .orElseThrow(() -> new GuestDocumentNotFoundException("Guest not found"));
+        var guest = guestService.findGuestDtoByActiveOrder_Id(order.getId());
 
-        var courier = courierService.findCourierDocumentByActiveOrder_Id(order.getId())
-                .orElseThrow(() -> new CourierDocumentNotFoundException("Courier not found"));
+        var courier = courierService.findCourierDtoByActiveOrder_Id(order.getId());
 
         guestService.deleteById(guest.getId());
         courierService.deleteById(courier.getId());
         orderService.deleteById(order.getId());
         log.trace("Order deleted with ID: " + orderId);
-        return orderMapper.fromDocumentToOrderDto(order);
+        return order;
     }
 }
