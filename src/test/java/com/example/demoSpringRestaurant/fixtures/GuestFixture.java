@@ -5,7 +5,6 @@ import com.example.demoSpringRestaurant.model.GuestDto;
 import com.example.demoSpringRestaurant.model.GuestUpdateDto;
 import com.example.demoSpringRestaurant.model.OrderDto;
 import com.example.demoSpringRestaurant.persistance.document.GuestDocument;
-import com.example.demoSpringRestaurant.persistance.document.GuestDocument;
 import com.example.demoSpringRestaurant.persistance.document.OrderDocument;
 import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
@@ -18,8 +17,8 @@ import java.util.List;
 @Data
 
 public class GuestFixture {
-    private static final OrderDocument ACTIVE_ORDER = null;
-    private static final OrderDto ACTIVE_ORDER_DTO = null;
+    private static final OrderDocument ACTIVE_ORDER = OrderFixture.getOrderDocument(true);
+    private static final OrderDto ACTIVE_ORDER_DTO = OrderFixture.getOrderDto();
     private static final boolean PAYED = true;
     @CreatedDate
     private static final LocalDateTime CREATED_DATE = LocalDateTime.now();

@@ -21,8 +21,8 @@ import java.util.List;
 @Data
 public class OrderFixture {
 
-    private static final RestaurantDocument RESTAURANT_DOCUMENT = new RestaurantDocument();
-    private static final RestaurantDto RESTAURANT_DTO = new RestaurantDto();
+    private static final RestaurantDocument RESTAURANT_DOCUMENT = RestaurantFixture.getRestaurantDocument(true);
+    private static final RestaurantDto RESTAURANT_DTO = RestaurantFixture.getRestaurantDto();
     private static final MealType MEAL_TYPE = MealType.RICEANDFISH;
     private static final DrinkType DRINK_TYPE = DrinkType.COLA;
     private static final double PRICE = MEAL_TYPE.getValue() + DRINK_TYPE.getValue();
@@ -30,10 +30,10 @@ public class OrderFixture {
     private static final OrderStatus ORDER_STATUS = OrderStatus.SENT;
     private static final String GUEST_ID = "1234";
     private static final String COURIER_ID = "1234";
-    private static final CourierDocument COURIER_DOCUMENT = null;
-    private static final CourierDto COURIER_DTO = null;
-    private static final GuestDocument GUEST_DOCUMENT =  null;
-    private static final GuestDto GUEST_DTO =  null;
+    private static final CourierDocument COURIER_DOCUMENT = CourierFixture.getCourierDocument(true);
+    private static final CourierDto COURIER_DTO = CourierFixture.getCourierDto();
+    private static final GuestDocument GUEST_DOCUMENT =  GuestFixture.getGuestDocument(true);
+    private static final GuestDto GUEST_DTO =  GuestFixture.getGuestDto();
 
     @CreatedDate
     private static final LocalDateTime CREATED_DATE = LocalDateTime.now();

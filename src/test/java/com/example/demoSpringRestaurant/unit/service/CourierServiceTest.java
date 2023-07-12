@@ -2,9 +2,7 @@ package com.example.demoSpringRestaurant.unit.service;
 
 import com.example.demoSpringRestaurant.exception.CourierDocumentNotFoundException;
 import com.example.demoSpringRestaurant.exception.DocumentNotFoundException;
-import com.example.demoSpringRestaurant.exception.RestaurantDocumentNotFoundException;
 import com.example.demoSpringRestaurant.fixtures.CourierFixture;
-import com.example.demoSpringRestaurant.fixtures.RestaurantFixture;
 import com.example.demoSpringRestaurant.mapper.CourierMapper;
 import com.example.demoSpringRestaurant.model.CourierCreationDto;
 import com.example.demoSpringRestaurant.model.CourierUpdateDto;
@@ -131,28 +129,30 @@ public class CourierServiceTest {
     }
 
     @Test
-    void findCourierDocumentByActiveOrder_Id() {
+    void findCourierDtoByActiveOrder_Id() throws CourierDocumentNotFoundException {
         when(courierRepository.findCourierDocumentByActiveOrder_Id(anyString())).
                 thenReturn(Optional.of(CourierFixture.getCourierDocument(true)));
+        when(courierMapper.fromDocumentToCourierDto(any(CourierDocument.class)))
+                .thenReturn(CourierFixture.getCourierDto());
 
-        var courierDocumentOptional = courierService.findCourierDocumentByActiveOrder_Id(
+        var courierDto = courierService.findCourierDtoByActiveOrder_Id(
                 "1234");
 
-        assertThat(courierDocumentOptional).usingRecursiveComparison().isEqualTo(
-                Optional.of(CourierFixture.getCourierDocument("1234")));
+        assertThat(courierDto).usingRecursiveComparison().isEqualTo(CourierFixture.getCourierDto());
         verify(courierRepository, times(1)).findCourierDocumentByActiveOrder_Id(anyString());
         verifyNoMoreInteractions(courierRepository);
     }
 
     @Test
-    void findByIdShouldReturnOneCourier() {
+    void findByCourierIdShouldReturnOneCourier() throws CourierDocumentNotFoundException {
         when(courierRepository.findById(anyString())).
                 thenReturn(Optional.of(CourierFixture.getCourierDocument(true)));
+        when(courierMapper.fromDocumentToCourierDto(any(CourierDocument.class)))
+                .thenReturn(CourierFixture.getCourierDto());
 
-        var courierDocumentOptional = courierService.findById("1234");
+        var courierDto = courierService.findCourierById("1234");
 
-        assertThat(courierDocumentOptional).usingRecursiveComparison().isEqualTo(
-                Optional.of(CourierFixture.getCourierDocument("1234")));
+        assertThat(courierDto).usingRecursiveComparison().isEqualTo(CourierFixture.getCourierDto());
         verify(courierRepository, times(1)).findById(anyString());
         verifyNoMoreInteractions(courierRepository);
     }

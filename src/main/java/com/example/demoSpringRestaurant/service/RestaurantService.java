@@ -60,10 +60,10 @@ public class RestaurantService {
                 .stream().map(restaurantMapper::fromDocumentToRestaurantDto).toList();
     }
 
-    public RestaurantDocument findRestaurantById(String restaurantId) throws RestaurantDocumentNotFoundException {
-        return restaurantRepository.findById(restaurantId).orElseThrow(
-                () -> new RestaurantDocumentNotFoundException("Restaurant not found")
-        );
+    public RestaurantDto findRestaurantById(String restaurantId) throws RestaurantDocumentNotFoundException {
+        var restaurant = restaurantRepository.findById(restaurantId).orElseThrow(
+                () -> new RestaurantDocumentNotFoundException("Restaurant not found"));
+        return restaurantMapper.fromDocumentToRestaurantDto(restaurant);
     }
 
     public RestaurantDto updateParametersInRestaurant(String restaurantId, RestaurantUpdateDto restaurantUpdateDto) throws RestaurantDocumentNotFoundException {

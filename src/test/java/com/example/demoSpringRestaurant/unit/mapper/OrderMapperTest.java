@@ -1,20 +1,18 @@
 package com.example.demoSpringRestaurant.unit.mapper;
 
-import com.example.demoSpringRestaurant.fixtures.OrderFixture;
-import com.example.demoSpringRestaurant.mapper.OrderMapper;
-import com.example.demoSpringRestaurant.model.OrderCreationDto;
-import org.junit.jupiter.api.Test;
+import com.example.demoSpringRestaurant.mapper.OrderMapperImpl;
+import com.example.demoSpringRestaurant.mapper.RestaurantWithoutOrderMapperImpl;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mapstruct.factory.Mappers;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static org.junit.jupiter.api.Assertions.*;
 
 //TODO a módosítás miatt nem jó
 @ExtendWith(SpringExtension.class)
+@SpringBootTest(classes = {OrderMapperImpl.class, RestaurantWithoutOrderMapperImpl.class})
 public class OrderMapperTest {
-
-    /*OrderMapper orderMapper = Mappers.getMapper(OrderMapper.class);
+/*    @Autowired
+    OrderMapper orderMapper;// = Mappers.getMapper(OrderMapper.class);
 
     @Test
     public void fromOrderDtoToDocument() {
@@ -64,15 +62,16 @@ public class OrderMapperTest {
     @Test
     public void fromOrderCreationDtoToDocument() {
         var result = orderMapper
-                .fromOrderCreationDtoToDocument(OrderFixture.getOrderCreationDto(),
-                        OrderFixture.getOrderDocument(true).getCourierDocument());
+                .fromOrderCreationDtoToDto(OrderFixture.getOrderCreationDto(),
+                        OrderFixture.getOrderDto().getCourierDto(),
+                        OrderFixture.getOrderDto().getGuestDto());
 
-        assertEquals(result, OrderFixture.getOrderDocument(false));
+        assertEquals(result, OrderFixture.getOrderDto());
     }
     @Test
     public void fromOrderCreationDtoToDocumentReturnsNull() {
         var result = orderMapper
-                .fromOrderCreationDtoToDocument((OrderCreationDto) null,null);
+                .fromOrderCreationDtoToDto((OrderCreationDto) null,null,null);
 
         assertNull(result);
     }
@@ -104,6 +103,6 @@ public class OrderMapperTest {
         var result = orderMapper
                 .fromOrderUpdateDtoToDocument(null);
 
-        assertNull(result);
+        assertNull(result);  //TODO isActive false lesz valahogy
     }*/
 }

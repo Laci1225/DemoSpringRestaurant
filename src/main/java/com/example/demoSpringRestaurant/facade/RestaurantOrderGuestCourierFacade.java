@@ -1,17 +1,13 @@
 package com.example.demoSpringRestaurant.facade;
 
-import com.example.demoSpringRestaurant.exception.CourierDocumentNotFoundException;
 import com.example.demoSpringRestaurant.exception.DocumentNotFoundException;
-import com.example.demoSpringRestaurant.exception.GuestDocumentNotFoundException;
 import com.example.demoSpringRestaurant.mapper.CourierMapper;
 import com.example.demoSpringRestaurant.mapper.GuestMapper;
 import com.example.demoSpringRestaurant.mapper.OrderMapper;
-import com.example.demoSpringRestaurant.mapper.RestaurantMapper;
 import com.example.demoSpringRestaurant.model.OrderCreationDto;
 import com.example.demoSpringRestaurant.model.OrderDto;
 import com.example.demoSpringRestaurant.service.CourierService;
 import com.example.demoSpringRestaurant.service.GuestService;
-import com.example.demoSpringRestaurant.service.OrderService;
 import com.example.demoSpringRestaurant.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,18 +22,16 @@ public class RestaurantOrderGuestCourierFacade {
     private final CourierService courierService;
     private final CourierMapper courierMapper;
     private final RestaurantService restaurantService;
-    private final RestaurantMapper restaurantMapper;
     private final GuestService guestService;
     private final GuestMapper guestMapper;
     private final OrderMapper orderMapper;
-    private final OrderService orderService;
 
     public OrderDto createOrder(OrderCreationDto orderCreationDto,
                                 String restaurantId) throws DocumentNotFoundException {
         log.trace("Creating order " + orderCreationDto + "with Restaurant ID: " + restaurantId);
 
-        var restaurantDocument = restaurantService.findRestaurantById(restaurantId);
-        orderCreationDto.setRestaurant(restaurantMapper.fromDocumentToRestaurantDto(restaurantDocument));
+        var restaurantDto = restaurantService.findRestaurantById(restaurantId);
+        orderCreationDto.setRestaurant(restaurantDto);
         var estimated = LocalDateTime.now().toLocalTime().plusMinutes(30);
         orderCreationDto.setEstimatedPreparationTime(estimated);
 
@@ -53,17 +47,18 @@ public class RestaurantOrderGuestCourierFacade {
         //;
 
         log.trace("a  :" + courier);
-        var orderDocument = orderMapper.fromOrderCreationDtoToDocument(orderCreationDto
-                , courierDocument, guestDocument);
+        var orderDto = orderMapper.fromOrderCreationDtoToDto(orderCreationDto
+                , courier, guest);
+        var orderDocument = orderMapper.fromOrderDtoToDocument(orderDto);
         log.trace("a  :" + orderCreationDto);
 
 
         //if (orderDocument.isDelivery())
         orderDocument.setCourierDocument(courierDocument);
         orderDocument.setGuestDocument(guestDocument);
-        var orderDto = orderService.saveOrder(orderDocument);
+       // var orderDto = orderService.saveOrder(orderDocument);
 
-        log.trace("Order" + orderDto + " with Restaurant ID: " + orderDto.getId() + " created");
+       // log.trace("Order" + orderDto + " with Restaurant ID: " + orderDto.getId() + " created");
         return orderMapper.fromDocumentToOrderDto(orderDocument);
     }
 }

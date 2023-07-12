@@ -3,7 +3,6 @@ package com.example.demoSpringRestaurant.facade;
 import com.example.demoSpringRestaurant.exception.RestaurantDocumentNotFoundException;
 import com.example.demoSpringRestaurant.mapper.OrderMapper;
 import com.example.demoSpringRestaurant.mapper.RestaurantMapper;
-import com.example.demoSpringRestaurant.model.OrderCreationDto;
 import com.example.demoSpringRestaurant.model.OrderDto;
 import com.example.demoSpringRestaurant.model.RestaurantDto;
 import com.example.demoSpringRestaurant.service.OrderService;
@@ -12,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -39,7 +37,8 @@ public class RestaurantOrderFacade {
 
         var orders = orderService.findAllByRestaurantId(restaurantId);
         orderService.deleteAllOrder(orders);
-        var restaurantEntity = restaurantService.findRestaurantById(restaurantId);
+        var restaurantDto = restaurantService.findRestaurantById(restaurantId);
+        var restaurantEntity = restaurantMapper.fromRestaurantDtoToDocument(restaurantDto);
         restaurantService.deleteRestaurant(restaurantEntity);
 
         log.trace("Restaurant with ID: " + restaurantId + " deleted");

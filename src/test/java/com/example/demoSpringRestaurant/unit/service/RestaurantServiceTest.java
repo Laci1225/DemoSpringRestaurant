@@ -189,10 +189,12 @@ public class RestaurantServiceTest {
     void findRestaurantByIdShouldReturnARestaurant() throws RestaurantDocumentNotFoundException {
         when(restaurantRepository.findById(anyString()))
                 .thenReturn(Optional.of(RestaurantFixture.getRestaurantDocument(false)));
+        when(restaurantMapper.fromDocumentToRestaurantDto(any(RestaurantDocument.class)))
+                .thenReturn(RestaurantFixture.getRestaurantDto());
 
-        var restaurantDocument = restaurantService.findRestaurantById(RestaurantFixture.getRestaurantDto().getId());
+        var restaurantDto = restaurantService.findRestaurantById(RestaurantFixture.getRestaurantDto().getId());
 
-        assertThat(restaurantDocument).usingRecursiveComparison().isEqualTo(RestaurantFixture.getRestaurantDocument(false));
+        assertThat(restaurantDto).usingRecursiveComparison().isEqualTo(RestaurantFixture.getRestaurantDto());
         verify(restaurantRepository, times(1)).findById(anyString());
         verifyNoMoreInteractions(restaurantRepository);
     }

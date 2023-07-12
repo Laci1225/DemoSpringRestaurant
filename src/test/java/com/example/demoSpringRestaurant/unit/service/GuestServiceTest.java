@@ -1,13 +1,11 @@
 package com.example.demoSpringRestaurant.unit.service;
 
-import com.example.demoSpringRestaurant.exception.CourierDocumentNotFoundException;
 import com.example.demoSpringRestaurant.exception.DocumentNotFoundException;
 import com.example.demoSpringRestaurant.exception.GuestDocumentNotFoundException;
 import com.example.demoSpringRestaurant.fixtures.CourierFixture;
 import com.example.demoSpringRestaurant.fixtures.GuestFixture;
-import com.example.demoSpringRestaurant.fixtures.GuestFixture;
-import com.example.demoSpringRestaurant.fixtures.GuestFixture;
 import com.example.demoSpringRestaurant.mapper.GuestMapper;
+import com.example.demoSpringRestaurant.model.GuestDto;
 import com.example.demoSpringRestaurant.model.GuestUpdateDto;
 import com.example.demoSpringRestaurant.persistance.document.GuestDocument;
 import com.example.demoSpringRestaurant.persistance.repository.GuestRepository;
@@ -104,7 +102,7 @@ public class GuestServiceTest {
     }
 
     @Test
-    void deleteByIdShouldThrowGuestDocumentNotFoundException() throws GuestDocumentNotFoundException {
+    void deleteByIdShouldThrowGuestDocumentNotFoundException(){
         when(guestRepository.existsById(anyString()))
                 .thenReturn(false);
 
@@ -116,38 +114,45 @@ public class GuestServiceTest {
     void saveGuestShouldSaveOneGuest() {
         when(guestRepository.save(any(GuestDocument.class)))
                 .thenReturn(GuestFixture.getGuestDocument(true));
+        when(guestMapper.fromGuestDtoToDocument(any(GuestDto.class)))
+                .thenReturn(GuestFixture.getGuestDocument(true));
+        when(guestMapper.fromDocumentToGuestDto(any(GuestDocument.class)))
+                .thenReturn(GuestFixture.getGuestDto());
 
-        var guest = guestService.saveGuest(GuestFixture.getGuestDocument("1234"));
+        var guest = guestService.saveGuest(GuestFixture.getGuestDto());
 
-        assertThat(guest).usingRecursiveComparison().isEqualTo(GuestFixture.getGuestDocument("1234"));
+        assertThat(guest).usingRecursiveComparison().isEqualTo(GuestFixture.getGuestDto());
 
         verify(guestRepository, times(1)).save(any(GuestDocument.class));
         verifyNoMoreInteractions(guestRepository);
     }
 
     @Test
-    void findGuestDocumentByActiveOrder_Id() {
+    void findGuestDocumentByActiveOrder_Id() throws GuestDocumentNotFoundException {
         when(guestRepository.findGuestDocumentByActiveOrder_Id(anyString())).
                 thenReturn(Optional.of(GuestFixture.getGuestDocument(true)));
+        when(guestMapper.fromDocumentToGuestDto(any(GuestDocument.class)))
+                .thenReturn(GuestFixture.getGuestDto());
 
-        var guestDocumentOptional = guestService.findGuestDocumentByActiveOrder_Id(
+        var guestDto = guestService.findGuestDtoByActiveOrder_Id(
                 "1234");
 
-        assertThat(guestDocumentOptional).usingRecursiveComparison().isEqualTo(
-                Optional.of(GuestFixture.getGuestDocument("1234")));
+        assertThat(guestDto).usingRecursiveComparison().isEqualTo(GuestFixture.getGuestDto());
         verify(guestRepository, times(1)).findGuestDocumentByActiveOrder_Id(anyString());
         verifyNoMoreInteractions(guestRepository);
     }
 
     @Test
-    void findByIdShouldReturnOneGuest() {
+    void findGuestByIdShouldReturnOneGuest() throws GuestDocumentNotFoundException {
         when(guestRepository.findById(anyString())).
                 thenReturn(Optional.of(GuestFixture.getGuestDocument(true)));
+        when(guestMapper.fromDocumentToGuestDto(any(GuestDocument.class)))
+                .thenReturn(GuestFixture.getGuestDto());
 
-        var guestDocumentOptional = guestService.findById("1234");
+        var guestDto = guestService.findGuestById("1234");
 
-        assertThat(guestDocumentOptional).usingRecursiveComparison().isEqualTo(
-                Optional.of(GuestFixture.getGuestDocument("1234")));
+        assertThat(guestDto).usingRecursiveComparison().isEqualTo(
+                GuestFixture.getGuestDto());
         verify(guestRepository, times(1)).findById(anyString());
         verifyNoMoreInteractions(guestRepository);
     }

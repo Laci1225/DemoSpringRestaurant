@@ -17,6 +17,8 @@ public interface GuestMapper {
 
     GuestDocument fromGuestCreationDtoToDocument(GuestCreationDto GuestCreationDto);
 
+    GuestDto fromCreationDtoToDto(GuestCreationDto guestCreationDto);
+
     GuestUpdateDto fromDocumentToGuestUpdateDto(GuestDocument GuestDocument);
 
     GuestDocument fromGuestUpdateDtoToDocument(GuestUpdateDto GuestUpdateDto);

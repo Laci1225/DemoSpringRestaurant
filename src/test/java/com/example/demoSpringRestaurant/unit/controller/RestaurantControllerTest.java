@@ -3,7 +3,6 @@ package com.example.demoSpringRestaurant.unit.controller;
 import com.example.demoSpringRestaurant.controller.RestaurantController;
 import com.example.demoSpringRestaurant.exception.RestaurantDocumentNotFoundException;
 import com.example.demoSpringRestaurant.facade.RestaurantOrderFacade;
-import com.example.demoSpringRestaurant.fixtures.OrderFixture;
 import com.example.demoSpringRestaurant.fixtures.RestaurantFixture;
 import com.example.demoSpringRestaurant.model.RestaurantCreationDto;
 import com.example.demoSpringRestaurant.model.RestaurantUpdateDto;
@@ -27,7 +26,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @WebMvcTest(RestaurantController.class)
 public class RestaurantControllerTest {
 
-    /*@Autowired
+    @Autowired
     private MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
@@ -38,7 +37,7 @@ public class RestaurantControllerTest {
 
 
     @Test
-    void getRestaurantShouldReturnAllRestaurant() throws Exception {
+    void getRestaurantsShouldReturnAllRestaurant() throws Exception {
         when(restaurantService.getRestaurants())
                 .thenReturn(RestaurantFixture.getRestaurantDtoList());
 
@@ -47,6 +46,19 @@ public class RestaurantControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isOk()).andExpect(content()
                 .json(objectMapper.writeValueAsString(RestaurantFixture.getRestaurantDtoList()))
+        );
+    }
+
+    @Test
+    void getRestaurantShouldReturnOneRestaurant() throws Exception {
+        when(restaurantService.getRestaurant(anyString()))
+                .thenReturn(RestaurantFixture.getRestaurantDto());
+
+        this.mockMvc.perform(
+                get("/restaurants/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isOk()).andExpect(content()
+                .json(objectMapper.writeValueAsString(RestaurantFixture.getRestaurantDto()))
         );
     }
 
@@ -85,10 +97,9 @@ public class RestaurantControllerTest {
         //when
         //then
         this.mockMvc.perform(
-                delete("/orders/1")
+                delete("/restaurants/1")
         ).andExpect(status().isNotFound());
     }
-
     @Test
     void updateRestaurantShouldUpdateOneRestaurant() throws Exception {
         when(restaurantService.updateRestaurant(anyString(), any(RestaurantUpdateDto.class)))
@@ -115,6 +126,7 @@ public class RestaurantControllerTest {
 
         ).andExpect(status().isNotFound());
     }
+
     @Test
     void updateRestaurantShouldThrowOrderEntityNotFoundExceptionWith400() throws Exception {
         when(restaurantService.updateRestaurant(anyString(), any(RestaurantUpdateDto.class)))
@@ -123,7 +135,7 @@ public class RestaurantControllerTest {
         this.mockMvc.perform(
                 put("/restaurants/1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(OrderFixture.getOrderCreationDto()))
+                        .content(objectMapper.writeValueAsString(RestaurantFixture.getRestaurantDocumentList()))
         ).andExpect(status().isBadRequest());
     }
 
@@ -153,6 +165,7 @@ public class RestaurantControllerTest {
 
         ).andExpect(status().isNotFound());
     }
+
     @Test
     void updateParametersInRestaurantShouldThrowOrderEntityNotFoundExceptionWith400() throws Exception {
         when(restaurantService.updateParametersInRestaurant(anyString(), any(RestaurantUpdateDto.class)))
@@ -161,7 +174,7 @@ public class RestaurantControllerTest {
         this.mockMvc.perform(
                 patch("/restaurants/1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(OrderFixture.getOrderDtoList()))
+                        .content(objectMapper.writeValueAsString(RestaurantFixture.getRestaurantDocumentList()))
         ).andExpect(status().isBadRequest());
     }
 
@@ -176,5 +189,4 @@ public class RestaurantControllerTest {
                 .json(objectMapper.writeValueAsString(RestaurantFixture.getRestaurantDtoList()))
         );
     }
-*/
 }

@@ -26,11 +26,12 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping(path = "courier")
+@RequestMapping(path = "couriers")
 @Slf4j
 public class CourierController {
     private final CourierService courierService;
     private final OrderCourierFacade orderCourierFacade;
+
     @Operation(summary = "Returns all courier")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "All courier found",
@@ -46,6 +47,7 @@ public class CourierController {
         log.debug("Couriers returned successfully");
         return courierList;
     }
+
     @Operation(summary = "Returns a courier")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "A courier found",
@@ -61,6 +63,7 @@ public class CourierController {
         log.debug("Couriers returned successfully");
         return courierList;
     }
+
     @Operation(summary = "Creates a courier")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "A courier created",
@@ -78,6 +81,7 @@ public class CourierController {
         log.debug("Created a courier successfully");
         return courier;
     }
+
     @Operation(summary = "Add order to courier")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "An order added to a courier",
@@ -90,13 +94,14 @@ public class CourierController {
     @ResponseStatus(HttpStatus.OK)
     @PostMapping(path = "add/{courierId}/{orderId}")
     public CourierDto addOrderToCourier(@PathVariable(value = "courierId") String courierId
-    ,@PathVariable(value = "orderId") String orderId){
+            , @PathVariable(value = "orderId") String orderId) {
         try {
-            return orderCourierFacade.addOrderToCourier(courierId,orderId);
+            return orderCourierFacade.addOrderToCourier(courierId, orderId);
         } catch (CourierDocumentNotFoundException | OrderDocumentNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
     }
+
     @Operation(summary = "Add order set to active")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "An order set active",
@@ -109,14 +114,15 @@ public class CourierController {
     @ResponseStatus(HttpStatus.OK)
     @PostMapping(path = "set/{courierId}/{orderId}")
     public CourierDto setOrderActive(@PathVariable(value = "courierId") String courierId
-    ,@PathVariable(value = "orderId") String orderId){
+            , @PathVariable(value = "orderId") String orderId) {
         try {
-            return orderCourierFacade.setOrderActive(courierId,orderId);
+            return orderCourierFacade.setOrderActive(courierId, orderId);
         } catch (CourierDocumentNotFoundException | OrderDocumentNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
     }
-   /* @Operation(summary = "Deletes a courier")
+
+    @Operation(summary = "Deletes a courier")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "202", description = "A courier deleted",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
@@ -137,7 +143,7 @@ public class CourierController {
             log.warn("Deleting a courier were unsuccessful due to: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
-    }*/
+    }
 
     @Operation(summary = "Updates a courier")
     @ApiResponses(value = {

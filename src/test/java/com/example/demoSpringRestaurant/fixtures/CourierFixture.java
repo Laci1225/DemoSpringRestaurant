@@ -4,12 +4,9 @@ import com.example.demoSpringRestaurant.constant.Vehicle;
 import com.example.demoSpringRestaurant.model.*;
 import com.example.demoSpringRestaurant.persistance.document.CourierDocument;
 import com.example.demoSpringRestaurant.persistance.document.OrderDocument;
-import com.example.demoSpringRestaurant.persistance.document.RestaurantDocument;
 import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -20,10 +17,10 @@ import java.util.Optional;
 public class CourierFixture {
     private static final String NAME = "Sam";
     private static final boolean IS_ACTIVE = true;
-    private static final List<OrderDocument> ORDERS = null;
-    private static final List<OrderDto> ORDERS_DTO = null;
-    private static final OrderDocument ACTIVE_ORDER = null;
-    private static final OrderDto ACTIVE_ORDER_DTO = null;
+    private static final List<OrderDocument> ORDERS = OrderFixture.getOrderDocumentList();
+    private static final List<OrderDto> ORDERS_DTO = OrderFixture.getOrderDtoList();
+    private static final OrderDocument ACTIVE_ORDER = OrderFixture.getOrderDocument(true);
+    private static final OrderDto ACTIVE_ORDER_DTO = OrderFixture.getOrderDto();
     private static final double PAYMENT_PER_ORDER = 12.0;
     private static final Vehicle VEHICLE = Vehicle.CAR;
     @CreatedDate

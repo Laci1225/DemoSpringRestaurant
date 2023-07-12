@@ -3,13 +3,10 @@ package com.example.demoSpringRestaurant.unit.service;
 import com.example.demoSpringRestaurant.constant.OrderStatus;
 import com.example.demoSpringRestaurant.exception.OrderDocumentNotFoundException;
 import com.example.demoSpringRestaurant.exception.DocumentNotFoundException;
-import com.example.demoSpringRestaurant.exception.OrderDocumentNotFoundException;
-import com.example.demoSpringRestaurant.fixtures.OrderFixture;
-import com.example.demoSpringRestaurant.fixtures.OrderFixture;
 import com.example.demoSpringRestaurant.fixtures.OrderFixture;
 import com.example.demoSpringRestaurant.mapper.OrderMapper;
+import com.example.demoSpringRestaurant.model.OrderDto;
 import com.example.demoSpringRestaurant.model.OrderUpdateDto;
-import com.example.demoSpringRestaurant.persistance.document.OrderDocument;
 import com.example.demoSpringRestaurant.persistance.document.OrderDocument;
 import com.example.demoSpringRestaurant.persistance.repository.OrderRepository;
 import com.example.demoSpringRestaurant.service.OrderService;
@@ -17,11 +14,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -183,10 +177,12 @@ class OrderServiceTest {
                 .thenReturn(OrderFixture.getOrderDocument(false));
         when(orderMapper.fromDocumentToOrderDto(any(OrderDocument.class)))
                 .thenReturn(OrderFixture.getOrderDto());
+        when(orderMapper.fromOrderDtoToDocument(any(OrderDto.class)))
+                .thenReturn(OrderFixture.getOrderDocument(true));
 
-        var order = orderService.saveOrder(OrderFixture.getOrderDocument("1234"));
+        var orderDto = orderService.saveOrder(OrderFixture.getOrderDto());
 
-        assertThat(order).usingRecursiveComparison().isEqualTo(OrderFixture.getOrderDto());
+        assertThat(orderDto).usingRecursiveComparison().isEqualTo(OrderFixture.getOrderDto());
 
         verify(orderRepository, times(1)).save(any(OrderDocument.class));
         verifyNoMoreInteractions(orderRepository);
@@ -215,14 +211,16 @@ class OrderServiceTest {
     }
 
     @Test
-    void findByIdShouldReturnOneOrder() {
+    void findOrderByIdShouldReturnOneOrder() throws OrderDocumentNotFoundException {
         when(orderRepository.findById(anyString())).
                 thenReturn(Optional.of(OrderFixture.getOrderDocument(true)));
+        when(orderMapper.fromDocumentToOrderDto(any(OrderDocument.class)))
+                .thenReturn(OrderFixture.getOrderDto());
 
-        var orderDocumentOptional = orderService.findById("1234");
+        var orderDto = orderService.findOrderById("1234");
 
-        assertThat(orderDocumentOptional).usingRecursiveComparison().isEqualTo(
-                Optional.of(OrderFixture.getOrderDocument("1234")));
+        assertThat(orderDto).usingRecursiveComparison().isEqualTo(
+                OrderFixture.getOrderDto());
         verify(orderRepository, times(1)).findById(anyString());
         verifyNoMoreInteractions(orderRepository);
     }

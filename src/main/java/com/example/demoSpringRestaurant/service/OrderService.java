@@ -11,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -54,8 +53,9 @@ public class OrderService {
         return orderMapper.fromDocumentToOrderDto(updatedDocument);
     }
 
-    public OrderDto saveOrder(OrderDocument orderDocument) {
-        return orderMapper.fromDocumentToOrderDto(orderRepository.save(orderDocument));
+    public OrderDto saveOrder(OrderDto orderDto) {
+        var orderDocument =  orderRepository.save(orderMapper.fromOrderDtoToDocument(orderDto));
+        return orderMapper.fromDocumentToOrderDto(orderDocument);
     }
 
     public void deleteAllOrder(List<OrderDocument> orders) {

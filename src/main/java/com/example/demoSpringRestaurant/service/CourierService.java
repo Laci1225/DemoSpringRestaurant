@@ -5,14 +5,12 @@ import com.example.demoSpringRestaurant.mapper.CourierMapper;
 import com.example.demoSpringRestaurant.model.CourierCreationDto;
 import com.example.demoSpringRestaurant.model.CourierDto;
 import com.example.demoSpringRestaurant.model.CourierUpdateDto;
-import com.example.demoSpringRestaurant.persistance.document.CourierDocument;
 import com.example.demoSpringRestaurant.persistance.repository.CourierRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -58,7 +56,7 @@ public class CourierService {
         return courierMapper.fromDocumentToCourierDto(courier);
     }
 
-    public CourierDto findCourierById(String courierId) throws CourierDocumentNotFoundException { //TODo üsszes többinél is
+    public CourierDto findCourierById(String courierId) throws CourierDocumentNotFoundException {
         var courierDocument = courierRepository.findById(courierId)
                 .orElseThrow(() -> new CourierDocumentNotFoundException("Courier not found"));
         return courierMapper.fromDocumentToCourierDto(courierDocument);

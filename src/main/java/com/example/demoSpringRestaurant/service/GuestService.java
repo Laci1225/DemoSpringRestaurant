@@ -4,7 +4,6 @@ import com.example.demoSpringRestaurant.exception.GuestDocumentNotFoundException
 import com.example.demoSpringRestaurant.mapper.GuestMapper;
 import com.example.demoSpringRestaurant.model.GuestDto;
 import com.example.demoSpringRestaurant.model.GuestUpdateDto;
-import com.example.demoSpringRestaurant.persistance.document.GuestDocument;
 import com.example.demoSpringRestaurant.persistance.repository.GuestRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -57,8 +56,9 @@ public class GuestService {
         return guestMapper.fromDocumentToGuestDto(guestDocument);
     }
 
-    public GuestDto saveGuest(GuestDocument guestDocument) {
-        return guestMapper.fromDocumentToGuestDto(guestRepository.save(guestDocument));
+    public GuestDto saveGuest(GuestDto guestDto) {
+        var guestDocument = guestRepository.save(guestMapper.fromGuestDtoToDocument(guestDto));
+        return guestMapper.fromDocumentToGuestDto(guestDocument);
     }
 
 

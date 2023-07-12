@@ -6,7 +6,7 @@ import com.example.demoSpringRestaurant.fixtures.OrderFixture;
 import com.example.demoSpringRestaurant.fixtures.RestaurantFixture;
 import com.example.demoSpringRestaurant.mapper.OrderMapper;
 import com.example.demoSpringRestaurant.mapper.RestaurantMapper;
-import com.example.demoSpringRestaurant.model.OrderCreationDto;
+import com.example.demoSpringRestaurant.model.RestaurantDto;
 import com.example.demoSpringRestaurant.persistance.document.OrderDocument;
 import com.example.demoSpringRestaurant.persistance.document.RestaurantDocument;
 import com.example.demoSpringRestaurant.service.OrderService;
@@ -61,26 +61,7 @@ public class RestaurantOrderFacadeTest {
         verify(restaurantService, times(1)).restaurantExist(anyString());
     }
 
-    /*@Test
-    void createOrderShouldCreateOneOrderDocument() throws RestaurantDocumentNotFoundException {
-        when(orderMapper.fromDocumentToOrderDto(any(OrderDocument.class)))
-                .thenReturn(OrderFixture.getOrderDto());
-        when(orderMapper.fromOrderCreationDtoToDocument(any(OrderCreationDto.class)))
-                .thenReturn(OrderFixture.getOrderDocument(false));
-        when(restaurantService.findRestaurantById(anyString()))
-                .thenReturn((RestaurantFixture.getRestaurantDocument(true)));
-        when(orderService.saveOrder(any(OrderDocument.class)))
-                .thenReturn(OrderFixture.getOrderDto());
-
-        var orderDto = restaurantOrderFacade.createOrder(OrderFixture.getOrderCreationDto(), "1234");
-
-        assertThat(orderDto).usingRecursiveComparison().isEqualTo(OrderFixture.getOrderDto());
-        verify(restaurantService, times(1)).findRestaurantById(anyString());
-        verify(orderMapper, times(1)).fromDocumentToOrderDto(any(OrderDocument.class));
-        verify(orderMapper, times(1)).fromOrderCreationDtoToDocument(any(OrderCreationDto.class));
-        verify(orderService, times(1)).saveOrder(any(OrderDocument.class));
-    }
-
+    /*
     @Test
     void createOrderShouldThrowRestaurantNotFoundException() throws RestaurantDocumentNotFoundException {
         when(restaurantService.findRestaurantById(anyString()))
@@ -100,6 +81,8 @@ public class RestaurantOrderFacadeTest {
         when(orderService.findAllByRestaurantId(anyString()))
                 .thenReturn(OrderFixture.getOrderDocumentList());
         when(restaurantService.findRestaurantById(anyString()))
+                .thenReturn(RestaurantFixture.getRestaurantDto());
+        when( restaurantMapper.fromRestaurantDtoToDocument(any(RestaurantDto.class)))
                 .thenReturn(RestaurantFixture.getRestaurantDocument(true));
         Mockito.doNothing().when(orderService).deleteAllOrder(Mockito.anyList());
         Mockito.doNothing().when(restaurantService).deleteRestaurant(Mockito.any(RestaurantDocument.class));

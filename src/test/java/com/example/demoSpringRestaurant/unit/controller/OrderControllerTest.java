@@ -4,10 +4,13 @@ import com.example.demoSpringRestaurant.constant.OrderStatus;
 import com.example.demoSpringRestaurant.controller.OrderController;
 import com.example.demoSpringRestaurant.exception.OrderDocumentNotFoundException;
 import com.example.demoSpringRestaurant.exception.RestaurantDocumentNotFoundException;
+import com.example.demoSpringRestaurant.facade.OrderCourierFacade;
+import com.example.demoSpringRestaurant.facade.OrderGuestCourierFacade;
 import com.example.demoSpringRestaurant.facade.RestaurantOrderFacade;
+import com.example.demoSpringRestaurant.facade.RestaurantOrderGuestCourierFacade;
 import com.example.demoSpringRestaurant.fixtures.OrderFixture;
-import com.example.demoSpringRestaurant.fixtures.RestaurantFixture;
 import com.example.demoSpringRestaurant.model.OrderCreationDto;
+import com.example.demoSpringRestaurant.model.OrderUpdateDto;
 import com.example.demoSpringRestaurant.service.OrderService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -24,21 +27,28 @@ import static org.mockito.Mockito.*;
 
 @WebMvcTest(OrderController.class)
 public class OrderControllerTest {
-/*
+
     @Autowired
     private MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
+
     @MockBean
     private OrderService orderService;
     @MockBean
-    private RestaurantOrderFacade restaurantOrderFacade;
+    private RestaurantOrderFacade orderOrderFacade;
+    @MockBean
+    private RestaurantOrderGuestCourierFacade orderOrderGuestCourierFacade;
+    @MockBean
+    private OrderGuestCourierFacade orderGuestCourierFacade;
+    @MockBean
+    private OrderCourierFacade orderCourierFacade;
 
 
-    /*@Test
+    @Test
     void createOrderShouldReturnCreatedOrder() throws Exception {
         //given
-        when(restaurantOrderFacade.createOrder(any(OrderCreationDto.class), anyString()))
+        when(orderOrderGuestCourierFacade.createOrder(any(OrderCreationDto.class), anyString()))
                 .thenReturn(OrderFixture.getOrderDto());
 
         //when
@@ -53,24 +63,24 @@ public class OrderControllerTest {
     }
 
     @Test
-    void createOrderShouldThrowOrderEntityNotFoundExceptionWith400() throws Exception {
+    void createOrderShouldThrowOrderDocumentNotFoundExceptionWith400() throws Exception {
 
         //given
-        when(restaurantOrderFacade.createOrder(any(OrderCreationDto.class), anyString()))
+        when(orderOrderGuestCourierFacade.createOrder(any(OrderCreationDto.class), anyString()))
                 .thenThrow(RestaurantDocumentNotFoundException.class);
         //when
         //then
         this.mockMvc.perform(
                 post("/orders/1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(RestaurantFixture.getRestaurantDocument(true)))
+                        .content(objectMapper.writeValueAsString(OrderFixture.getOrderDtoList()))
         ).andExpect(status().isBadRequest());
     }
 
     @Test
-    void createOrderShouldThrowOrderEntityNotFoundExceptionWith404() throws Exception {
+    void createOrderShouldThrowOrderDocumentNotFoundExceptionWith404() throws Exception {
         //given
-        when(restaurantOrderFacade.createOrder(any(OrderCreationDto.class), anyString()))
+        when(orderOrderGuestCourierFacade.createOrder(any(OrderCreationDto.class), anyString()))
                 .thenThrow(RestaurantDocumentNotFoundException.class);
         //when
         //then
@@ -85,7 +95,7 @@ public class OrderControllerTest {
     @Test
     void getOrdersByRestaurantIdShouldReturnAllOrder() throws Exception {
         //given
-        when(restaurantOrderFacade.getOrdersByRestaurantId(anyString()))
+        when(orderOrderFacade.getOrdersByRestaurantId(anyString()))
                 .thenReturn(OrderFixture.getOrderDtoList());
 
         //when
@@ -99,9 +109,9 @@ public class OrderControllerTest {
     }
 
     @Test
-    void getOrdersByRestaurantIdShouldThrowOrderEntityNotFoundExceptionWith404() throws Exception {
+    void getOrdersByRestaurantIdShouldThrowOrderDocumentNotFoundExceptionWith404() throws Exception {
         //given
-        when(restaurantOrderFacade.getOrdersByRestaurantId(anyString()))
+        when(orderOrderFacade.getOrdersByRestaurantId(anyString()))
                 .thenThrow(RestaurantDocumentNotFoundException.class);
         //when
         //then
@@ -113,7 +123,7 @@ public class OrderControllerTest {
     @Test
     void deleteOrderShouldRemoveOneOrder() throws Exception {
         //given
-        when(orderService.deleteOrder(anyString()))
+        when(orderGuestCourierFacade.deleteOrder(anyString()))
                 .thenReturn(OrderFixture.getOrderDto());
         //when
         //then
@@ -126,9 +136,9 @@ public class OrderControllerTest {
     }
 
     @Test
-    void deleteOrderShouldThrowOrderEntityNotFoundExceptionWith404() throws Exception {
+    void deleteOrderShouldThrowOrderDocumentNotFoundExceptionWith404() throws Exception {
         //given
-        when(orderService.deleteOrder(anyString()))
+        when(orderGuestCourierFacade.deleteOrder(anyString()))
                 .thenThrow(OrderDocumentNotFoundException.class);
         //when
         //then
@@ -191,7 +201,7 @@ public class OrderControllerTest {
     }
 
     @Test
-    void setNextStateShouldThrowEntityNotFoundExceptionWith404() throws Exception {
+    void setNextStateShouldThrowDocumentNotFoundExceptionWith404() throws Exception {
         when(orderService.setNextState(anyString()))
                 .thenThrow(OrderDocumentNotFoundException.class);
         //when
@@ -199,5 +209,91 @@ public class OrderControllerTest {
         this.mockMvc.perform(
                 post("/orders/1/next-state")
         ).andExpect(status().isNotFound());
-    }*/
+    }
+
+    @Test
+    void updateOrderShouldUpdateOneOrder() throws Exception {
+        when(orderService.updateOrder(anyString(), any(OrderUpdateDto.class)))
+                .thenReturn(OrderFixture.getOrderDto());
+
+        this.mockMvc.perform(
+                put("/orders/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(OrderFixture.getOrderUpdateDto()))
+        ).andExpect(status().isOk()).andExpect(content()
+                .json(objectMapper.writeValueAsString(OrderFixture.getOrderDto()))
+        );
+    }
+
+    @Test
+    void updateOrderShouldThrowOrderDocumentNotFoundExceptionWith404() throws Exception {
+        when(orderService.updateOrder(anyString(), any(OrderUpdateDto.class)))
+                .thenThrow(OrderDocumentNotFoundException.class);
+
+        this.mockMvc.perform(
+                put("/orders/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(OrderFixture.getOrderUpdateDto()))
+
+        ).andExpect(status().isNotFound());
+    }
+
+    @Test
+    void updateOrderShouldThrowOrderDocumentNotFoundExceptionWith400() throws Exception {
+        when(orderService.updateOrder(anyString(), any(OrderUpdateDto.class)))
+                .thenThrow(OrderDocumentNotFoundException.class);
+
+        this.mockMvc.perform(
+                put("/orders/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(OrderFixture.getOrderDocumentList()))
+        ).andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void getOrderShouldReturnOneOrder() throws Exception {
+        when(orderService.getOrderById(anyString()))
+                .thenReturn(OrderFixture.getOrderDto());
+
+        this.mockMvc.perform(
+                get("/orders/order/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isOk()).andExpect(content()
+                .json(objectMapper.writeValueAsString(OrderFixture.getOrderDto()))
+        );
+    }
+
+    @Test
+    void getOrderShouldThrowOrderDocumentNotFoundExceptionWith400() throws Exception {
+        when(orderService.getOrderById(anyString()))
+                .thenThrow(OrderDocumentNotFoundException.class);
+
+        this.mockMvc.perform(
+                get("/orders/order/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isNotFound());
+    }
+
+    @Test
+    void setCourierToOrderShouldSetACourierToAnOrder() throws Exception {
+        when(orderCourierFacade.setCourierToOrder(anyString(),anyString()))
+                .thenReturn(OrderFixture.getOrderDto());
+
+        this.mockMvc.perform(
+                post("/orders/set/1/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isOk()).andExpect(content()
+                .json(objectMapper.writeValueAsString(OrderFixture.getOrderDto()))
+        );
+    }
+    @Test
+    void setCourierToOrderShouldThrowOrderDocumentNotFoundExceptionWith400() throws Exception {
+        when(orderCourierFacade.setCourierToOrder(anyString(),anyString()))
+                .thenThrow(OrderDocumentNotFoundException.class);
+
+        this.mockMvc.perform(
+                post("/orders/set/1/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isNotFound());
+    }
 }

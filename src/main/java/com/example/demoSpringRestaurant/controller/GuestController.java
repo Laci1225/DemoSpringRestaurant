@@ -2,7 +2,6 @@ package com.example.demoSpringRestaurant.controller;
 
 import com.example.demoSpringRestaurant.exception.DocumentNotFoundException;
 import com.example.demoSpringRestaurant.exception.GuestDocumentNotFoundException;
-import com.example.demoSpringRestaurant.exception.OrderDocumentNotFoundException;
 import com.example.demoSpringRestaurant.facade.OrderGuestFacade;
 import com.example.demoSpringRestaurant.model.GuestCreationDto;
 import com.example.demoSpringRestaurant.model.GuestDto;
@@ -26,7 +25,7 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping(path = "guest")
+@RequestMapping(path = "guests")
 @Slf4j
 public class GuestController {
 
@@ -83,8 +82,8 @@ public class GuestController {
             GuestDto guest = orderGuestFacade.createGuest(GuestCreationDto, orderId);
             log.debug("Created a guest successfully");
             return guest;
-        } catch (OrderDocumentNotFoundException e) {
-            throw new RuntimeException(e);
+        } catch (DocumentNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
 
     }

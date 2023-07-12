@@ -1,11 +1,6 @@
 package com.example.demoSpringRestaurant.mapper;
 
-import com.example.demoSpringRestaurant.model.CourierDto;
-import com.example.demoSpringRestaurant.model.OrderCreationDto;
-import com.example.demoSpringRestaurant.model.OrderDto;
-import com.example.demoSpringRestaurant.model.OrderUpdateDto;
-import com.example.demoSpringRestaurant.persistance.document.CourierDocument;
-import com.example.demoSpringRestaurant.persistance.document.GuestDocument;
+import com.example.demoSpringRestaurant.model.*;
 import com.example.demoSpringRestaurant.persistance.document.OrderDocument;
 import org.mapstruct.*;
 import org.springframework.stereotype.Component;
@@ -31,18 +26,19 @@ public interface OrderMapper {
     OrderCreationDto fromDocumentToOrderCreationDto(OrderDocument orderDocument);
 
 
-    @Mapping(target = "courierDocument", ignore = true)
-    @Mapping(target = "guestDocument", ignore = true)
-    OrderDocument fromOrderCreationDtoToDocument(OrderCreationDto orderCreationDto,
-                                                 @Context CourierDocument courierDocument,
-                                                 @Context GuestDocument guestDocument);
+    @Mapping(target = "courierDto", ignore = true)
+    @Mapping(target = "guestDto", ignore = true)
+    OrderDto fromOrderCreationDtoToDto(OrderCreationDto orderCreationDto,
+                                       @Context CourierDto courierDto,
+                                       @Context GuestDto guestDto);
 
+    //TODO nem csinálja
     @AfterMapping
-    default void fromOrderCreationDtoToDocument(@MappingTarget OrderDocument orderDocument,
-                                                @Context CourierDocument courierDocument,
-                                                @Context GuestDocument guestDocument) {
-        orderDocument.setCourierDocument(courierDocument);
-        orderDocument.setGuestDocument(guestDocument);
+    default void fromOrderCreationDtoToDto(@MappingTarget OrderDto orderDto,
+                                           @Context CourierDto courierDto,
+                                           @Context GuestDto guestDto) {
+        orderDto.setCourierDto(courierDto);
+        orderDto.setGuestDto(null);
     }
 
     @Mapping(target = "courierDto", source = "orderDocument.courierDocument")

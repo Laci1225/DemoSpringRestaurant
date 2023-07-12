@@ -126,11 +126,9 @@ public class OrderController {
                     orderCreationDto, restaurantId);
             log.debug("Created an order successfully");
             return order;
-        } catch (RestaurantDocumentNotFoundException e) {
+        } catch (DocumentNotFoundException e) {
             log.warn("Creating an order was unsuccessful due to: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
-        } catch (DocumentNotFoundException e) {
-            throw new RuntimeException(e);
         }
     }
 
@@ -159,11 +157,9 @@ public class OrderController {
             var order = orderGuestCourierFacade.deleteOrder(orderId);
             log.debug("Order with ID: " + orderId + " deleted successfully");
             return order;
-        } catch (OrderDocumentNotFoundException e) {
+        } catch (DocumentNotFoundException e) {
             log.warn("Deleting an order were unsuccessful due to: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
-        } catch (DocumentNotFoundException e) {
-            throw new RuntimeException(e);
         }
     }
 
