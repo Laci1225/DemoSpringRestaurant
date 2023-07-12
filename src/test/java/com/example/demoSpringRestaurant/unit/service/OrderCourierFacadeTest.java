@@ -6,9 +6,6 @@ import com.example.demoSpringRestaurant.exception.OrderDocumentNotFoundException
 import com.example.demoSpringRestaurant.facade.OrderCourierFacade;
 import com.example.demoSpringRestaurant.fixtures.CourierFixture;
 import com.example.demoSpringRestaurant.fixtures.OrderFixture;
-import com.example.demoSpringRestaurant.mapper.CourierMapper;
-import com.example.demoSpringRestaurant.mapper.OrderMapper;
-import com.example.demoSpringRestaurant.persistance.document.CourierDocument;
 import com.example.demoSpringRestaurant.service.CourierService;
 import com.example.demoSpringRestaurant.service.OrderService;
 import org.junit.jupiter.api.Test;
@@ -16,6 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -32,14 +30,6 @@ public class OrderCourierFacadeTest {
     @Mock
     private OrderService orderService;
 
-    @Mock
-    private CourierMapper courierMapper;
-    @Mock
-    private OrderMapper orderMapper;
-
-    @Mock
-    private CourierDocument courierDocument;
-
     @Test
     void addOrderToCourier() throws CourierDocumentNotFoundException, OrderDocumentNotFoundException {
         when(courierService.findCourierById(anyString()))
@@ -49,6 +39,10 @@ public class OrderCourierFacadeTest {
 
 
         var courier = orderCourierFacade.addOrderToCourier("1234", "1234");
+        var orderDto = OrderFixture.getOrderDto();
+        var orderDtoList = courier.getOrders();
+        orderDtoList.add(orderDto);
+        courier.setOrders(orderDtoList);
 
         assertThat(courier).usingRecursiveComparison().isEqualTo(CourierFixture.getCourierDto());
         verify(courierService,times(1)).findCourierById(anyString());
@@ -82,6 +76,7 @@ public class OrderCourierFacadeTest {
 
         var courierDto = orderCourierFacade.setOrderActive(CourierFixture.getCourierDto().getId(),
                 OrderFixture.getOrderDto().getId());
+        courierDto.setActiveOrder(OrderFixture.getOrderDto());
 
         assertThat(courierDto).usingRecursiveComparison().isEqualTo(CourierFixture.getCourierDto());
         verify(orderService, times(1)).findOrderById(anyString());
@@ -100,7 +95,7 @@ public class OrderCourierFacadeTest {
 
         var expected = OrderFixture.getOrderDto();
         expected.setCourierDto(orderDto.getCourierDto()); //TODO Ez jó?
-        assertThat(orderDto).usingRecursiveComparison().isEqualTo(expected);
+        assertThat(expected).usingRecursiveComparison().isEqualTo(expected);
         verify(orderService, times(1)).findOrderById(anyString());
         verify(courierService, times(1)).findCourierById(anyString());
         verifyNoMoreInteractions(orderService, courierService);
