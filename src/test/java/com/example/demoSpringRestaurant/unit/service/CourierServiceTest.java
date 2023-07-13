@@ -72,7 +72,7 @@ public class CourierServiceTest {
 
 
     @Test
-    void getCourierShouldGetACourier() {
+    void getCourierShouldGetACourier() throws CourierDocumentNotFoundException {
         when(courierMapper.fromDocumentToCourierDto(any(CourierDocument.class)))
                 .thenReturn(CourierFixture.getCourierDto());
         when(courierRepository.findById(anyString()))
@@ -108,7 +108,7 @@ public class CourierServiceTest {
     }
 
     @Test
-    void deleteByIdShouldThrowCourierDocumentNotFoundException() throws CourierDocumentNotFoundException {
+    void deleteByIdShouldThrowCourierDocumentNotFoundException(){
         when(courierRepository.existsById(anyString()))
                 .thenReturn(false);
 
