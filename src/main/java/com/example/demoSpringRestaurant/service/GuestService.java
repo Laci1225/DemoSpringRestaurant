@@ -24,11 +24,11 @@ public class GuestService {
         return guestRepository.findAll().stream()
                 .map(guestMapper::fromDocumentToGuestDto).toList();
     }
-    public GuestDto getGuest(String id) {
+    public GuestDto getGuest(String id) throws GuestDocumentNotFoundException {
         log.trace("All guests listed");
         return guestRepository.findById(id)
                 .map(guestMapper::fromDocumentToGuestDto)
-                .orElseThrow();
+                .orElseThrow(() -> new GuestDocumentNotFoundException("Guest not found"));
     }
     public GuestDto updateGuest(String guestId, GuestUpdateDto guestUpdateDto) throws GuestDocumentNotFoundException {
         log.trace("Updating order with ID: " + guestId + "to " + guestUpdateDto);

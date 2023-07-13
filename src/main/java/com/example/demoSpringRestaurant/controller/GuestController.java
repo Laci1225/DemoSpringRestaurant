@@ -31,6 +31,7 @@ public class GuestController {
 
     private final GuestService guestService;
     private final OrderGuestFacade orderGuestFacade;
+
     @Operation(summary = "Returns all guest")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "All guest found",
@@ -46,6 +47,7 @@ public class GuestController {
         log.debug("Guests returned successfully");
         return guestList;
     }
+
     @Operation(summary = "Returns a guest")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "A guest found",
@@ -56,10 +58,14 @@ public class GuestController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("guest/{guestId}")
     public GuestDto getGuest(@PathVariable(value = "guestId") String id) {
-        log.debug("Requested a guests");
-        var guestList = guestService.getGuest(id);
-        log.debug("Guests returned successfully");
-        return guestList;
+        try {
+            log.debug("Requested a guests");
+            var guestList = guestService.getGuest(id);
+            log.debug("Guests returned successfully");
+            return guestList;
+        } catch (GuestDocumentNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Operation(summary = "Creates a guest")
@@ -87,6 +93,7 @@ public class GuestController {
         }
 
     }
+
     @Operation(summary = "Deletes a guest")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "202", description = "A guest deleted",
@@ -109,6 +116,7 @@ public class GuestController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
     }
+
     @Operation(summary = "Updates a guest")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "A guest updated",

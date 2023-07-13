@@ -58,10 +58,14 @@ public class CourierController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(path = "{courierId}")
     public CourierDto getCourier(@PathVariable("courierId") String courierId) {
-        log.debug("Requested all couriers");
-        var courierList = courierService.getCourier(courierId);
-        log.debug("Couriers returned successfully");
-        return courierList;
+        try {
+            log.debug("Requested all couriers");
+            var courierList = courierService.getCourier(courierId);
+            log.debug("Couriers returned successfully");
+            return courierList;
+        } catch (CourierDocumentNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Operation(summary = "Creates a courier")

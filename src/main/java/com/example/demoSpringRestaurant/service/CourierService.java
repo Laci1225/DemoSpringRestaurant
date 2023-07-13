@@ -25,9 +25,11 @@ public class CourierService {
                 .map(courierMapper::fromDocumentToCourierDto).toList();
     }
 
-    public CourierDto getCourier(String courierId) {
+    public CourierDto getCourier(String courierId) throws CourierDocumentNotFoundException {
         return courierRepository.findById(courierId)
-                .map(courierMapper::fromDocumentToCourierDto).orElseThrow();
+                .map(courierMapper::fromDocumentToCourierDto).orElseThrow(
+                        () -> new CourierDocumentNotFoundException("Courier not found")
+                );
     }
 
     public CourierDto createCourier(CourierCreationDto CourierCreationDto) {

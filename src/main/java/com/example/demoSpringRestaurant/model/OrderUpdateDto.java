@@ -5,7 +5,6 @@ import com.example.demoSpringRestaurant.constant.MealType;
 import com.example.demoSpringRestaurant.constant.OrderStatus;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -17,9 +16,6 @@ import java.time.LocalTime;
 @NoArgsConstructor
 @Builder
 public class OrderUpdateDto {
-
-    @Id
-    private String id;
     private RestaurantDto restaurant;
     private MealType mealType;
     private DrinkType drinkType;

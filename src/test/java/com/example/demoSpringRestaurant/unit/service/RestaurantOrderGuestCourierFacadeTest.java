@@ -69,6 +69,8 @@ public class RestaurantOrderGuestCourierFacadeTest {
                 .thenReturn(CourierFixture.getCourierDocument(true));
         when(guestMapper.fromGuestDtoToDocument(any(GuestDto.class)))
                 .thenReturn(GuestFixture.getGuestDocument(true));
+        when(orderService.saveOrder(any(OrderDto.class)))
+                .thenReturn(OrderFixture.getOrderDto());
 
         var order = restaurantOrderGuestCourierFacade.
                 createOrder(OrderFixture.getOrderCreationDto(),"1234");
@@ -77,6 +79,7 @@ public class RestaurantOrderGuestCourierFacadeTest {
         verify(restaurantService,times(1)).findRestaurantById(anyString());
         verify(courierService,times(1)).findCourierById(anyString());
         verify(guestService,times(1)).findGuestById(anyString());
+        verify(orderService,times(1)).saveOrder(any(OrderDto.class));
         verifyNoMoreInteractions(guestService,restaurantService,courierService,orderService);
     }
 }

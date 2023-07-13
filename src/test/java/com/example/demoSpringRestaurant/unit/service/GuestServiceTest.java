@@ -54,7 +54,7 @@ public class GuestServiceTest {
     }
 
     @Test
-    void getGuestShouldGetAGuest() {
+    void getGuestShouldGetAGuest() throws GuestDocumentNotFoundException {
         when(guestMapper.fromDocumentToGuestDto(any(GuestDocument.class)))
                 .thenReturn(GuestFixture.getGuestDto());
         when(guestRepository.findById(anyString()))
