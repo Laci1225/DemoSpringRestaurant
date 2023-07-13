@@ -1,0 +1,33 @@
+#//TODO data skalár localdatetime serialization format + order in the restaurant
+type Restaurant {
+    id: ID!
+    name: String!
+    owner: String!
+    address: String!
+    email: String!
+    phoneNumber: String!
+    numberOfTables: Int
+    isVegan: Boolean
+    canDeliver: Boolean!
+    isOnWolt: Boolean
+}
+input RestaurantInput {
+    name: String!
+    owner: String!
+    address: String!
+    email: String!
+    phoneNumber: String!
+    numberOfTables: Int
+    isVegan: Boolean
+    canDeliver: Boolean!
+    isOnWolt: Boolean
+}
+
+type Query {
+    restaurants: [Restaurant!]!
+    restaurant(id: ID!): Restaurant!
+}
+
+type Mutation{
+    createRestaurant(restaurant: RestaurantInput!): Restaurant!
+}

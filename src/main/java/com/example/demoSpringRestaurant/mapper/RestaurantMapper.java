@@ -3,19 +3,19 @@ package com.example.demoSpringRestaurant.mapper;
 import com.example.demoSpringRestaurant.model.RestaurantCreationDto;
 import com.example.demoSpringRestaurant.model.RestaurantDto;
 import com.example.demoSpringRestaurant.model.RestaurantUpdateDto;
-import com.example.demoSpringRestaurant.persistance.entity.RestaurantEntity;
+import com.example.demoSpringRestaurant.persistance.document.RestaurantDocument;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring",uses = {OrderMapper.class})
 public interface RestaurantMapper {
-    RestaurantEntity fromRestaurantDtoToEntity(RestaurantDto restaurantDto);
-    RestaurantDto fromEntityToRestaurantDto(RestaurantEntity restaurantEntity);
+    RestaurantDocument fromRestaurantDtoToDocument(RestaurantDto restaurantDto);
+    RestaurantDto fromDocumentToRestaurantDto(RestaurantDocument restaurantDocument);
 
-    RestaurantCreationDto fromEntityToRestaurantCreationDto(RestaurantEntity restaurantEntity);
+    RestaurantCreationDto fromDocumentToRestaurantCreationDto(RestaurantDocument restaurantDocument);
 
-    RestaurantEntity fromRestaurantCreationDtoToEntity(RestaurantCreationDto restaurantCreationDto);
-    RestaurantUpdateDto fromEntityToRestaurantUpdateDto(RestaurantEntity restaurantEntity);
+    RestaurantDocument fromRestaurantCreationDtoToDocument(RestaurantCreationDto restaurantCreationDto);
+    RestaurantUpdateDto fromDocumentToRestaurantUpdateDto(RestaurantDocument restaurantDocument);
 
-    RestaurantEntity fromRestaurantUpdateDtoToEntity(RestaurantUpdateDto restaurantUpdateDto);
+    RestaurantDocument fromRestaurantUpdateDtoToDocument(RestaurantUpdateDto restaurantUpdateDto);
 
 }

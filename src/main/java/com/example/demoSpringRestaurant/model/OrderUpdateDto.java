@@ -2,15 +2,11 @@ package com.example.demoSpringRestaurant.model;
 
 import com.example.demoSpringRestaurant.constant.DrinkType;
 import com.example.demoSpringRestaurant.constant.MealType;
-import com.example.demoSpringRestaurant.persistance.entity.RestaurantEntity;
-import jakarta.annotation.Nullable;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Transient;
-import jakarta.validation.constraints.NotNull;
 import com.example.demoSpringRestaurant.constant.OrderStatus;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -20,26 +16,21 @@ import java.time.LocalTime;
 @NoArgsConstructor
 @Builder
 public class OrderUpdateDto {
-
-    @ManyToOne
-    private RestaurantEntity restaurant;
-    @Nullable
-    @Enumerated(EnumType.STRING)
+    private RestaurantDto restaurant;
     private MealType mealType;
-    @Nullable
-    @Enumerated(EnumType.STRING)
     private DrinkType drinkType;
-    @Transient
     private double price;
-    @NotNull
+    private boolean isDelivery;
     private String deliveryAddress;
-    @Transient
-    private LocalDateTime createDate;
-    @Enumerated(EnumType.STRING)
-    @NotNull
+    private CourierDto courierDto;
     private OrderStatus orderStatus = OrderStatus.SENT;
-
-    private LocalTime estimatedDeliveryTime;
+    @DateTimeFormat(pattern = "HH:mm:ss")
+    private LocalTime estimatedPreparationTime;
+    private GuestDto guestDto;
+    @CreatedDate
+    private LocalDateTime createdDate;
+    @LastModifiedDate
+    private LocalDateTime modifiedDate;
 
     public double getPrice() {
         return getMealType().getValue() + getDrinkType().getValue();

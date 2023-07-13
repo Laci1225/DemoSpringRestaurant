@@ -1,13 +1,13 @@
 package com.example.demoSpringRestaurant.unit.service;
 
-import com.example.demoSpringRestaurant.exception.EntityNotFoundException;
-import com.example.demoSpringRestaurant.exception.RestaurantEntityNotFoundException;
+import com.example.demoSpringRestaurant.exception.DocumentNotFoundException;
+import com.example.demoSpringRestaurant.exception.RestaurantDocumentNotFoundException;
 import com.example.demoSpringRestaurant.fixtures.RestaurantFixture;
 import com.example.demoSpringRestaurant.mapper.RestaurantMapper;
 import com.example.demoSpringRestaurant.model.RestaurantCreationDto;
 import com.example.demoSpringRestaurant.model.RestaurantDto;
 import com.example.demoSpringRestaurant.model.RestaurantUpdateDto;
-import com.example.demoSpringRestaurant.persistance.entity.RestaurantEntity;
+import com.example.demoSpringRestaurant.persistance.document.RestaurantDocument;
 import com.example.demoSpringRestaurant.persistance.repository.RestaurantRepository;
 import com.example.demoSpringRestaurant.service.RestaurantService;
 import org.junit.jupiter.api.Test;
@@ -37,27 +37,27 @@ public class RestaurantServiceTest {
     @Test
     void createRestaurantShouldCreateOneRestaurant() {
         //arrange / given
-        when(restaurantMapper.fromRestaurantCreationDtoToEntity(any(RestaurantCreationDto.class)))
-                .thenReturn(RestaurantFixture.getRestaurantEntity(false));
-        when(restaurantMapper.fromEntityToRestaurantDto(any(RestaurantEntity.class)))
+        when(restaurantMapper.fromRestaurantCreationDtoToDocument(any(RestaurantCreationDto.class)))
+                .thenReturn(RestaurantFixture.getRestaurantDocument(false));
+        when(restaurantMapper.fromDocumentToRestaurantDto(any(RestaurantDocument.class)))
                 .thenReturn(RestaurantFixture.getRestaurantDto());
-        when(restaurantRepository.save(any(RestaurantEntity.class)))
-                .thenReturn(RestaurantFixture.getRestaurantEntity(true));
+        when(restaurantRepository.save(any(RestaurantDocument.class)))
+                .thenReturn(RestaurantFixture.getRestaurantDocument(true));
 
         //act / when
         var restaurantDto = restaurantService.createRestaurant(RestaurantFixture.getRestaurantCreationDto());
 
         //assert / then
         assertThat(restaurantDto).usingRecursiveComparison().isEqualTo(RestaurantFixture.getRestaurantDto());
-        verify(restaurantRepository, times(1)).save(any(RestaurantEntity.class));
+        verify(restaurantRepository, times(1)).save(any(RestaurantDocument.class));
         verifyNoMoreInteractions(restaurantRepository);
     }
 
     @Test
-    void getRestaurantShouldGetAllRestaurant() {
-        when(restaurantMapper.fromEntityToRestaurantDto(any(RestaurantEntity.class)))
+    void getRestaurantsShouldGetAllRestaurant() {
+        when(restaurantMapper.fromDocumentToRestaurantDto(any(RestaurantDocument.class)))
                 .thenReturn(RestaurantFixture.getRestaurantDto());
-        when(restaurantRepository.findAll()).thenReturn(RestaurantFixture.getRestaurantEntityList());
+        when(restaurantRepository.findAll()).thenReturn(RestaurantFixture.getRestaurantDocumentList());
 
         //act / when
         var restaurantDtoList = restaurantService.getRestaurants();
@@ -69,93 +69,166 @@ public class RestaurantServiceTest {
     }
 
     @Test
-    void updateRestaurantShouldUpdateOneRestaurant() throws EntityNotFoundException {
-        //arrange / given
-        when(restaurantMapper.fromEntityToRestaurantDto(any(RestaurantEntity.class)))
+    void getRestaurantShouldGetARestaurant() {
+        when(restaurantMapper.fromDocumentToRestaurantDto(any(RestaurantDocument.class)))
                 .thenReturn(RestaurantFixture.getRestaurantDto());
-        when(restaurantMapper.fromRestaurantUpdateDtoToEntity(any(RestaurantUpdateDto.class)))
-                .thenReturn(RestaurantFixture.getRestaurantEntity(false));
-        when(restaurantRepository.save(any(RestaurantEntity.class)))
-                .thenReturn(RestaurantFixture.getRestaurantEntity(true));
-        when(restaurantRepository.findById(anyLong())).thenReturn(Optional.of(RestaurantFixture.getRestaurantEntity(true)));
+        when(restaurantRepository.findById(anyString()))
+                .thenReturn(Optional.ofNullable(RestaurantFixture.getRestaurantDocument(true)));
+
         //act / when
-        var restaurantUpdate = restaurantService.updateRestaurant(1L, RestaurantFixture.getRestaurantUpdateDto());
+        var restaurantDto = restaurantService.getRestaurant("1234");
+
+        //assert / then
+        assertThat(restaurantDto).usingRecursiveComparison().isEqualTo(RestaurantFixture.getRestaurantDto());
+        verify(restaurantRepository, times(1)).findById(anyString());
+        verifyNoMoreInteractions(restaurantRepository);
+    }
+
+    @Test
+    void updateRestaurantShouldUpdateOneRestaurant() throws DocumentNotFoundException {
+        //arrange / given
+        when(restaurantMapper.fromDocumentToRestaurantDto(any(RestaurantDocument.class)))
+                .thenReturn(RestaurantFixture.getRestaurantDto());
+        when(restaurantMapper.fromRestaurantUpdateDtoToDocument(any(RestaurantUpdateDto.class)))
+                .thenReturn(RestaurantFixture.getRestaurantDocument(false));
+        when(restaurantRepository.save(any(RestaurantDocument.class)))
+                .thenReturn(RestaurantFixture.getRestaurantDocument(true));
+        when(restaurantRepository.findById(anyString())).thenReturn(Optional.of(RestaurantFixture.getRestaurantDocument(true)));
+        //act / when
+        var restaurantUpdate = restaurantService.updateRestaurant("1L", RestaurantFixture.getRestaurantUpdateDto());
 
         //assert / then
         assertThat(restaurantUpdate).usingRecursiveComparison().isEqualTo(RestaurantFixture.getRestaurantDto());
-        verify(restaurantRepository, times(1)).findById(anyLong());
-        verify(restaurantRepository, times(1)).save(any(RestaurantEntity.class));
+        verify(restaurantRepository, times(1)).findById(anyString());
+        verify(restaurantRepository, times(1)).save(any(RestaurantDocument.class));
         verifyNoMoreInteractions(restaurantRepository);
     }
 
     @Test
     void updateRestaurantShouldThrowRestaurantNotFoundException() {
-        when(restaurantRepository.findById(anyLong())).thenReturn(Optional.empty());
+        when(restaurantRepository.findById(anyString())).thenReturn(Optional.empty());
 
-        assertThrows(RestaurantEntityNotFoundException.class, () ->
-                restaurantService.updateRestaurant(1L, RestaurantFixture.getRestaurantUpdateDto()));
+        assertThrows(RestaurantDocumentNotFoundException.class, () ->
+                restaurantService.updateRestaurant("1L", RestaurantFixture.getRestaurantUpdateDto()));
 
         verifyNoMoreInteractions(restaurantRepository);
     }
 
     @Test
-    void updateParametersInRestaurantShouldUpdateOneRestaurant() throws EntityNotFoundException {
-        when(restaurantMapper.fromEntityToRestaurantDto(any(RestaurantEntity.class)))
+    void updateParametersInRestaurantShouldUpdateOneRestaurant() throws DocumentNotFoundException {
+        when(restaurantMapper.fromDocumentToRestaurantDto(any(RestaurantDocument.class)))
                 .thenReturn(RestaurantFixture.getRestaurantDto());
-        when(restaurantMapper.fromRestaurantDtoToEntity(any(RestaurantDto.class)))
-                .thenReturn(RestaurantFixture.getRestaurantEntity(true));
-        when(restaurantRepository.save(any(RestaurantEntity.class)))
-                .thenReturn(RestaurantFixture.getRestaurantEntity(true));
-        when(restaurantRepository.findById(anyLong()))
-                .thenReturn(Optional.of(RestaurantFixture.getRestaurantEntity(true)));
+        when(restaurantMapper.fromRestaurantDtoToDocument(any(RestaurantDto.class)))
+                .thenReturn(RestaurantFixture.getRestaurantDocument(true));
+        when(restaurantRepository.save(any(RestaurantDocument.class)))
+                .thenReturn(RestaurantFixture.getRestaurantDocument(true));
+        when(restaurantRepository.findById(anyString()))
+                .thenReturn(Optional.of(RestaurantFixture.getRestaurantDocument(true)));
 
-        var restaurantDto = restaurantService.updateParametersInRestaurant(1L, RestaurantFixture.getRestaurantUpdateDto());
+        var restaurantDto = restaurantService.updateParametersInRestaurant("1L", RestaurantFixture.getRestaurantUpdateDto());
 
         assertThat(restaurantDto).usingRecursiveComparison().isEqualTo(RestaurantFixture.getRestaurantDto());
-        verify(restaurantRepository, times(1)).findById(anyLong());
-        verify(restaurantRepository, times(1)).save(any(RestaurantEntity.class));
+        verify(restaurantRepository, times(1)).findById(anyString());
+        verify(restaurantRepository, times(1)).save(any(RestaurantDocument.class));
         verifyNoMoreInteractions(restaurantRepository);
     }
 
     @Test
     void updateParametersInRestaurantShouldThrowRestaurantNotFoundException() {
-        when(restaurantRepository.findById(anyLong())).thenReturn(Optional.empty());
+        when(restaurantRepository.findById(anyString())).thenReturn(Optional.empty());
 
-        assertThrows(RestaurantEntityNotFoundException.class, () ->
-                restaurantService.updateParametersInRestaurant(1L, RestaurantFixture.getRestaurantUpdateDto()));
+        assertThrows(RestaurantDocumentNotFoundException.class, () ->
+                restaurantService.updateParametersInRestaurant("1L", RestaurantFixture.getRestaurantUpdateDto()));
 
         verifyNoMoreInteractions(restaurantRepository);
     }
 
     @Test
-    void updateParametersInRestaurantShouldDoNothing() throws RestaurantEntityNotFoundException {
-        when(restaurantMapper.fromEntityToRestaurantDto(any(RestaurantEntity.class)))
+    void updateParametersInRestaurantShouldDoNothing() throws RestaurantDocumentNotFoundException {
+        when(restaurantMapper.fromDocumentToRestaurantDto(any(RestaurantDocument.class)))
                 .thenReturn(RestaurantFixture.getRestaurantDto());
-        when(restaurantMapper.fromRestaurantDtoToEntity(any(RestaurantDto.class)))
-                .thenReturn(RestaurantFixture.getRestaurantEntity(true));
-        when(restaurantRepository.save(any(RestaurantEntity.class)))
-                .thenReturn(RestaurantFixture.getRestaurantEntity(true));
-        when(restaurantRepository.findById(anyLong()))
-                .thenReturn(Optional.of(RestaurantFixture.getRestaurantEntity(true)));
-        var restaurantDto = restaurantService.updateParametersInRestaurant(1L, RestaurantFixture.getRestaurantUpdateDtoSetEverythingToNull());
+        when(restaurantMapper.fromRestaurantDtoToDocument(any(RestaurantDto.class)))
+                .thenReturn(RestaurantFixture.getRestaurantDocument(true));
+        when(restaurantRepository.save(any(RestaurantDocument.class)))
+                .thenReturn(RestaurantFixture.getRestaurantDocument(true));
+        when(restaurantRepository.findById(anyString()))
+                .thenReturn(Optional.of(RestaurantFixture.getRestaurantDocument(true)));
+        var restaurantDto = restaurantService.updateParametersInRestaurant("1L", RestaurantFixture.getRestaurantUpdateDtoSetEverythingToNull());
 
         assertThat(restaurantDto).usingRecursiveComparison().isEqualTo(RestaurantFixture.getRestaurantDto());
-        verify(restaurantRepository, times(1)).findById(anyLong());
-        verify(restaurantRepository, times(1)).save(any(RestaurantEntity.class));
+        verify(restaurantRepository, times(1)).findById(anyString());
+        verify(restaurantRepository, times(1)).save(any(RestaurantDocument.class));
         verifyNoMoreInteractions(restaurantRepository);
     }
 
     @Test
     void getVeganRestaurantShouldGetAllVeganRestaurant() {
-        when(restaurantMapper.fromEntityToRestaurantDto(any(RestaurantEntity.class)))
+        when(restaurantMapper.fromDocumentToRestaurantDto(any(RestaurantDocument.class)))
                 .thenReturn(RestaurantFixture.getRestaurantDto());
         when(restaurantRepository.findAllByIsVeganTrue())
-                .thenReturn(RestaurantFixture.getRestaurantEntityList());
+                .thenReturn(RestaurantFixture.getRestaurantDocumentList());
 
         var restaurantDtoList = restaurantService.getVeganRestaurant();
 
         assertThat(restaurantDtoList).usingRecursiveComparison().isEqualTo(RestaurantFixture.getRestaurantDtoList());
         verify(restaurantRepository, times(1)).findAllByIsVeganTrue();
+        verifyNoMoreInteractions(restaurantRepository);
+    }
+
+    @Test
+    void deleteRestaurantShouldRemoveOneRestaurant() {
+        doNothing().when(restaurantRepository).delete(any(RestaurantDocument.class));
+
+        restaurantService.deleteRestaurant(RestaurantFixture.getRestaurantDocument(false));
+
+        verify(restaurantRepository, times(1)).delete(any(RestaurantDocument.class));
+        verifyNoMoreInteractions(restaurantRepository);
+    }
+
+    @Test
+    void findRestaurantByIdShouldReturnARestaurant() throws RestaurantDocumentNotFoundException {
+        when(restaurantRepository.findById(anyString()))
+                .thenReturn(Optional.of(RestaurantFixture.getRestaurantDocument(false)));
+        when(restaurantMapper.fromDocumentToRestaurantDto(any(RestaurantDocument.class)))
+                .thenReturn(RestaurantFixture.getRestaurantDto());
+
+        var restaurantDto = restaurantService.findRestaurantById(RestaurantFixture.getRestaurantDto().getId());
+
+        assertThat(restaurantDto).usingRecursiveComparison().isEqualTo(RestaurantFixture.getRestaurantDto());
+        verify(restaurantRepository, times(1)).findById(anyString());
+        verifyNoMoreInteractions(restaurantRepository);
+    }
+
+    @Test
+    void findRestaurantByIdShouldThrowRestaurantNotFoundException() throws RestaurantDocumentNotFoundException {
+        when(restaurantRepository.findById(anyString()))
+                .thenReturn(Optional.empty());
+
+        assertThrows(RestaurantDocumentNotFoundException.class, () ->
+                restaurantService.findRestaurantById(RestaurantFixture.getRestaurantDto().getId()));
+
+        verifyNoMoreInteractions(restaurantRepository);
+    }
+
+
+    @Test
+    void restaurantExistShouldReturnTrue() throws RestaurantDocumentNotFoundException {
+        when(restaurantRepository.existsById((anyString())))
+                .thenReturn(true);
+
+        var exist = restaurantService.restaurantExist(RestaurantFixture.getRestaurantDto().getId());
+
+        verify(restaurantRepository, times(1)).existsById(anyString());
+        verifyNoMoreInteractions(restaurantRepository);
+    }
+    @Test
+    void restaurantExistShouldThrowRestaurantNotFoundException(){
+        when(restaurantRepository.existsById((anyString())))
+                .thenReturn(false);
+
+        assertThrows(RestaurantDocumentNotFoundException.class, () ->
+                restaurantService.restaurantExist(RestaurantFixture.getRestaurantDto().getId()));
+
         verifyNoMoreInteractions(restaurantRepository);
     }
 }
