@@ -1,5 +1,6 @@
 package com.example.demoSpringRestaurant.unit.mapper;
 
+import com.example.demoSpringRestaurant.fixtures.CourierFixture;
 import com.example.demoSpringRestaurant.mapper.CourierMapper;
 import com.example.demoSpringRestaurant.mapper.CourierMapperImpl;
 import com.example.demoSpringRestaurant.mapper.OrderMapperImpl;
@@ -8,6 +9,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = {CourierMapperImpl.class, OrderMapperImpl.class, RestaurantWithoutOrderMapperImpl.class})
@@ -17,7 +26,7 @@ public class CourierMapperTest {
     CourierMapper courierMapper;
 
 
-   /* @Test
+    @Test
     void fromCourierDtoToDocument() {
         var result = courierMapper
                 .fromCourierDtoToDocument(CourierFixture.getCourierDto());
@@ -110,6 +119,6 @@ public class CourierMapperTest {
         var result = courierMapper
                 .fromCourierUpdateDtoToDocument(null);
 
-        assertNull(result); //TODO isActive false lesz valahogyv
-    }*/
+        assertNull(result);
+    }
 }

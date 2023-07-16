@@ -26,12 +26,13 @@ public class OrderGuestFacade {
         log.trace("Creating Guest " + guestCreationDto);
         var guestDto = guestMapper.fromCreationDtoToDto(guestCreationDto);
         var orderDto = orderService.findOrderById(orderId);
-        orderDto.setGuestDto(guestDto);
-        guestDto.setActiveOrder(orderDto);
 
 
         var guest = guestService.saveGuest(guestDto);
-        orderService.saveOrder(orderDto);
+        orderDto.setGuestDto(guest);
+        var order = orderService.saveOrder(orderDto);
+        //guest.setActiveOrder(order);
+        //  guestService.saveGuest(guest);
 
         log.trace("Guest created with ID:" + guestDto.getId());
         return guest;

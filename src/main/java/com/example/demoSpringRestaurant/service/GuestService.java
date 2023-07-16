@@ -32,11 +32,12 @@ public class GuestService {
     }
     public GuestDto updateGuest(String guestId, GuestUpdateDto guestUpdateDto) throws GuestDocumentNotFoundException {
         log.trace("Updating order with ID: " + guestId + "to " + guestUpdateDto);
-        guestRepository.findById(guestId)
+        var cDate = guestRepository.findById(guestId)
                 .orElseThrow(() -> new GuestDocumentNotFoundException("guest doesn't exist"));
 
         var updatedDocument = guestMapper.fromGuestUpdateDtoToDocument(guestUpdateDto);
         updatedDocument.setId(guestId);
+        updatedDocument.setCreatedDate(cDate.getCreatedDate());
         guestRepository.save(updatedDocument);
         log.trace("guest with ID: " + updatedDocument.getId() + " updated as" + updatedDocument);
         return guestMapper.fromDocumentToGuestDto(updatedDocument);

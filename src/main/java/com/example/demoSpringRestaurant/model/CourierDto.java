@@ -20,7 +20,7 @@ public class CourierDto {
     @Id
     private String id;
     private String name;
-    private boolean isActive;
+    private boolean active;
     private List<OrderDto> orders;
     private OrderDto activeOrder;
     private double paymentPerOrder;

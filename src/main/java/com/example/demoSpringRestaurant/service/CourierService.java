@@ -42,11 +42,12 @@ public class CourierService {
 
     public CourierDto updateCourier(String courierId, CourierUpdateDto courierUpdateDto) throws CourierDocumentNotFoundException {
         log.trace("Updating order with ID: " + courierId + "to " + courierUpdateDto);
-        courierRepository.findById(courierId)
+        var cDate = courierRepository.findById(courierId)
                 .orElseThrow(() -> new CourierDocumentNotFoundException("courier doesn't exist"));
 
         var updatedDocument = courierMapper.fromCourierUpdateDtoToDocument(courierUpdateDto);
         updatedDocument.setId(courierId);
+        updatedDocument.setCreatedDate(cDate.getCreatedDate());
         courierRepository.save(updatedDocument);
         log.trace("courier with ID: " + updatedDocument.getId() + " updated as" + updatedDocument);
         return courierMapper.fromDocumentToCourierDto(updatedDocument);

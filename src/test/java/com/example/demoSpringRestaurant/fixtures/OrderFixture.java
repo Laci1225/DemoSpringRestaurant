@@ -61,6 +61,21 @@ public class OrderFixture {
                 .modifiedDate(MODIFIED_DATE)
                 .build();
     }
+    public static OrderDto getOrderDtoWithoutId() {
+        return OrderDto.builder()
+                .restaurant(RESTAURANT_DTO)
+                .mealType(MEAL_TYPE)
+                .drinkType(DRINK_TYPE)
+                .price(PRICE)
+                .deliveryAddress(DELIVERY_ADDRESS)
+                .orderStatus(ORDER_STATUS)
+                .estimatedPreparationTime(ESTIMATED_DELIVERY_TIME)
+                .guestDto(GUEST_DTO)
+                .courierDto(COURIER_DTO)
+                .createdDate(CREATED_DATE)
+                .modifiedDate(MODIFIED_DATE)
+                .build();
+    }
 
     public static OrderDto getOrderDtoGetNextStatus(OrderStatus fromStatus) {
         return OrderDto.builder()

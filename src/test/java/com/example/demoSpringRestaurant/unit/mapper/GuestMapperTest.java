@@ -1,10 +1,19 @@
 package com.example.demoSpringRestaurant.unit.mapper;
 
+import com.example.demoSpringRestaurant.fixtures.GuestFixture;
 import com.example.demoSpringRestaurant.mapper.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = {GuestMapperImpl.class,OrderMapperImpl.class, RestaurantWithoutOrderMapperImpl.class})
@@ -13,7 +22,7 @@ public class GuestMapperTest {
     @Autowired
     GuestMapper guestMapper;
 
-/*
+
     @Test
     void fromGuestDtoToDocument() {
         var result = guestMapper
@@ -107,6 +116,6 @@ public class GuestMapperTest {
         var result = guestMapper
                 .fromGuestUpdateDtoToDocument(null);
 
-        assertNull(result); //TODO isActive false lesz valahogy
-    }*/
+        assertNull(result);
+    }
 }

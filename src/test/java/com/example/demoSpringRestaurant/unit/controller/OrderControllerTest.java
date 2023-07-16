@@ -158,7 +158,7 @@ public class OrderControllerTest {
                 post("/orders/1/next-state")
         ).andExpect(status().isOk()).andExpect(content()
                 .json(objectMapper.writeValueAsString(OrderFixture.getOrderDtoGetNextStatus(orderStatus)))
-        );//TODO
+        );
     }
 
     @Test

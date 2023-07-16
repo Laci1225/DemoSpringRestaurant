@@ -23,7 +23,7 @@ public class CourierDocument {
     @Id
     private String id;
     private String name;
-    private boolean isActive;
+    private boolean active;
     @DocumentReference
     private List<OrderDocument> orders;
     @DocumentReference

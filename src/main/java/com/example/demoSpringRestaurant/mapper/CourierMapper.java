@@ -9,21 +9,15 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring", uses = {OrderMapper.class})
 public interface CourierMapper {
 
-    //@Mapping(target = "isActive",source = "active") // TODO Why????
     CourierDocument fromCourierDtoToDocument(CourierDto courierDto);
 
-   // @Mapping(target = "isActive",source = "courierDocument.active")
     CourierDto fromDocumentToCourierDto(CourierDocument courierDocument);
 
-    //@Mapping(target = "isActive",source = "courierDocument.active")
     CourierCreationDto fromDocumentToCourierCreationDto(CourierDocument courierDocument);
 
-    //@Mapping(target = "isActive",source = "courierCreationDto.active")
     CourierDocument fromCourierCreationDtoToDocument(CourierCreationDto courierCreationDto);
 
-    //@Mapping(target = "isActive",source = "courierDocument.active")
     CourierUpdateDto fromDocumentToCourierUpdateDto(CourierDocument courierDocument);
 
-    //@Mapping(target = "isActive",source = "courierUpdateDto.active")
     CourierDocument fromCourierUpdateDtoToDocument(CourierUpdateDto courierUpdateDto);
 }

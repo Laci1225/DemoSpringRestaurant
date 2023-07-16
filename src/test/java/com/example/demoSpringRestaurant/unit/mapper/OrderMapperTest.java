@@ -1,17 +1,25 @@
 package com.example.demoSpringRestaurant.unit.mapper;
 
+import com.example.demoSpringRestaurant.fixtures.OrderFixture;
+import com.example.demoSpringRestaurant.mapper.OrderMapper;
 import com.example.demoSpringRestaurant.mapper.OrderMapperImpl;
 import com.example.demoSpringRestaurant.mapper.RestaurantWithoutOrderMapperImpl;
+import com.example.demoSpringRestaurant.model.OrderCreationDto;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 
 //TODO a módosítás miatt nem jó
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = {OrderMapperImpl.class, RestaurantWithoutOrderMapperImpl.class})
 public class OrderMapperTest {
-/*    @Autowired
+    @Autowired
     OrderMapper orderMapper;// = Mappers.getMapper(OrderMapper.class);
 
     @Test
@@ -66,7 +74,7 @@ public class OrderMapperTest {
                         OrderFixture.getOrderDto().getCourierDto(),
                         OrderFixture.getOrderDto().getGuestDto());
 
-        assertEquals(result, OrderFixture.getOrderDto());
+        assertEquals(result, OrderFixture.getOrderDtoWithoutId() );
     }
     @Test
     public void fromOrderCreationDtoToDocumentReturnsNull() {
@@ -104,5 +112,5 @@ public class OrderMapperTest {
                 .fromOrderUpdateDtoToDocument(null);
 
         assertNull(result);  //TODO isActive false lesz valahogy
-    }*/
+    }
 }

@@ -43,11 +43,12 @@ public class OrderService {
 
     public OrderDto updateOrder(String orderId, OrderUpdateDto orderUpdateDto) throws OrderDocumentNotFoundException {
         log.trace("Updating order with ID: " + orderId + "to " + orderUpdateDto);
-        orderRepository.findById(orderId)
+        var cDate = orderRepository.findById(orderId)
                 .orElseThrow(() -> new OrderDocumentNotFoundException("order doesn't exist"));
 
         var updatedDocument = orderMapper.fromOrderUpdateDtoToDocument(orderUpdateDto);
         updatedDocument.setId(orderId);
+        updatedDocument.setCreatedDate(cDate.getCreatedDate());
         orderRepository.save(updatedDocument);
         log.trace("order with ID: " + updatedDocument.getId() + " updated as" + updatedDocument);
         return orderMapper.fromDocumentToOrderDto(updatedDocument);

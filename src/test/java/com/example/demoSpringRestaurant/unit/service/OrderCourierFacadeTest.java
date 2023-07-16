@@ -32,7 +32,7 @@ public class OrderCourierFacadeTest {
 
     @Test
     void addOrderToCourier() throws CourierDocumentNotFoundException, OrderDocumentNotFoundException {
-       /* when(courierService.findCourierById(anyString()))
+        when(courierService.findCourierById(anyString()))
                 .thenReturn(CourierFixture.getCourierDto());
         when(orderService.findOrderById(anyString()))
                 .thenReturn(OrderFixture.getOrderDto());
@@ -47,7 +47,7 @@ public class OrderCourierFacadeTest {
         assertThat(courier).usingRecursiveComparison().isEqualTo(CourierFixture.getCourierDto());
         verify(courierService,times(1)).findCourierById(anyString());
         verify(orderService,times(1)).findOrderById(anyString());
-        verifyNoMoreInteractions(orderService,courierService);*///TODO
+        verifyNoMoreInteractions(orderService,courierService);//TODO
     }
 
     @Test
@@ -69,7 +69,7 @@ public class OrderCourierFacadeTest {
 
     @Test
     void setOrderActive() throws CourierDocumentNotFoundException, OrderDocumentNotFoundException {
-        /*when(courierService.findCourierById(anyString()))
+        when(courierService.findCourierById(anyString()))
                 .thenReturn(CourierFixture.getCourierDto());
         when(orderService.findOrderById(anyString()))
                 .thenReturn(OrderFixture.getOrderDto());
@@ -81,7 +81,7 @@ public class OrderCourierFacadeTest {
         assertThat(courierDto).usingRecursiveComparison().isEqualTo(CourierFixture.getCourierDto());
         verify(orderService, times(1)).findOrderById(anyString());
         verify(courierService, times(1)).findCourierById(anyString());
-        verifyNoMoreInteractions(orderService, courierService);*///TODO
+        verifyNoMoreInteractions(orderService, courierService);//TODO
     }
 
     @Test
@@ -94,8 +94,9 @@ public class OrderCourierFacadeTest {
         var orderDto = orderCourierFacade.setCourierToOrder("1234", "1234");
 
         var expected = OrderFixture.getOrderDto();
-        expected.setCourierDto(orderDto.getCourierDto()); //TODO Ez jó?
-        assertThat(expected).usingRecursiveComparison().isEqualTo(expected);
+        expected.setCourierDto(CourierFixture.getCourierDto()); //TODO Ez jó?
+
+        assertThat(orderDto).usingRecursiveComparison().isEqualTo(expected);
         verify(orderService, times(1)).findOrderById(anyString());
         verify(courierService, times(1)).findCourierById(anyString());
         verifyNoMoreInteractions(orderService, courierService);

@@ -16,7 +16,7 @@ import java.util.Optional;
 @Data
 public class CourierFixture {
     private static final String NAME = "Sam";
-    private static final boolean IS_ACTIVE = true;
+    private static final boolean ACTIVE = true;
     private static final List<OrderDocument> ORDERS = OrderFixture.getOrderDocumentList();
     private static final List<OrderDto> ORDERS_DTO = OrderFixture.getOrderDtoList();
     private static final OrderDocument ACTIVE_ORDER = OrderFixture.getOrderDocument(true);
@@ -31,7 +31,7 @@ public class CourierFixture {
     public static CourierCreationDto getCourierCreationDto() {
         return CourierCreationDto.builder().
                 name(NAME).
-                isActive(IS_ACTIVE).
+                active(ACTIVE).
                 orders(ORDERS_DTO).
                 activeOrder(ACTIVE_ORDER_DTO).
                 paymentPerOrder(PAYMENT_PER_ORDER).
@@ -45,7 +45,7 @@ public class CourierFixture {
     public static CourierUpdateDto getCourierUpdateDto() {
         return CourierUpdateDto.builder().
                 name(NAME).
-                isActive(IS_ACTIVE).
+                active(ACTIVE).
                 orders(ORDERS_DTO).
                 activeOrder(ACTIVE_ORDER_DTO).
                 paymentPerOrder(PAYMENT_PER_ORDER).
@@ -59,7 +59,7 @@ public class CourierFixture {
     public static CourierUpdateDto getCourierUpdateDtoSetEverythingToNull() {
         return CourierUpdateDto.builder().
                 name(NAME).
-                isActive(IS_ACTIVE).
+                active(ACTIVE).
                 orders(ORDERS_DTO).
                 activeOrder(ACTIVE_ORDER_DTO).
                 paymentPerOrder(PAYMENT_PER_ORDER).
@@ -74,7 +74,7 @@ public class CourierFixture {
 
         var courierDocument = CourierDocument.builder().
                 name(NAME).
-                isActive(IS_ACTIVE).
+                active(ACTIVE).
                 orders(ORDERS).
                 activeOrder(ACTIVE_ORDER).
                 paymentPerOrder(PAYMENT_PER_ORDER).
@@ -92,7 +92,7 @@ public class CourierFixture {
         return CourierDto.builder().
                 id("1234").
                 name(NAME).
-                isActive(IS_ACTIVE).
+                active(ACTIVE).
                 orders(ORDERS_DTO).
                 activeOrder(ACTIVE_ORDER_DTO).
                 paymentPerOrder(PAYMENT_PER_ORDER).
@@ -106,7 +106,7 @@ public class CourierFixture {
         return CourierDto.builder().
                 id("1234").
                 name(NAME).
-                isActive(IS_ACTIVE).
+                active(ACTIVE).
                 orders(ORDERS_DTO).
                 activeOrder(ACTIVE_ORDER_DTO).
                 paymentPerOrder(PAYMENT_PER_ORDER).
@@ -119,7 +119,7 @@ public class CourierFixture {
     public static CourierDocument getCourierDocument(String id) {
         return CourierDocument.builder().
                 name(NAME).
-                isActive(IS_ACTIVE).
+                active(ACTIVE).
                 orders(ORDERS).
                 activeOrder(ACTIVE_ORDER).
                 paymentPerOrder(PAYMENT_PER_ORDER).
@@ -136,7 +136,7 @@ public class CourierFixture {
         list.add(CourierDocument.builder().
                 id("1234").
                 name(NAME).
-                isActive(IS_ACTIVE).
+                active(ACTIVE).
                 orders(ORDERS).
                 activeOrder(ACTIVE_ORDER).
                 paymentPerOrder(PAYMENT_PER_ORDER).
@@ -153,7 +153,7 @@ public class CourierFixture {
         list.add(CourierDto.builder().
                 id("1234").
                 name(NAME).
-                isActive(IS_ACTIVE).
+                active(ACTIVE).
                 orders(ORDERS_DTO).
                 activeOrder(ACTIVE_ORDER_DTO).
                 paymentPerOrder(PAYMENT_PER_ORDER).
@@ -168,7 +168,7 @@ public class CourierFixture {
     public static CourierUpdateDto getUpdatedCourierUpdateDto() {
         return CourierUpdateDto.builder().
                 name(NAME).
-                isActive(IS_ACTIVE).
+                active(ACTIVE).
                 orders(ORDERS_DTO).
                 activeOrder(ACTIVE_ORDER_DTO).
                 paymentPerOrder(PAYMENT_PER_ORDER).
@@ -183,7 +183,7 @@ public class CourierFixture {
     public static Optional<CourierDto> getOptionalCourierDto() {
         return Optional.of(CourierDto.builder().
                 name(NAME).
-                isActive(IS_ACTIVE).
+                active(ACTIVE).
                 orders(ORDERS_DTO).
                 activeOrder(ACTIVE_ORDER_DTO).
                 paymentPerOrder(PAYMENT_PER_ORDER).

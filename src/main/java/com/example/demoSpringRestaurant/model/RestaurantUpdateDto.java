@@ -35,9 +35,9 @@ public class RestaurantUpdateDto {
     @NotNull
     private Boolean isOnWolt;
 
-    @CreatedDate
+    /*@CreatedDate
     private LocalDateTime createdDate;
     @LastModifiedDate
-    private LocalDateTime modifiedDate;
+    private LocalDateTime modifiedDate;*/
     
 }

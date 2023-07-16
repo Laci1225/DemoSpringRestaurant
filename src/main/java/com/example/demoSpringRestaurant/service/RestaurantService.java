@@ -44,11 +44,12 @@ public class RestaurantService {
     //@Transactional
     public RestaurantDto updateRestaurant(String restaurantId, RestaurantUpdateDto restaurantUpdateDto) throws RestaurantDocumentNotFoundException {
         log.trace("Updating restaurant with ID: " + restaurantId + "to " + restaurantUpdateDto);
-        restaurantRepository.findById(restaurantId)
+        var cDate = restaurantRepository.findById(restaurantId)
                 .orElseThrow(() -> new RestaurantDocumentNotFoundException("Restaurant doesn't exist"));
 
         var updatedDocument = restaurantMapper.fromRestaurantUpdateDtoToDocument(restaurantUpdateDto);
         updatedDocument.setId(restaurantId);
+        updatedDocument.setCreatedDate(cDate.getCreatedDate());
         restaurantRepository.save(updatedDocument);
         log.trace("Restaurant with ID: " + updatedDocument.getId() + " updated as" + updatedDocument);
         return restaurantMapper.fromDocumentToRestaurantDto(updatedDocument);

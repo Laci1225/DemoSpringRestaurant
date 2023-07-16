@@ -17,7 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 public class CourierUpdateDto {
     private String name;
-    private boolean isActive;
+    private boolean active;
     private List<OrderDto> orders;
     private OrderDto activeOrder;
     private double paymentPerOrder;
