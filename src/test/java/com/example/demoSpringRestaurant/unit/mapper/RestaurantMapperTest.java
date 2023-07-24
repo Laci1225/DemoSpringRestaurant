@@ -16,88 +16,88 @@ public class RestaurantMapperTest {
     RestaurantMapper restaurantMapper= Mappers.getMapper(RestaurantMapper.class);
 
      @Test
-     void fromRestaurantDtoToEntity(){
+     void fromRestaurantDtoToDocument(){
          var result = restaurantMapper
-                 .fromRestaurantDtoToEntity(RestaurantFixture.getRestaurantDto());
+                 .fromRestaurantDtoToDocument(RestaurantFixture.getRestaurantDto());
 
-         assertEquals(result, RestaurantFixture.getRestaurantEntity(true));
+         assertEquals(result, RestaurantFixture.getRestaurantDocument(true));
      }
     @Test
-    void fromRestaurantDtoToEntityReturnsNull(){
+    void fromRestaurantDtoToDocumentReturnsNull(){
         var result = restaurantMapper
-                .fromRestaurantDtoToEntity(null);
+                .fromRestaurantDtoToDocument(null);
 
         assertNull(result);
     }
 
     @Test
-    void fromEntityToRestaurantDto(){
+    void fromDocumentToRestaurantDto(){
         var result = restaurantMapper
-                .fromEntityToRestaurantDto(RestaurantFixture.getRestaurantEntity(true));
+                .fromDocumentToRestaurantDto(RestaurantFixture.getRestaurantDocument(true));
 
         assertEquals(result, RestaurantFixture.getRestaurantDto());
     }
     @Test
-    void fromEntityToRestaurantDtoReturnsNull(){
+    void fromDocumentToRestaurantDtoReturnsNull(){
         var result = restaurantMapper
-                .fromEntityToRestaurantDto(null);
+                .fromDocumentToRestaurantDto(null);
 
         assertNull(result);
     }
 
      @Test
-     void fromEntityToRestaurantCreationDto(){
+     void fromDocumentToRestaurantCreationDto(){
          var result = restaurantMapper
-                 .fromEntityToRestaurantCreationDto(RestaurantFixture.getRestaurantEntity(false));
+                 .fromDocumentToRestaurantCreationDto(RestaurantFixture.getRestaurantDocument(false));
 
          assertEquals(result, RestaurantFixture.getRestaurantCreationDto());
      }
     @Test
-    void fromEntityToRestaurantCreationDtoReturnsNull(){
+    void fromDocumentToRestaurantCreationDtoReturnsNull(){
         var result = restaurantMapper
-                .fromEntityToRestaurantCreationDto(null);
+                .fromDocumentToRestaurantCreationDto(null);
 
         assertNull(result);
     }
      @Test
-     void fromRestaurantCreationDtoToEntity(){
+     void fromRestaurantCreationDtoToDocument(){
          var result = restaurantMapper
-                 .fromRestaurantCreationDtoToEntity(RestaurantFixture.getRestaurantCreationDto());
+                 .fromRestaurantCreationDtoToDocument(RestaurantFixture.getRestaurantCreationDto());
 
-         assertEquals(result, RestaurantFixture.getRestaurantEntity(false));
+         assertEquals(result, RestaurantFixture.getRestaurantDocument(false));
      }
     @Test
-    void fromRestaurantCreationDtoToEntityReturnsNull(){
+    void fromRestaurantCreationDtoToDocumentReturnsNull(){
         var result = restaurantMapper
-                .fromRestaurantCreationDtoToEntity(null);
+                .fromRestaurantCreationDtoToDocument(null);
 
         assertNull(result);
     }
      @Test
-     void fromEntityToRestaurantUpdateDto(){
+     void fromDocumentToRestaurantUpdateDto(){
          var result = restaurantMapper
-                 .fromEntityToRestaurantUpdateDto(RestaurantFixture.getRestaurantEntity(false));
+                 .fromDocumentToRestaurantUpdateDto(RestaurantFixture.getRestaurantDocument(false));
 
          assertEquals(result, RestaurantFixture.getRestaurantUpdateDto());
      }
     @Test
-    void fromEntityToRestaurantUpdateDtoReturnsNull(){
+    void fromDocumentToRestaurantUpdateDtoReturnsNull(){
         var result = restaurantMapper
-                .fromEntityToRestaurantUpdateDto(null);
+                .fromDocumentToRestaurantUpdateDto(null);
 
         assertNull(result);
     }
      @Test
-     void fromRestaurantUpdateDtoToEntity(){
+     void fromRestaurantUpdateDtoToDocument(){
          var result = restaurantMapper
-                 .fromRestaurantUpdateDtoToEntity(RestaurantFixture.getRestaurantUpdateDto());
+                 .fromRestaurantUpdateDtoToDocument(RestaurantFixture.getRestaurantUpdateDto());
 
-         assertEquals(result, RestaurantFixture.getRestaurantEntity(false));
+         assertEquals(result, RestaurantFixture.getRestaurantDocument(false));
      }
     @Test
-    void fromRestaurantUpdateDtoToEntityReturnsNull(){
+    void fromRestaurantUpdateDtoToDocumentReturnsNull(){
         var result = restaurantMapper
-                .fromRestaurantUpdateDtoToEntity(null);
+                .fromRestaurantUpdateDtoToDocument(null);
 
         assertNull(result);
     }

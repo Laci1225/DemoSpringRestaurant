@@ -1,9 +1,11 @@
 package com.example.demoSpringRestaurant.fixtures;
 
+import com.example.demoSpringRestaurant.model.OrderDto;
 import com.example.demoSpringRestaurant.model.RestaurantCreationDto;
 import com.example.demoSpringRestaurant.model.RestaurantDto;
 import com.example.demoSpringRestaurant.model.RestaurantUpdateDto;
-import com.example.demoSpringRestaurant.persistance.entity.RestaurantEntity;
+import com.example.demoSpringRestaurant.persistance.document.OrderDocument;
+import com.example.demoSpringRestaurant.persistance.document.RestaurantDocument;
 import jakarta.validation.constraints.Email;
 
 import java.util.ArrayList;
@@ -15,6 +17,8 @@ public class RestaurantFixture {
     private static final String NAME = "John's restaurant";
     private static final String OWNER = "John";
     private static final String ADDRESS = "Budapest xy street 6.";
+    private static final List<OrderDocument> orders = null;
+    private static final List<OrderDto> ordersDto = null;
     @Email
     private static final String EMAIL = "asd@dsa.com"; // TODO email not verified
     private static final String PHONE_NUMBER = "PhoneNumber";
@@ -65,9 +69,9 @@ public class RestaurantFixture {
                 .build();
     }
 
-    public static RestaurantEntity getRestaurantEntity(boolean withId) {
+    public static RestaurantDocument getRestaurantDocument(boolean withId) {
 
-        var restaurantEntity = RestaurantEntity.builder()
+        var restaurantDocument = RestaurantDocument.builder()
                 .name(NAME)
                 .owner(OWNER)
                 .address(ADDRESS)
@@ -79,13 +83,13 @@ public class RestaurantFixture {
                 .isOnWolt(IS_ON_WOLT)
                 .build();
         if (withId)
-            restaurantEntity.setId(1L);
-        return restaurantEntity;
+            restaurantDocument.setId("1L");
+        return restaurantDocument;
     }
 
     public static RestaurantDto getRestaurantDto() {
         return RestaurantDto.builder()
-                .id(1L)
+                .id("1L")
                 .name(NAME)
                 .owner(OWNER)
                 .address(ADDRESS)
@@ -98,7 +102,7 @@ public class RestaurantFixture {
                 .build();
     }
 
-    public static RestaurantDto getRestaurantDto(Long id) {
+    public static RestaurantDto getRestaurantDto(String id) {
         return RestaurantDto.builder()
                 .id(id)
                 .name(NAME)
@@ -113,10 +117,10 @@ public class RestaurantFixture {
                 .build();
     }
 
-    public static List<RestaurantEntity> getRestaurantEntityList() {
-        var list = new ArrayList<RestaurantEntity>();
-        list.add(RestaurantEntity.builder()
-                .id(1L)
+    public static List<RestaurantDocument> getRestaurantDocumentList() {
+        var list = new ArrayList<RestaurantDocument>();
+        list.add(RestaurantDocument.builder()
+                .id("1L")
                 .name(NAME)
                 .owner(OWNER)
                 .address(ADDRESS)
@@ -133,7 +137,7 @@ public class RestaurantFixture {
     public static List<RestaurantDto> getRestaurantDtoList() {
         var list = new ArrayList<RestaurantDto>();
         list.add(RestaurantDto.builder()
-                .id(1L)
+                .id("1L")
                 .name(NAME)
                 .owner(OWNER)
                 .address(ADDRESS)
@@ -161,9 +165,9 @@ public class RestaurantFixture {
                 .build();
     }
 
-    public static RestaurantEntity getRestaurantEntityIsVegan(boolean withId) {
+    public static RestaurantDocument getRestaurantDocumentIsVegan(boolean withId) {
 
-        var restaurantEntity = RestaurantEntity.builder()
+        var restaurantDocument = RestaurantDocument.builder()
                 .name(NAME)
                 .owner(OWNER)
                 .address(ADDRESS)
@@ -175,7 +179,7 @@ public class RestaurantFixture {
                 .isOnWolt(IS_ON_WOLT)
                 .build();
         if (withId)
-            restaurantEntity.setId(1L);
-        return restaurantEntity;
+            restaurantDocument.setId("1L");
+        return restaurantDocument;
     }
 }

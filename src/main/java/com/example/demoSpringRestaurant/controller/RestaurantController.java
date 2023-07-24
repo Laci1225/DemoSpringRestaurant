@@ -1,8 +1,8 @@
 package com.example.demoSpringRestaurant.controller;
 
-import com.example.demoSpringRestaurant.persistance.entity.RestaurantEntity;
-import com.example.demoSpringRestaurant.exception.RestaurantEntityNotFoundException;
+import com.example.demoSpringRestaurant.exception.RestaurantDocumentNotFoundException;
 import com.example.demoSpringRestaurant.facade.RestaurantOrderFacade;
+import com.example.demoSpringRestaurant.persistance.document.RestaurantDocument;
 import com.example.demoSpringRestaurant.model.*;
 import com.example.demoSpringRestaurant.service.RestaurantService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -56,6 +56,23 @@ public class RestaurantController {
         return restaurantList;
     }
 
+
+    @Operation(summary = "Returns a restaurant")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "A restaurant found",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = RestaurantDto.class))),
+            @ApiResponse(responseCode = "500", description = "Server error",
+                    content = @Content)})
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping(path = "{restaurantId}")
+    public RestaurantDto getRestaurant(@PathVariable("restaurantId") String id) {
+        log.debug("Requested a restaurant");
+        var restaurant = restaurantService.getRestaurant(id);
+        log.debug("Restaurants returned successfully");
+        return restaurant;
+    }
+
     /**
      * Creates a new restaurant.
      *
@@ -86,7 +103,7 @@ public class RestaurantController {
      *
      * @param restaurantId The ID of the restaurant to be deleted.
      * @return The deleted {@link RestaurantDto} object representing the deleted restaurant.
-     * @throws ResponseStatusException If the {@link RestaurantEntity} is not found with 404 status code
+     * @throws ResponseStatusException If the {@link RestaurantDocument} is not found with 404 status code
      *                                 or if there is a server error with 500 status code.
      */
     @Operation(summary = "Deletes a restaurant")
@@ -100,13 +117,13 @@ public class RestaurantController {
                     content = @Content)})
     @ResponseStatus(HttpStatus.ACCEPTED)
     @DeleteMapping(path = "{restaurantId}")
-    public RestaurantDto deleteRestaurant(@PathVariable("restaurantId") Long restaurantId) {
+    public RestaurantDto deleteRestaurant(@PathVariable("restaurantId") String restaurantId) {
         try {
             log.debug("Deleting a restaurant");
             var restaurant = restaurantOrderFacade.deleteRestaurant(restaurantId);
             log.debug("Restaurant with ID: " + restaurantId + " deleted successfully");
             return restaurant;
-        } catch (RestaurantEntityNotFoundException e) {
+        } catch (RestaurantDocumentNotFoundException e) {
             log.warn("Deleting a restaurant was unsuccessful due to: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
@@ -118,7 +135,7 @@ public class RestaurantController {
      * @param restaurantId        The ID of the restaurant to be updated.
      * @param restaurantUpdateDto The {@link RestaurantUpdateDto} object containing the updated restaurant details.
      * @return The updated {@link RestaurantDto} object representing the updated restaurant.
-     * @throws ResponseStatusException If the {@link RestaurantEntity} is not found with 404 status code
+     * @throws ResponseStatusException If the {@link RestaurantDocument} is not found with 404 status code
      *                                 or if there is a server error with 500 status code.
      */
     @Operation(summary = "Updates a restaurant")
@@ -135,14 +152,14 @@ public class RestaurantController {
     @ResponseStatus(HttpStatus.OK)
     @PutMapping(path = "{restaurantId}")
     public RestaurantDto updateRestaurant(
-            @PathVariable("restaurantId") Long restaurantId,
+            @PathVariable("restaurantId") String restaurantId,
             @Valid @RequestBody RestaurantUpdateDto restaurantUpdateDto) {
         try {
             log.debug("Updating restaurant with ID: " + restaurantId);
             var restaurant = restaurantService.updateRestaurant(restaurantId, restaurantUpdateDto);
             log.debug("Updating restaurant with ID: " + restaurantId + " was successful");
             return restaurant;
-        } catch (RestaurantEntityNotFoundException e) {
+        } catch (RestaurantDocumentNotFoundException e) {
             log.warn("Updating a restaurant was unsuccessful due to: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
@@ -154,7 +171,7 @@ public class RestaurantController {
      * @param restaurantId        The ID of the restaurant.
      * @param restaurantUpdateDto The {@link RestaurantUpdateDto} object containing the updated restaurant parameters.
      * @return The updated {@link RestaurantDto} object representing the restaurant with updated parameters.
-     * @throws ResponseStatusException If the {@link RestaurantEntity} is not found with 404 status code
+     * @throws ResponseStatusException If the {@link RestaurantDocument} is not found with 404 status code
      *                                 or if there is a server error with 500 status code.
      */
     @Operation(summary = "Updates a parameter in a restaurant")
@@ -171,14 +188,14 @@ public class RestaurantController {
     @ResponseStatus(HttpStatus.OK)
     @PatchMapping(path = "{restaurantId}")
     public RestaurantDto updateParametersInRestaurant(
-            @PathVariable("restaurantId") Long restaurantId,
+            @PathVariable("restaurantId") String restaurantId,
             @Valid @RequestBody RestaurantUpdateDto restaurantUpdateDto) {
         try {
             log.debug("Updating restaurant's parameter with ID: " + restaurantId);
             var restaurant = restaurantService.updateParametersInRestaurant(restaurantId, restaurantUpdateDto);
             log.debug("Updating restaurant's parameter with ID: " + restaurantId + " was successful");
             return restaurant;
-        } catch (RestaurantEntityNotFoundException e) {
+        } catch (RestaurantDocumentNotFoundException e) {
             log.warn("Updating a restaurant's parameter was unsuccessful due to: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
