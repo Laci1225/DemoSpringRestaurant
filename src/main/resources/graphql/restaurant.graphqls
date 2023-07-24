@@ -1,4 +1,6 @@
 #//TODO data skalár localdatetime serialization format + order in the restaurant
+scalar LocalDateTime
+
 type Restaurant {
     id: ID!
     name: String!
@@ -10,6 +12,8 @@ type Restaurant {
     isVegan: Boolean
     canDeliver: Boolean!
     isOnWolt: Boolean
+    createdDate: LocalDateTime
+    modifiedDate: LocalDateTime
 }
 input RestaurantInput {
     name: String!
@@ -26,8 +30,12 @@ input RestaurantInput {
 type Query {
     restaurants: [Restaurant!]!
     restaurant(id: ID!): Restaurant!
+    vegan: [Restaurant!]!
 }
 
 type Mutation{
     createRestaurant(restaurant: RestaurantInput!): Restaurant!
+    deleteRestaurant(id: String!): Restaurant!
+    updateRestaurant(id: String!,restaurant: RestaurantInput!): Restaurant!
+
 }

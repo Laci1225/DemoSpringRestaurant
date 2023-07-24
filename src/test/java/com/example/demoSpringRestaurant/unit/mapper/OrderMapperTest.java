@@ -15,7 +15,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 
-//TODO a módosítás miatt nem jó
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = {OrderMapperImpl.class, RestaurantWithoutOrderMapperImpl.class})
 public class OrderMapperTest {
@@ -111,6 +110,6 @@ public class OrderMapperTest {
         var result = orderMapper
                 .fromOrderUpdateDtoToDocument(null);
 
-        assertNull(result);  //TODO isActive false lesz valahogy
+        assertNull(result);
     }
 }

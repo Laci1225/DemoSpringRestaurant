@@ -5,7 +5,7 @@ import com.example.demoSpringRestaurant.persistance.document.OrderDocument;
 import org.mapstruct.*;
 
 @Mapper(componentModel = "spring")
-public interface OrderWithoutGuestMapper {
+public interface OrderWithoutGuestMapper {//todo orderWithoutReferences guest+courier
     @Mapping(target = "guestDocument",ignore = true)
     @Mapping(target = "courierDocument", source = "orderDto.courierDto")
     OrderDocument fromOrderDtoToDocument(OrderDto orderDto);
@@ -25,7 +25,7 @@ public interface OrderWithoutGuestMapper {
     @Mapping(target = "guestDto",ignore = true)
     @Mapping(target = "courierDto", ignore = true)
     OrderDto fromOrderCreationDtoToDto(OrderCreationDto orderCreationDto,
-                                       @Context CourierDto courierDto,
+                                       @Context CourierDto courierDto,//todo
                                        @Context GuestDto guestDto);
 
     @AfterMapping

@@ -6,7 +6,7 @@ import com.example.demoSpringRestaurant.model.GuestUpdateDto;
 import com.example.demoSpringRestaurant.persistance.document.GuestDocument;
 import org.mapstruct.Mapper;
 
-@Mapper(componentModel = "spring", uses = {OrderMapper.class})
+@Mapper(componentModel = "spring", uses = {OrderWithoutGuestMapper.class})//todo
 public interface GuestMapper {
 
     GuestDocument fromGuestDtoToDocument(GuestDto GuestDto);

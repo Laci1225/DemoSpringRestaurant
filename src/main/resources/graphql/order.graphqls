@@ -1,0 +1,42 @@
+type Order {
+    id: ID!
+    restaurant: Restaurant!
+    mealType: MealType
+    drinkType: DrinkType
+    price: Float
+    isDelivery: Boolean
+    deliveryAddress: String
+    #courierDto: Courier
+    orderStatus: OrderStatus
+        guestDto: Guest
+    createdDate: LocalDateTime
+    modifiedDate: LocalDateTime
+}
+input OrderCreationInput {
+    mealType: MealType
+    drinkType: DrinkType
+    isDelivery: Boolean
+    deliveryAddress: String
+    courierId: String
+    guestId: String
+}
+input OrderInput {
+    mealType: MealType
+    drinkType: DrinkType
+    isDelivery: Boolean
+    deliveryAddress: String
+    #courierDto: CourierDto
+    guestDto: GuestInput
+}
+
+extend type Query {
+    orders(id: ID!): [Order!]!
+    order(id:ID!): Order!
+}
+extend type Mutation {
+    createOrder(order:OrderCreationInput!,id:String!):Order!
+    deleteOrder(id: ID!):Order!
+    updateOrder(id:String!,order:OrderInput!):Order!
+    setNextStage(id:ID!):Order!
+    setCourierToOrder(orderId: ID!,courierId:ID!):Order!
+}

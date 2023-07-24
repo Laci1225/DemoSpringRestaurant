@@ -31,7 +31,7 @@ public class OrderGuestFacade {
         var guest = guestService.saveGuest(guestDto);
         orderDto.setGuestDto(guest);
         var order = orderService.saveOrder(orderDto);
-        //guest.setActiveOrder(order);
+        //guest.setActiveOrder(order);  todo
         //  guestService.saveGuest(guest);
 
         log.trace("Guest created with ID:" + guestDto.getId());

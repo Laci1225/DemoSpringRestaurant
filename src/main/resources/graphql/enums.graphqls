@@ -1,0 +1,17 @@
+
+enum MealType {
+    RICEANDFISH,FISHANDCHIPS,CHICKENANDRICE,CHICKENANDFISH
+}
+
+
+enum DrinkType {
+    COLA,WATER,JUICE,LEMONADE,TEA
+}
+
+enum  OrderStatus {
+    SENT,APPROVED,SHIPPING,SHIPPED
+}
+
+enum Vehicle{
+    CAR,MOTORBIKE,BICYCLE
+}

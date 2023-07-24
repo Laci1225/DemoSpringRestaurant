@@ -43,11 +43,11 @@ public class OrderCourierFacadeTest {
         var orderDtoList = courier.getOrders();
         orderDtoList.add(orderDto);
         courier.setOrders(orderDtoList);
-
+        // todo miért egyenlő
         assertThat(courier).usingRecursiveComparison().isEqualTo(CourierFixture.getCourierDto());
         verify(courierService,times(1)).findCourierById(anyString());
         verify(orderService,times(1)).findOrderById(anyString());
-        verifyNoMoreInteractions(orderService,courierService);//TODO
+        verifyNoMoreInteractions(orderService,courierService);
     }
 
     @Test
