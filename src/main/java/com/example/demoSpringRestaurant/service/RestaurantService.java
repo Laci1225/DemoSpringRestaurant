@@ -1,12 +1,12 @@
 package com.example.demoSpringRestaurant.service;
 
 import com.example.demoSpringRestaurant.exception.RestaurantDocumentNotFoundException;
-import com.example.demoSpringRestaurant.model.RestaurantCreationDto;
-import com.example.demoSpringRestaurant.model.RestaurantDto;
-import com.example.demoSpringRestaurant.model.RestaurantUpdateDto;
+import com.example.demoSpringRestaurant.model.service.RestaurantCreationDto;
+import com.example.demoSpringRestaurant.model.service.RestaurantDto;
+import com.example.demoSpringRestaurant.model.service.RestaurantUpdateDto;
 import com.example.demoSpringRestaurant.persistance.document.RestaurantDocument;
 import com.example.demoSpringRestaurant.persistance.repository.RestaurantRepository;
-import com.example.demoSpringRestaurant.mapper.RestaurantMapper;
+import com.example.demoSpringRestaurant.mapper.service.RestaurantMapper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

@@ -1,12 +1,12 @@
 package com.example.demoSpringRestaurant.unit.controller;
 
-import com.example.demoSpringRestaurant.controller.GuestController;
+import com.example.demoSpringRestaurant.controller.rest.GuestController;
 import com.example.demoSpringRestaurant.exception.GuestDocumentNotFoundException;
 import com.example.demoSpringRestaurant.exception.OrderDocumentNotFoundException;
 import com.example.demoSpringRestaurant.facade.OrderGuestFacade;
 import com.example.demoSpringRestaurant.fixtures.GuestFixture;
-import com.example.demoSpringRestaurant.model.GuestCreationDto;
-import com.example.demoSpringRestaurant.model.GuestUpdateDto;
+import com.example.demoSpringRestaurant.model.service.GuestCreationDto;
+import com.example.demoSpringRestaurant.model.service.GuestUpdateDto;
 import com.example.demoSpringRestaurant.service.GuestService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;

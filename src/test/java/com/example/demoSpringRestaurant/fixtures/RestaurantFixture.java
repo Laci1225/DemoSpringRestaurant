@@ -1,9 +1,9 @@
 package com.example.demoSpringRestaurant.fixtures;
 
-import com.example.demoSpringRestaurant.model.OrderDto;
-import com.example.demoSpringRestaurant.model.RestaurantCreationDto;
-import com.example.demoSpringRestaurant.model.RestaurantDto;
-import com.example.demoSpringRestaurant.model.RestaurantUpdateDto;
+import com.example.demoSpringRestaurant.model.service.OrderDto;
+import com.example.demoSpringRestaurant.model.service.RestaurantCreationDto;
+import com.example.demoSpringRestaurant.model.service.RestaurantDto;
+import com.example.demoSpringRestaurant.model.service.RestaurantUpdateDto;
 import com.example.demoSpringRestaurant.persistance.document.OrderDocument;
 import com.example.demoSpringRestaurant.persistance.document.RestaurantDocument;
 import jakarta.validation.constraints.Email;
@@ -20,7 +20,7 @@ public class RestaurantFixture {
     private static final List<OrderDocument> orders = null;
     private static final List<OrderDto> ordersDto = null;
     @Email
-    private static final String EMAIL = "asd@dsa.com"; // TODO email not verified
+    private static final String EMAIL = "asd@dsa.com";
     private static final String PHONE_NUMBER = "PhoneNumber";
     private static final Integer NUMBER_OF_TABLES = 45;
     private static final Boolean IS_VEGAN = false;

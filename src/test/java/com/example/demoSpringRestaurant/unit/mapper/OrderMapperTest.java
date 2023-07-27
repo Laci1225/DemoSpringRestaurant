@@ -1,10 +1,10 @@
 package com.example.demoSpringRestaurant.unit.mapper;
 
 import com.example.demoSpringRestaurant.fixtures.OrderFixture;
-import com.example.demoSpringRestaurant.mapper.OrderMapper;
+import com.example.demoSpringRestaurant.mapper.service.OrderMapper;
 import com.example.demoSpringRestaurant.mapper.OrderMapperImpl;
 import com.example.demoSpringRestaurant.mapper.RestaurantWithoutOrderMapperImpl;
-import com.example.demoSpringRestaurant.model.OrderCreationDto;
+import com.example.demoSpringRestaurant.model.service.OrderCreationDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,8 +70,8 @@ public class OrderMapperTest {
     public void fromOrderCreationDtoToDocument() {
         var result = orderMapper
                 .fromOrderCreationDtoToDto(OrderFixture.getOrderCreationDto(),
-                        OrderFixture.getOrderDto().getCourierDto(),
-                        OrderFixture.getOrderDto().getGuestDto());
+                        OrderFixture.getOrderDto().getCourier(),
+                        OrderFixture.getOrderDto().getGuest());
 
         assertEquals(result, OrderFixture.getOrderDtoWithoutId() );
     }

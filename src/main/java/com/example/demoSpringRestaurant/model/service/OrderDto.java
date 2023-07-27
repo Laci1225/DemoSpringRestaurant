@@ -1,4 +1,4 @@
-package com.example.demoSpringRestaurant.model;
+package com.example.demoSpringRestaurant.model.service;
 import com.example.demoSpringRestaurant.constant.DrinkType;
 import com.example.demoSpringRestaurant.constant.MealType;
 import com.example.demoSpringRestaurant.constant.OrderStatus;
@@ -25,11 +25,11 @@ public class OrderDto {
     private double price;
     private boolean isDelivery;
     private String deliveryAddress;
-    private CourierDto courierDto;
+    private CourierDto courier;
     private OrderStatus orderStatus = OrderStatus.SENT;
     @DateTimeFormat(pattern = "HH:mm:ss")
     private LocalTime estimatedPreparationTime;
-    private GuestDto guestDto;
+    private GuestDto guest;
 
     @CreatedDate
     private LocalDateTime createdDate;

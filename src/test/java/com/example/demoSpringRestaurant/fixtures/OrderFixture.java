@@ -3,7 +3,7 @@ package com.example.demoSpringRestaurant.fixtures;
 import com.example.demoSpringRestaurant.constant.DrinkType;
 import com.example.demoSpringRestaurant.constant.MealType;
 import com.example.demoSpringRestaurant.constant.OrderStatus;
-import com.example.demoSpringRestaurant.model.*;
+import com.example.demoSpringRestaurant.model.service.*;
 import com.example.demoSpringRestaurant.persistance.document.CourierDocument;
 import com.example.demoSpringRestaurant.persistance.document.GuestDocument;
 import com.example.demoSpringRestaurant.persistance.document.OrderDocument;
@@ -55,8 +55,8 @@ public class OrderFixture {
                 .deliveryAddress(DELIVERY_ADDRESS)
                 .orderStatus(ORDER_STATUS)
                 .estimatedPreparationTime(ESTIMATED_DELIVERY_TIME)
-                .guestDto(GUEST_DTO)
-                .courierDto(COURIER_DTO)
+                .guest(GUEST_DTO)
+                .courier(COURIER_DTO)
                 .createdDate(CREATED_DATE)
                 .modifiedDate(MODIFIED_DATE)
                 .build();
@@ -70,8 +70,8 @@ public class OrderFixture {
                 .deliveryAddress(DELIVERY_ADDRESS)
                 .orderStatus(ORDER_STATUS)
                 .estimatedPreparationTime(ESTIMATED_DELIVERY_TIME)
-                .guestDto(GUEST_DTO)
-                .courierDto(COURIER_DTO)
+                .guest(GUEST_DTO)
+                .courier(COURIER_DTO)
                 .createdDate(CREATED_DATE)
                 .modifiedDate(MODIFIED_DATE)
                 .build();
@@ -87,8 +87,8 @@ public class OrderFixture {
                 .deliveryAddress(DELIVERY_ADDRESS)
                 .orderStatus(fromStatus.getNextStatus())
                 .estimatedPreparationTime(ESTIMATED_DELIVERY_TIME)
-                .guestDto(GUEST_DTO)
-                .courierDto(COURIER_DTO)
+                .guest(GUEST_DTO)
+                .courier(COURIER_DTO)
                 .createdDate(CREATED_DATE)
                 .modifiedDate(MODIFIED_DATE)
                 .build();
@@ -103,8 +103,8 @@ public class OrderFixture {
                 .deliveryAddress(DELIVERY_ADDRESS)
                 .orderStatus(ORDER_STATUS)
                 .estimatedPreparationTime(ESTIMATED_DELIVERY_TIME)
-                .guestDocument(GUEST_DOCUMENT)
-                .courierDocument(COURIER_DOCUMENT)
+                .guest(GUEST_DOCUMENT)
+                .courier(COURIER_DOCUMENT)
                 .createdDate(CREATED_DATE)
                 .modifiedDate(MODIFIED_DATE)
                 .build();
@@ -122,8 +122,8 @@ public class OrderFixture {
                 .deliveryAddress(DELIVERY_ADDRESS)
                 .orderStatus(ORDER_STATUS)
                 .estimatedPreparationTime(ESTIMATED_DELIVERY_TIME)
-                .guestDocument(GUEST_DOCUMENT)
-                .courierDocument(COURIER_DOCUMENT)
+                .guest(GUEST_DOCUMENT)
+                .courier(COURIER_DOCUMENT)
                 .createdDate(CREATED_DATE)
                 .modifiedDate(MODIFIED_DATE)
                 .id(id)
@@ -154,8 +154,8 @@ public class OrderFixture {
                 .deliveryAddress(DELIVERY_ADDRESS)
                 .orderStatus(ORDER_STATUS)
                 .estimatedPreparationTime(ESTIMATED_DELIVERY_TIME)
-                .guestDto(GUEST_DTO)
-                .courierDto(COURIER_DTO)
+                .guest(GUEST_DTO)
+                .courier(COURIER_DTO)
                 .createdDate(CREATED_DATE)
                 .modifiedDate(MODIFIED_DATE)
                 .build();
@@ -172,8 +172,8 @@ public class OrderFixture {
                 .deliveryAddress(DELIVERY_ADDRESS)
                 .orderStatus(ORDER_STATUS)
                 .estimatedPreparationTime(ESTIMATED_DELIVERY_TIME)
-                .guestDto(GUEST_DTO)
-                .courierDto(COURIER_DTO )
+                .guest(GUEST_DTO)
+                .courier(COURIER_DTO )
                 .createdDate(CREATED_DATE)
                 .modifiedDate(MODIFIED_DATE)
                 .build());
@@ -189,8 +189,8 @@ public class OrderFixture {
                 .deliveryAddress(DELIVERY_ADDRESS)
                 .orderStatus(ORDER_STATUS)
                 .estimatedPreparationTime(ESTIMATED_DELIVERY_TIME)
-                .guestDto(GUEST_DTO)
-                .courierDto(COURIER_DTO)
+                .guest(GUEST_DTO)
+                .courier(COURIER_DTO)
                 .createdDate(CREATED_DATE)
                 .modifiedDate(MODIFIED_DATE)
                 .build();
@@ -205,8 +205,8 @@ public class OrderFixture {
                 .deliveryAddress(DELIVERY_ADDRESS)
                 .orderStatus(ORDER_STATUS)
                 .estimatedPreparationTime(ESTIMATED_DELIVERY_TIME)
-                .guestDocument(GUEST_DOCUMENT)
-                .courierDocument(COURIER_DOCUMENT)
+                .guest(GUEST_DOCUMENT)
+                .courier(COURIER_DOCUMENT)
                 .createdDate(CREATED_DATE)
                 .modifiedDate(MODIFIED_DATE)
                 .build();
@@ -224,8 +224,8 @@ public class OrderFixture {
                 .deliveryAddress(DELIVERY_ADDRESS)
                 .orderStatus(ORDER_STATUS)
                 .estimatedPreparationTime(ESTIMATED_DELIVERY_TIME)
-                .guestDto(GUEST_DTO)
-                .courierDto(COURIER_DTO)
+                .guest(GUEST_DTO)
+                .courier(COURIER_DTO)
                 .createdDate(CREATED_DATE)
                 .modifiedDate(MODIFIED_DATE)
                 .build();
@@ -241,8 +241,8 @@ public class OrderFixture {
                 .deliveryAddress(DELIVERY_ADDRESS)
                 .orderStatus(fromStatus.getNextStatus())
                 .estimatedPreparationTime(ESTIMATED_DELIVERY_TIME)
-                .guestDto(GUEST_DTO)
-                .courierDto(COURIER_DTO)
+                .guest(GUEST_DTO)
+                .courier(COURIER_DTO)
                 .createdDate(CREATED_DATE)
                 .modifiedDate(MODIFIED_DATE)
                 .build();
@@ -259,8 +259,8 @@ public class OrderFixture {
                 .deliveryAddress(DELIVERY_ADDRESS)
                 .orderStatus(ORDER_STATUS)
                 .estimatedPreparationTime(ESTIMATED_DELIVERY_TIME)
-                .guestDocument(GUEST_DOCUMENT)
-                .courierDocument(COURIER_DOCUMENT)
+                .guest(GUEST_DOCUMENT)
+                .courier(COURIER_DOCUMENT)
                 .createdDate(CREATED_DATE)
                 .modifiedDate(MODIFIED_DATE)
                 .build());

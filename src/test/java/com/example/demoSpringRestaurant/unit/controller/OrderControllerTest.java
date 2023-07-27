@@ -1,7 +1,7 @@
 package com.example.demoSpringRestaurant.unit.controller;
 
 import com.example.demoSpringRestaurant.constant.OrderStatus;
-import com.example.demoSpringRestaurant.controller.OrderController;
+import com.example.demoSpringRestaurant.controller.rest.OrderController;
 import com.example.demoSpringRestaurant.exception.OrderDocumentNotFoundException;
 import com.example.demoSpringRestaurant.exception.RestaurantDocumentNotFoundException;
 import com.example.demoSpringRestaurant.facade.OrderCourierFacade;
@@ -9,8 +9,8 @@ import com.example.demoSpringRestaurant.facade.OrderGuestCourierFacade;
 import com.example.demoSpringRestaurant.facade.RestaurantOrderFacade;
 import com.example.demoSpringRestaurant.facade.RestaurantOrderGuestCourierFacade;
 import com.example.demoSpringRestaurant.fixtures.OrderFixture;
-import com.example.demoSpringRestaurant.model.OrderCreationDto;
-import com.example.demoSpringRestaurant.model.OrderUpdateDto;
+import com.example.demoSpringRestaurant.model.service.OrderCreationDto;
+import com.example.demoSpringRestaurant.model.service.OrderUpdateDto;
 import com.example.demoSpringRestaurant.service.OrderService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;

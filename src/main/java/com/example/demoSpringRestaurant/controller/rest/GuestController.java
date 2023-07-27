@@ -1,11 +1,11 @@
-package com.example.demoSpringRestaurant.controller;
+package com.example.demoSpringRestaurant.controller.rest;
 
 import com.example.demoSpringRestaurant.exception.DocumentNotFoundException;
 import com.example.demoSpringRestaurant.exception.GuestDocumentNotFoundException;
 import com.example.demoSpringRestaurant.facade.OrderGuestFacade;
-import com.example.demoSpringRestaurant.model.GuestCreationDto;
-import com.example.demoSpringRestaurant.model.GuestDto;
-import com.example.demoSpringRestaurant.model.GuestUpdateDto;
+import com.example.demoSpringRestaurant.model.service.GuestCreationDto;
+import com.example.demoSpringRestaurant.model.service.GuestDto;
+import com.example.demoSpringRestaurant.model.service.GuestUpdateDto;
 import com.example.demoSpringRestaurant.service.GuestService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;

@@ -1,9 +1,9 @@
 package com.example.demoSpringRestaurant.service;
 
 import com.example.demoSpringRestaurant.exception.OrderDocumentNotFoundException;
-import com.example.demoSpringRestaurant.mapper.OrderMapper;
-import com.example.demoSpringRestaurant.model.OrderDto;
-import com.example.demoSpringRestaurant.model.OrderUpdateDto;
+import com.example.demoSpringRestaurant.mapper.service.OrderMapper;
+import com.example.demoSpringRestaurant.model.service.OrderDto;
+import com.example.demoSpringRestaurant.model.service.OrderUpdateDto;
 import com.example.demoSpringRestaurant.persistance.document.OrderDocument;
 import com.example.demoSpringRestaurant.persistance.repository.OrderRepository;
 import lombok.AllArgsConstructor;
@@ -80,5 +80,4 @@ public class OrderService {
         else throw new OrderDocumentNotFoundException("Order not found");
     }
 
-    // TODO REST & HTTP other communications
 }

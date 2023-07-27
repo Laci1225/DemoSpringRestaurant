@@ -1,30 +1,39 @@
-package com.example.demoSpringRestaurant.model;
+package com.example.demoSpringRestaurant.model.service;
 
-import lombok.*;
+import jakarta.annotation.Nullable;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
+@AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@AllArgsConstructor
-public class RestaurantDto {
-    @Id
-    private String id;
-    private List<OrderDto> orders;
+public class RestaurantCreationDto {
+    @NotNull
     private String name;
+    @NotNull
     private String owner;
     private String address;
+    @Email
     private String email;
+    @Nullable
     private String phoneNumber;
 
+    @Nullable
     private Integer numberOfTables;
+    @Nullable
     private Boolean isVegan;
+    @NotNull
     private Boolean canDeliver;
+    @NotNull
     private Boolean isOnWolt;
     @CreatedDate
     private LocalDateTime createdDate;

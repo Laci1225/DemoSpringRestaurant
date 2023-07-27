@@ -1,11 +1,11 @@
 package com.example.demoSpringRestaurant.unit.controller;
 
-import com.example.demoSpringRestaurant.controller.RestaurantController;
+import com.example.demoSpringRestaurant.controller.rest.RestaurantController;
 import com.example.demoSpringRestaurant.exception.RestaurantDocumentNotFoundException;
 import com.example.demoSpringRestaurant.facade.RestaurantOrderFacade;
 import com.example.demoSpringRestaurant.fixtures.RestaurantFixture;
-import com.example.demoSpringRestaurant.model.RestaurantCreationDto;
-import com.example.demoSpringRestaurant.model.RestaurantUpdateDto;
+import com.example.demoSpringRestaurant.model.service.RestaurantCreationDto;
+import com.example.demoSpringRestaurant.model.service.RestaurantUpdateDto;
 import com.example.demoSpringRestaurant.service.RestaurantService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;

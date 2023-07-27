@@ -1,8 +1,8 @@
-package com.example.demoSpringRestaurant.mapper;
+package com.example.demoSpringRestaurant.mapper.service;
 
-import com.example.demoSpringRestaurant.model.CourierCreationDto;
-import com.example.demoSpringRestaurant.model.CourierDto;
-import com.example.demoSpringRestaurant.model.CourierUpdateDto;
+import com.example.demoSpringRestaurant.model.service.CourierCreationDto;
+import com.example.demoSpringRestaurant.model.service.CourierDto;
+import com.example.demoSpringRestaurant.model.service.CourierUpdateDto;
 import com.example.demoSpringRestaurant.persistance.document.CourierDocument;
 import org.mapstruct.Mapper;
 

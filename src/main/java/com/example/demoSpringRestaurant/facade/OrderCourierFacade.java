@@ -3,10 +3,10 @@ package com.example.demoSpringRestaurant.facade;
 import com.example.demoSpringRestaurant.exception.CourierDocumentNotFoundException;
 import com.example.demoSpringRestaurant.exception.DocumentNotFoundException;
 import com.example.demoSpringRestaurant.exception.OrderDocumentNotFoundException;
-import com.example.demoSpringRestaurant.mapper.CourierMapper;
-import com.example.demoSpringRestaurant.mapper.OrderMapper;
-import com.example.demoSpringRestaurant.model.CourierDto;
-import com.example.demoSpringRestaurant.model.OrderDto;
+import com.example.demoSpringRestaurant.mapper.service.CourierMapper;
+import com.example.demoSpringRestaurant.mapper.service.OrderMapper;
+import com.example.demoSpringRestaurant.model.service.CourierDto;
+import com.example.demoSpringRestaurant.model.service.OrderDto;
 import com.example.demoSpringRestaurant.service.CourierService;
 import com.example.demoSpringRestaurant.service.OrderService;
 import lombok.RequiredArgsConstructor;
@@ -25,9 +25,9 @@ public class OrderCourierFacade {
     public CourierDto deleteCourier(String courierId) throws DocumentNotFoundException {
         var courier = courierService.findCourierById(courierId);
         var order = orderService.findOrderById(courier.getActiveOrder().getId());
-        order.setCourierDto(null);
+        order.setCourier(null);
         var orders = courier.getOrders();
-        orders.forEach(orderDto -> orderDto.setCourierDto(null));
+        orders.forEach(orderDto -> orderDto.setCourier(null));
         courierService.deleteById(courier.getId());
         return courier;
     }
@@ -51,7 +51,7 @@ public class OrderCourierFacade {
     public OrderDto setCourierToOrder(String orderId, String courierId) throws CourierDocumentNotFoundException, OrderDocumentNotFoundException {
         var courier = courierService.findCourierById(courierId);
         var order = orderService.findOrderById(orderId);
-        order.setCourierDto(courier);
+        order.setCourier(courier);
         return order;
     }
 }

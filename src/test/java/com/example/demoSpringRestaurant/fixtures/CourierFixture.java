@@ -1,7 +1,10 @@
 package com.example.demoSpringRestaurant.fixtures;
 
 import com.example.demoSpringRestaurant.constant.Vehicle;
-import com.example.demoSpringRestaurant.model.*;
+import com.example.demoSpringRestaurant.model.service.CourierCreationDto;
+import com.example.demoSpringRestaurant.model.service.CourierDto;
+import com.example.demoSpringRestaurant.model.service.CourierUpdateDto;
+import com.example.demoSpringRestaurant.model.service.OrderDto;
 import com.example.demoSpringRestaurant.persistance.document.CourierDocument;
 import com.example.demoSpringRestaurant.persistance.document.OrderDocument;
 import lombok.Data;

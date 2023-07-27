@@ -1,4 +1,4 @@
-package com.example.demoSpringRestaurant.model;
+package com.example.demoSpringRestaurant.model.service;
 
 import com.example.demoSpringRestaurant.constant.DrinkType;
 import com.example.demoSpringRestaurant.constant.MealType;
@@ -12,22 +12,21 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Data
+@AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@AllArgsConstructor
-public class OrderCreationDto {
+public class OrderUpdateDto {
     private RestaurantDto restaurant;
     private MealType mealType;
     private DrinkType drinkType;
     private double price;
     private boolean isDelivery;
     private String deliveryAddress;
-    private String courierId; //TODO
+    private CourierDto courier;
     private OrderStatus orderStatus = OrderStatus.SENT;
     @DateTimeFormat(pattern = "HH:mm:ss")
     private LocalTime estimatedPreparationTime;
-    private String guestId;
-
+    private GuestDto guest;
     @CreatedDate
     private LocalDateTime createdDate;
     @LastModifiedDate

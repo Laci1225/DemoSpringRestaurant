@@ -1,32 +1,34 @@
-package com.example.demoSpringRestaurant.model;
-
+package com.example.demoSpringRestaurant.model.controller;
 import com.example.demoSpringRestaurant.constant.DrinkType;
 import com.example.demoSpringRestaurant.constant.MealType;
 import com.example.demoSpringRestaurant.constant.OrderStatus;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Builder
-public class OrderUpdateDto {
-    private RestaurantDto restaurant;
+@NoArgsConstructor
+@AllArgsConstructor
+public class Order {
+    @Id
+    private String id;
+    private Restaurant restaurant;
     private MealType mealType;
     private DrinkType drinkType;
     private double price;
     private boolean isDelivery;
     private String deliveryAddress;
-    private CourierDto courierDto;
+    private Courier courier;
     private OrderStatus orderStatus = OrderStatus.SENT;
     @DateTimeFormat(pattern = "HH:mm:ss")
     private LocalTime estimatedPreparationTime;
-    private GuestDto guestDto;
+    private Guest guest;
+
     @CreatedDate
     private LocalDateTime createdDate;
     @LastModifiedDate
@@ -35,7 +37,4 @@ public class OrderUpdateDto {
     public double getPrice() {
         return getMealType().getValue() + getDrinkType().getValue();
     }
-
-
 }
-

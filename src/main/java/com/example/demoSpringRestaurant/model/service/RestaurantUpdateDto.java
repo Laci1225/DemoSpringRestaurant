@@ -1,4 +1,4 @@
-package com.example.demoSpringRestaurant.model;
+package com.example.demoSpringRestaurant.model.service;
 
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.Email;
@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class RestaurantCreationDto {
+public class RestaurantUpdateDto {
     @NotNull
     private String name;
     @NotNull
@@ -26,7 +26,6 @@ public class RestaurantCreationDto {
     private String email;
     @Nullable
     private String phoneNumber;
-
     @Nullable
     private Integer numberOfTables;
     @Nullable
@@ -35,9 +34,10 @@ public class RestaurantCreationDto {
     private Boolean canDeliver;
     @NotNull
     private Boolean isOnWolt;
-    @CreatedDate
+
+    /*@CreatedDate
     private LocalDateTime createdDate;
     @LastModifiedDate
-    private LocalDateTime modifiedDate;
-
+    private LocalDateTime modifiedDate;*/
+    
 }

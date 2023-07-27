@@ -2,10 +2,10 @@ package com.example.demoSpringRestaurant.facade;
 
 import com.example.demoSpringRestaurant.exception.DocumentNotFoundException;
 import com.example.demoSpringRestaurant.exception.OrderDocumentNotFoundException;
-import com.example.demoSpringRestaurant.mapper.GuestMapper;
-import com.example.demoSpringRestaurant.mapper.OrderMapper;
-import com.example.demoSpringRestaurant.model.GuestDto;
-import com.example.demoSpringRestaurant.model.GuestCreationDto;
+import com.example.demoSpringRestaurant.mapper.service.GuestMapper;
+import com.example.demoSpringRestaurant.mapper.service.OrderMapper;
+import com.example.demoSpringRestaurant.model.service.GuestDto;
+import com.example.demoSpringRestaurant.model.service.GuestCreationDto;
 import com.example.demoSpringRestaurant.service.GuestService;
 import com.example.demoSpringRestaurant.service.OrderService;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +29,7 @@ public class OrderGuestFacade {
 
 
         var guest = guestService.saveGuest(guestDto);
-        orderDto.setGuestDto(guest);
+        orderDto.setGuest(guest);
         var order = orderService.saveOrder(orderDto);
         //guest.setActiveOrder(order);  todo
         //  guestService.saveGuest(guest);

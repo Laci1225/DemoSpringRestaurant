@@ -1,12 +1,12 @@
-package com.example.demoSpringRestaurant.controller;
+package com.example.demoSpringRestaurant.controller.rest;
 
 import com.example.demoSpringRestaurant.exception.CourierDocumentNotFoundException;
 import com.example.demoSpringRestaurant.exception.DocumentNotFoundException;
 import com.example.demoSpringRestaurant.exception.OrderDocumentNotFoundException;
 import com.example.demoSpringRestaurant.facade.OrderCourierFacade;
-import com.example.demoSpringRestaurant.model.CourierCreationDto;
-import com.example.demoSpringRestaurant.model.CourierDto;
-import com.example.demoSpringRestaurant.model.CourierUpdateDto;
+import com.example.demoSpringRestaurant.model.service.CourierCreationDto;
+import com.example.demoSpringRestaurant.model.service.CourierDto;
+import com.example.demoSpringRestaurant.model.service.CourierUpdateDto;
 import com.example.demoSpringRestaurant.service.CourierService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -64,7 +64,7 @@ public class CourierController {
             log.debug("Couriers returned successfully");
             return courierList;
         } catch (CourierDocumentNotFoundException e) {
-            throw new RuntimeException(e);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
     }
 
@@ -100,7 +100,10 @@ public class CourierController {
     public CourierDto addOrderToCourier(@PathVariable(value = "courierId") String courierId
             , @PathVariable(value = "orderId") String orderId) {
         try {
-            return orderCourierFacade.addOrderToCourier(courierId, orderId);
+            log.debug("Adding an order to a courier");
+            var courier =  orderCourierFacade.addOrderToCourier(courierId, orderId);
+            log.debug("Order added to a courier successfully");
+            return courier;
         } catch (CourierDocumentNotFoundException | OrderDocumentNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
@@ -120,7 +123,10 @@ public class CourierController {
     public CourierDto setOrderActive(@PathVariable(value = "courierId") String courierId
             , @PathVariable(value = "orderId") String orderId) {
         try {
-            return orderCourierFacade.setOrderActive(courierId, orderId);
+            log.debug("Setting an order active in a courier");
+            var courier = orderCourierFacade.setOrderActive(courierId, orderId);
+            log.debug("CAn order with ID: " + courierId + " set in a courier successfully");
+            return courier;
         } catch (CourierDocumentNotFoundException | OrderDocumentNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
@@ -139,7 +145,7 @@ public class CourierController {
     @DeleteMapping(path = "{courierId}")
     public CourierDto deleteCourier(@PathVariable("courierId") String courierId) {
         try {
-            log.debug("Deleting an courier");
+            log.debug("Deleting a courier");
             var courier = orderCourierFacade.deleteCourier(courierId);
             log.debug("Courier with ID: " + courierId + " deleted successfully");
             return courier;

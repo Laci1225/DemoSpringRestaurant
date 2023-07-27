@@ -1,12 +1,8 @@
 package com.example.demoSpringRestaurant.facade;
 
-import com.example.demoSpringRestaurant.exception.CourierDocumentNotFoundException;
 import com.example.demoSpringRestaurant.exception.DocumentNotFoundException;
-import com.example.demoSpringRestaurant.exception.GuestDocumentNotFoundException;
-import com.example.demoSpringRestaurant.exception.OrderDocumentNotFoundException;
-import com.example.demoSpringRestaurant.mapper.OrderMapper;
-import com.example.demoSpringRestaurant.mapper.RestaurantMapper;
-import com.example.demoSpringRestaurant.model.OrderDto;
+import com.example.demoSpringRestaurant.mapper.service.OrderMapper;
+import com.example.demoSpringRestaurant.model.service.OrderDto;
 import com.example.demoSpringRestaurant.service.CourierService;
 import com.example.demoSpringRestaurant.service.GuestService;
 import com.example.demoSpringRestaurant.service.OrderService;

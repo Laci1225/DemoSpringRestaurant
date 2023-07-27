@@ -1,13 +1,13 @@
 package com.example.demoSpringRestaurant.facade;
 
 import com.example.demoSpringRestaurant.exception.DocumentNotFoundException;
-import com.example.demoSpringRestaurant.mapper.CourierMapper;
-import com.example.demoSpringRestaurant.mapper.GuestMapper;
-import com.example.demoSpringRestaurant.mapper.OrderMapper;
-import com.example.demoSpringRestaurant.model.CourierDto;
-import com.example.demoSpringRestaurant.model.GuestDto;
-import com.example.demoSpringRestaurant.model.OrderCreationDto;
-import com.example.demoSpringRestaurant.model.OrderDto;
+import com.example.demoSpringRestaurant.mapper.service.CourierMapper;
+import com.example.demoSpringRestaurant.mapper.service.GuestMapper;
+import com.example.demoSpringRestaurant.mapper.service.OrderMapper;
+import com.example.demoSpringRestaurant.model.service.CourierDto;
+import com.example.demoSpringRestaurant.model.service.GuestDto;
+import com.example.demoSpringRestaurant.model.service.OrderCreationDto;
+import com.example.demoSpringRestaurant.model.service.OrderDto;
 import com.example.demoSpringRestaurant.service.CourierService;
 import com.example.demoSpringRestaurant.service.GuestService;
 import com.example.demoSpringRestaurant.service.OrderService;
@@ -54,8 +54,8 @@ public class RestaurantOrderGuestCourierFacade {
                 , courier, guest);
         var orderDocument = orderMapper.fromOrderDtoToDocument(orderDto);
         //if (orderDocument.isDelivery())
-        orderDocument.setCourierDocument(courierDocument);
-        orderDocument.setGuestDocument(guestDocument);
+        orderDocument.setCourier(courierDocument);
+        orderDocument.setGuest(guestDocument);
         var orderDto2 = orderService.saveOrder(orderMapper.fromDocumentToOrderDto(orderDocument));
          log.trace("Order" + orderDto2 + " with Restaurant ID: " + orderDto2.getId() + " created");
         return orderDto2;

@@ -5,10 +5,10 @@ import com.example.demoSpringRestaurant.exception.OrderDocumentNotFoundException
 import com.example.demoSpringRestaurant.facade.OrderGuestFacade;
 import com.example.demoSpringRestaurant.fixtures.GuestFixture;
 import com.example.demoSpringRestaurant.fixtures.OrderFixture;
-import com.example.demoSpringRestaurant.mapper.GuestMapper;
-import com.example.demoSpringRestaurant.model.GuestCreationDto;
-import com.example.demoSpringRestaurant.model.GuestDto;
-import com.example.demoSpringRestaurant.model.OrderDto;
+import com.example.demoSpringRestaurant.mapper.service.GuestMapper;
+import com.example.demoSpringRestaurant.model.service.GuestCreationDto;
+import com.example.demoSpringRestaurant.model.service.GuestDto;
+import com.example.demoSpringRestaurant.model.service.OrderDto;
 import com.example.demoSpringRestaurant.service.GuestService;
 import com.example.demoSpringRestaurant.service.OrderService;
 import org.junit.jupiter.api.Test;

@@ -1,9 +1,9 @@
 package com.example.demoSpringRestaurant.fixtures;
 
-import com.example.demoSpringRestaurant.model.GuestCreationDto;
-import com.example.demoSpringRestaurant.model.GuestDto;
-import com.example.demoSpringRestaurant.model.GuestUpdateDto;
-import com.example.demoSpringRestaurant.model.OrderDto;
+import com.example.demoSpringRestaurant.model.service.GuestCreationDto;
+import com.example.demoSpringRestaurant.model.service.GuestDto;
+import com.example.demoSpringRestaurant.model.service.GuestUpdateDto;
+import com.example.demoSpringRestaurant.model.service.OrderDto;
 import com.example.demoSpringRestaurant.persistance.document.GuestDocument;
 import com.example.demoSpringRestaurant.persistance.document.OrderDocument;
 import lombok.Data;

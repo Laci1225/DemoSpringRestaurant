@@ -1,11 +1,11 @@
 package com.example.demoSpringRestaurant.unit.controller;
 
-import com.example.demoSpringRestaurant.controller.CourierController;
+import com.example.demoSpringRestaurant.controller.rest.CourierController;
 import com.example.demoSpringRestaurant.exception.CourierDocumentNotFoundException;
 import com.example.demoSpringRestaurant.facade.OrderCourierFacade;
 import com.example.demoSpringRestaurant.fixtures.CourierFixture;
-import com.example.demoSpringRestaurant.model.CourierCreationDto;
-import com.example.demoSpringRestaurant.model.CourierUpdateDto;
+import com.example.demoSpringRestaurant.model.service.CourierCreationDto;
+import com.example.demoSpringRestaurant.model.service.CourierUpdateDto;
 import com.example.demoSpringRestaurant.service.CourierService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;

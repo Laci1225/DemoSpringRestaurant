@@ -1,6 +1,6 @@
-package com.example.demoSpringRestaurant.mapper;
+package com.example.demoSpringRestaurant.mapper.service;
 
-import com.example.demoSpringRestaurant.model.*;
+import com.example.demoSpringRestaurant.model.service.*;
 import com.example.demoSpringRestaurant.persistance.document.OrderDocument;
 import org.mapstruct.*;
 import org.springframework.stereotype.Component;
@@ -9,25 +9,21 @@ import org.springframework.stereotype.Component;
 @Component
 public interface OrderMapper {
 
-    @Mapping(target = "courierDocument", source = "orderDto.courierDto")
-    @Mapping(target = "guestDocument", source = "orderDto.guestDto")
     OrderDocument fromOrderDtoToDocument(OrderDto orderDto);
 
 
-    @Mapping(target = "courierDto", source = "orderDocument.courierDocument")
-    @Mapping(target = "guestDto", source = "orderDocument.guestDocument")
     OrderDto fromDocumentToOrderDto(OrderDocument orderDocument);
 
 
-    @Mapping(target = "orderDocument.courierDocument", ignore = true)
-    @Mapping(target = "orderDocument.guestDocument", ignore = true)
-    @Mapping(target = "courierId", source = "orderDocument.courierDocument.id")
-    @Mapping(target = "guestId", source = "orderDocument.guestDocument.id")
+    @Mapping(target = "orderDocument.courier", ignore = true)
+    @Mapping(target = "orderDocument.guest", ignore = true)
+    @Mapping(target = "courierId", source = "orderDocument.courier.id")
+    @Mapping(target = "guestId", source = "orderDocument.guest.id")
     OrderCreationDto fromDocumentToOrderCreationDto(OrderDocument orderDocument);
 
     @BeanMapping(builder = @Builder(disableBuilder = true))//todo
-    @Mapping(target = "courierDto", ignore = true)
-    @Mapping(target = "guestDto", ignore = true)
+    @Mapping(target = "courier", ignore = true)
+    @Mapping(target = "guest", ignore = true)
     OrderDto fromOrderCreationDtoToDto(OrderCreationDto orderCreationDto,
                                        @Context CourierDto courierDto,
                                        @Context GuestDto guestDto);
@@ -36,16 +32,12 @@ public interface OrderMapper {
     default void fromOrderCreationDtoToDto(@MappingTarget OrderDto orderDto,
                                            @Context CourierDto courierDto,
                                            @Context GuestDto guestDto) {
-        orderDto.setCourierDto(courierDto);
-        orderDto.setGuestDto(guestDto);
+        orderDto.setCourier(courierDto);
+        orderDto.setGuest(guestDto);
     }
 
-    @Mapping(target = "courierDto", source = "orderDocument.courierDocument")
-    @Mapping(target = "guestDto", source = "orderDocument.guestDocument")
     OrderUpdateDto fromDocumentToOrderUpdateDto(OrderDocument orderDocument);
 
-    @Mapping(target = "courierDocument", source = "orderUpdateDto.courierDto")
-    @Mapping(target = "guestDocument", source = "orderUpdateDto.guestDto")
     OrderDocument fromOrderUpdateDtoToDocument(OrderUpdateDto orderUpdateDto);
 
 }
