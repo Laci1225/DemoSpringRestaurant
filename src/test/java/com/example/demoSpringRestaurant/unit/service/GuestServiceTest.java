@@ -2,8 +2,8 @@ package com.example.demoSpringRestaurant.unit.service;
 
 import com.example.demoSpringRestaurant.exception.DocumentNotFoundException;
 import com.example.demoSpringRestaurant.exception.GuestDocumentNotFoundException;
-import com.example.demoSpringRestaurant.fixtures.CourierFixture;
-import com.example.demoSpringRestaurant.fixtures.GuestFixture;
+import com.example.demoSpringRestaurant.fixtures.service.CourierFixture;
+import com.example.demoSpringRestaurant.fixtures.service.GuestFixture;
 import com.example.demoSpringRestaurant.mapper.service.GuestMapper;
 import com.example.demoSpringRestaurant.model.service.GuestDto;
 import com.example.demoSpringRestaurant.model.service.GuestUpdateDto;

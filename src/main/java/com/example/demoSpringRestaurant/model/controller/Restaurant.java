@@ -1,6 +1,5 @@
 package com.example.demoSpringRestaurant.model.controller;
 
-import com.example.demoSpringRestaurant.model.service.OrderDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,7 +17,7 @@ import java.util.List;
 public class Restaurant {
     @Id
     private String id;
-    private List<OrderDto> orders;
+    private List<Order> orders;
     private String name;
     private String owner;
     private String address;

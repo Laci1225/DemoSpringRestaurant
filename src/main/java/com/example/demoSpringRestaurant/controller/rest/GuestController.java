@@ -3,8 +3,9 @@ package com.example.demoSpringRestaurant.controller.rest;
 import com.example.demoSpringRestaurant.exception.DocumentNotFoundException;
 import com.example.demoSpringRestaurant.exception.GuestDocumentNotFoundException;
 import com.example.demoSpringRestaurant.facade.OrderGuestFacade;
+import com.example.demoSpringRestaurant.mapper.controller.GuestControllerMapper;
 import com.example.demoSpringRestaurant.model.service.GuestCreationDto;
-import com.example.demoSpringRestaurant.model.service.GuestDto;
+import com.example.demoSpringRestaurant.model.controller.Guest;
 import com.example.demoSpringRestaurant.model.service.GuestUpdateDto;
 import com.example.demoSpringRestaurant.service.GuestService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,19 +32,21 @@ public class GuestController {
 
     private final GuestService guestService;
     private final OrderGuestFacade orderGuestFacade;
+    private final GuestControllerMapper guestControllerMapper;
 
-    @Operation(summary = "Returns all guest")
+    @Operation(summary = "Returns all guests")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "All guest found",
+            @ApiResponse(responseCode = "200", description = "All guests found",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            array = @ArraySchema(schema = @Schema(implementation = GuestDto.class)))),
+                            array = @ArraySchema(schema = @Schema(implementation = Guest.class)))),
             @ApiResponse(responseCode = "500", description = "Server error",
                     content = @Content)})
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
-    public List<GuestDto> getGuests() {
+    public List<Guest> getGuests() {
         log.debug("Requested all guests");
-        var guestList = guestService.getGuests();
+        var guestList = guestService.getGuests().stream()
+                .map(guestControllerMapper::fromGuestDtoToGuest).toList();
         log.debug("Guests returned successfully");
         return guestList;
     }
@@ -52,17 +55,18 @@ public class GuestController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "A guest found",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = GuestDto.class))),
+                            schema = @Schema(implementation = Guest.class))),
             @ApiResponse(responseCode = "500", description = "Server error",
                     content = @Content)})
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("guest/{guestId}")
-    public GuestDto getGuest(@PathVariable(value = "guestId") String id) {
+    public Guest getGuest(@PathVariable(value = "guestId") String id) {
         try {
-            log.debug("Requested a guests");
-            var guestList = guestService.getGuest(id);
-            log.debug("Guests returned successfully");
-            return guestList;
+            log.debug("Requested a guest");
+            var guestDto = guestService.getGuest(id);
+            var guest = guestControllerMapper.fromGuestDtoToGuest(guestDto);
+            log.debug("Guest returned successfully");
+            return guest;
         } catch (GuestDocumentNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -72,7 +76,7 @@ public class GuestController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "A guest created",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = GuestDto.class))),
+                            schema = @Schema(implementation = Guest.class))),
             @ApiResponse(responseCode = "400", description = "Invalid request body",
                     content = @Content),
             @ApiResponse(responseCode = "404", description = "Order not found",
@@ -81,11 +85,12 @@ public class GuestController {
                     content = @Content)})
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("{orderId}")
-    public GuestDto createGuest(@Valid @RequestBody GuestCreationDto GuestCreationDto,
-                                @PathVariable("orderId") String orderId) {
+    public Guest createGuest(@Valid @RequestBody GuestCreationDto guestCreationDto,
+                             @PathVariable("orderId") String orderId) {
         try {
             log.debug("Creating a guest");
-            GuestDto guest = orderGuestFacade.createGuest(GuestCreationDto, orderId);
+            var guestDto = orderGuestFacade.createGuest(guestCreationDto, orderId);
+            var guest = guestControllerMapper.fromGuestDtoToGuest(guestDto);
             log.debug("Created a guest successfully");
             return guest;
         } catch (DocumentNotFoundException e) {
@@ -98,21 +103,22 @@ public class GuestController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "202", description = "A guest deleted",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = GuestDto.class))),
+                            schema = @Schema(implementation = Guest.class))),
             @ApiResponse(responseCode = "404", description = "Guest/order not found",
                     content = @Content),
             @ApiResponse(responseCode = "500", description = "Server error",
                     content = @Content)})
     @ResponseStatus(HttpStatus.ACCEPTED)
-    @DeleteMapping(path = "{guestId}")
-    public GuestDto deleteGuest(@PathVariable("guestId") String guestId) {
+    @DeleteMapping("{guestId}")
+    public Guest deleteGuest(@PathVariable("guestId") String guestId) {
         try {
-            log.debug("Deleting an guest");
-            var guest = orderGuestFacade.deleteGuest(guestId);
-            log.debug("guest with ID: " + guestId + " deleted successfully");
+            log.debug("Deleting a guest");
+            var guestDto = orderGuestFacade.deleteGuest(guestId);
+            var guest = guestControllerMapper.fromGuestDtoToGuest(guestDto);
+            log.debug("Guest with ID: " + guestId + " deleted successfully");
             return guest;
         } catch (DocumentNotFoundException e) {
-            log.warn("Deleting an guest were unsuccessful due to: " + e.getMessage());
+            log.warn("Deleting a guest was unsuccessful due to: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
     }
@@ -121,7 +127,7 @@ public class GuestController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "A guest updated",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = GuestDto.class))),
+                            schema = @Schema(implementation = Guest.class))),
             @ApiResponse(responseCode = "400", description = "Invalid request body",
                     content = @Content),
             @ApiResponse(responseCode = "404", description = "Guest not found",
@@ -129,13 +135,14 @@ public class GuestController {
             @ApiResponse(responseCode = "500", description = "Server error",
                     content = @Content)})
     @ResponseStatus(HttpStatus.OK)
-    @PutMapping(path = "{guestId}")
-    public GuestDto updateGuest(
+    @PutMapping("{guestId}")
+    public Guest updateGuest(
             @PathVariable("guestId") String guestId,
             @Valid @RequestBody GuestUpdateDto guestUpdateDto) {
         try {
             log.debug("Updating guest with ID: " + guestId);
-            var guest = guestService.updateGuest(guestId, guestUpdateDto);
+            var guestDto = guestService.updateGuest(guestId, guestUpdateDto);
+            var guest = guestControllerMapper.fromGuestDtoToGuest(guestDto);
             log.debug("Updating guest with ID: " + guestId + " was successful");
             return guest;
         } catch (GuestDocumentNotFoundException e) {
@@ -143,5 +150,4 @@ public class GuestController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
     }
-
 }

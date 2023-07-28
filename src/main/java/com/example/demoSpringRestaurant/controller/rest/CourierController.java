@@ -4,8 +4,9 @@ import com.example.demoSpringRestaurant.exception.CourierDocumentNotFoundExcepti
 import com.example.demoSpringRestaurant.exception.DocumentNotFoundException;
 import com.example.demoSpringRestaurant.exception.OrderDocumentNotFoundException;
 import com.example.demoSpringRestaurant.facade.OrderCourierFacade;
+import com.example.demoSpringRestaurant.mapper.controller.CourierControllerMapper;
 import com.example.demoSpringRestaurant.model.service.CourierCreationDto;
-import com.example.demoSpringRestaurant.model.service.CourierDto;
+import com.example.demoSpringRestaurant.model.controller.Courier;
 import com.example.demoSpringRestaurant.model.service.CourierUpdateDto;
 import com.example.demoSpringRestaurant.service.CourierService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,19 +32,22 @@ import java.util.List;
 public class CourierController {
     private final CourierService courierService;
     private final OrderCourierFacade orderCourierFacade;
+    private final CourierControllerMapper courierControllerMapper;
+
 
     @Operation(summary = "Returns all courier")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "All courier found",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            array = @ArraySchema(schema = @Schema(implementation = CourierDto.class)))),
+                            array = @ArraySchema(schema = @Schema(implementation = Courier.class)))),
             @ApiResponse(responseCode = "500", description = "Server error",
                     content = @Content)})
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
-    public List<CourierDto> getCouriers() {
+    public List<Courier> getCouriers() {
         log.debug("Requested all couriers");
-        var courierList = courierService.getCouriers();
+        var courierList = courierService.getCouriers().stream()
+                .map(courierControllerMapper::fromCourierDtoToCourier).toList();
         log.debug("Couriers returned successfully");
         return courierList;
     }
@@ -52,18 +56,20 @@ public class CourierController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "A courier found",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = CourierDto.class))),
+                            schema = @Schema(implementation = Courier.class))),
             @ApiResponse(responseCode = "500", description = "Server error",
                     content = @Content)})
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(path = "{courierId}")
-    public CourierDto getCourier(@PathVariable("courierId") String courierId) {
+    public Courier getCourier(@PathVariable("courierId") String courierId) {
         try {
             log.debug("Requested all couriers");
-            var courierList = courierService.getCourier(courierId);
+            var courierDto = courierService.getCourier(courierId);
+            var courier = courierControllerMapper.fromCourierDtoToCourier(courierDto);
             log.debug("Couriers returned successfully");
-            return courierList;
+            return courier;
         } catch (CourierDocumentNotFoundException e) {
+            log.debug("Courier with ID: " + courierId + " not found");
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
     }
@@ -72,16 +78,17 @@ public class CourierController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "A courier created",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = CourierDto.class))),
+                            schema = @Schema(implementation = Courier.class))),
             @ApiResponse(responseCode = "400", description = "Invalid request body",
                     content = @Content),
             @ApiResponse(responseCode = "500", description = "Server error",
                     content = @Content)})
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public CourierDto createCourier(@Valid @RequestBody CourierCreationDto courierCreationDto) {
+    public Courier createCourier(@Valid @RequestBody CourierCreationDto courierCreationDto) {
         log.debug("Creating a courier");
-        var courier = courierService.createCourier(courierCreationDto);
+        var courierDto = courierService.createCourier(courierCreationDto);
+        var courier = courierControllerMapper.fromCourierDtoToCourier(courierDto);
         log.debug("Created a courier successfully");
         return courier;
     }
@@ -90,18 +97,19 @@ public class CourierController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "An order added to a courier",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = CourierDto.class))),
+                            schema = @Schema(implementation = Courier.class))),
             @ApiResponse(responseCode = "404", description = "Courier not found",
                     content = @Content),
             @ApiResponse(responseCode = "500", description = "Server error",
                     content = @Content)})
     @ResponseStatus(HttpStatus.OK)
     @PostMapping(path = "add/{courierId}/{orderId}")
-    public CourierDto addOrderToCourier(@PathVariable(value = "courierId") String courierId
+    public Courier addOrderToCourier(@PathVariable(value = "courierId") String courierId
             , @PathVariable(value = "orderId") String orderId) {
         try {
             log.debug("Adding an order to a courier");
-            var courier =  orderCourierFacade.addOrderToCourier(courierId, orderId);
+            var courierDto = orderCourierFacade.addOrderToCourier(courierId, orderId);
+            var courier = courierControllerMapper.fromCourierDtoToCourier(courierDto);
             log.debug("Order added to a courier successfully");
             return courier;
         } catch (CourierDocumentNotFoundException | OrderDocumentNotFoundException e) {
@@ -113,18 +121,19 @@ public class CourierController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "An order set active",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = CourierDto.class))),
+                            schema = @Schema(implementation = Courier.class))),
             @ApiResponse(responseCode = "404", description = "Courier not found",
                     content = @Content),
             @ApiResponse(responseCode = "500", description = "Server error",
                     content = @Content)})
     @ResponseStatus(HttpStatus.OK)
     @PostMapping(path = "set/{courierId}/{orderId}")
-    public CourierDto setOrderActive(@PathVariable(value = "courierId") String courierId
+    public Courier setOrderActive(@PathVariable(value = "courierId") String courierId
             , @PathVariable(value = "orderId") String orderId) {
         try {
             log.debug("Setting an order active in a courier");
-            var courier = orderCourierFacade.setOrderActive(courierId, orderId);
+            var courierDto = orderCourierFacade.setOrderActive(courierId, orderId);
+            var courier = courierControllerMapper.fromCourierDtoToCourier(courierDto);
             log.debug("CAn order with ID: " + courierId + " set in a courier successfully");
             return courier;
         } catch (CourierDocumentNotFoundException | OrderDocumentNotFoundException e) {
@@ -136,17 +145,18 @@ public class CourierController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "202", description = "A courier deleted",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = CourierDto.class))),
+                            schema = @Schema(implementation = Courier.class))),
             @ApiResponse(responseCode = "404", description = "Courier not found",
                     content = @Content),
             @ApiResponse(responseCode = "500", description = "Server error",
                     content = @Content)})
     @ResponseStatus(HttpStatus.ACCEPTED)
     @DeleteMapping(path = "{courierId}")
-    public CourierDto deleteCourier(@PathVariable("courierId") String courierId) {
+    public Courier deleteCourier(@PathVariable("courierId") String courierId) {
         try {
             log.debug("Deleting a courier");
-            var courier = orderCourierFacade.deleteCourier(courierId);
+            var courierDto = orderCourierFacade.deleteCourier(courierId);
+            var courier = courierControllerMapper.fromCourierDtoToCourier(courierDto);
             log.debug("Courier with ID: " + courierId + " deleted successfully");
             return courier;
         } catch (DocumentNotFoundException e) {
@@ -159,7 +169,7 @@ public class CourierController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "A courier updated",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = CourierDto.class))),
+                            schema = @Schema(implementation = Courier.class))),
             @ApiResponse(responseCode = "400", description = "Invalid request body",
                     content = @Content),
             @ApiResponse(responseCode = "404", description = "Guest not found",
@@ -168,12 +178,13 @@ public class CourierController {
                     content = @Content)})
     @ResponseStatus(HttpStatus.OK)
     @PutMapping(path = "{courierId}")
-    public CourierDto updateCourier(
+    public Courier updateCourier(
             @PathVariable("courierId") String courierId,
             @Valid @RequestBody CourierUpdateDto courierUpdateDto) {
         try {
             log.debug("Updating courier with ID: " + courierId);
-            var courier = courierService.updateCourier(courierId, courierUpdateDto);
+            var courierDto = courierService.updateCourier(courierId, courierUpdateDto);
+            var courier = courierControllerMapper.fromCourierDtoToCourier(courierDto);
             log.debug("Updating courier with ID: " + courierId + " was successful");
             return courier;
         } catch (DocumentNotFoundException e) {

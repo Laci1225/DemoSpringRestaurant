@@ -2,7 +2,7 @@ package com.example.demoSpringRestaurant.unit.service;
 
 import com.example.demoSpringRestaurant.exception.CourierDocumentNotFoundException;
 import com.example.demoSpringRestaurant.exception.DocumentNotFoundException;
-import com.example.demoSpringRestaurant.fixtures.CourierFixture;
+import com.example.demoSpringRestaurant.fixtures.service.CourierFixture;
 import com.example.demoSpringRestaurant.mapper.service.CourierMapper;
 import com.example.demoSpringRestaurant.model.service.CourierCreationDto;
 import com.example.demoSpringRestaurant.model.service.CourierUpdateDto;

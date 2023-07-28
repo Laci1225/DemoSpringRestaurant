@@ -2,7 +2,7 @@ package com.example.demoSpringRestaurant.unit.service;
 
 import com.example.demoSpringRestaurant.exception.DocumentNotFoundException;
 import com.example.demoSpringRestaurant.exception.RestaurantDocumentNotFoundException;
-import com.example.demoSpringRestaurant.fixtures.RestaurantFixture;
+import com.example.demoSpringRestaurant.fixtures.service.RestaurantFixture;
 import com.example.demoSpringRestaurant.mapper.service.RestaurantMapper;
 import com.example.demoSpringRestaurant.model.service.RestaurantCreationDto;
 import com.example.demoSpringRestaurant.model.service.RestaurantDto;
@@ -200,7 +200,7 @@ public class RestaurantServiceTest {
     }
 
     @Test
-    void findRestaurantByIdShouldThrowRestaurantNotFoundException() throws RestaurantDocumentNotFoundException {
+    void findRestaurantByIdShouldThrowRestaurantNotFoundException(){
         when(restaurantRepository.findById(anyString()))
                 .thenReturn(Optional.empty());
 
@@ -218,6 +218,7 @@ public class RestaurantServiceTest {
 
         var exist = restaurantService.restaurantExist(RestaurantFixture.getRestaurantDto().getId());
 
+        assertThat(exist).isTrue();
         verify(restaurantRepository, times(1)).existsById(anyString());
         verifyNoMoreInteractions(restaurantRepository);
     }

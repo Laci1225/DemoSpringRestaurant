@@ -4,8 +4,9 @@ import com.example.demoSpringRestaurant.exception.CourierDocumentNotFoundExcepti
 import com.example.demoSpringRestaurant.exception.DocumentNotFoundException;
 import com.example.demoSpringRestaurant.exception.OrderDocumentNotFoundException;
 import com.example.demoSpringRestaurant.facade.OrderCourierFacade;
+import com.example.demoSpringRestaurant.mapper.controller.CourierControllerMapper;
 import com.example.demoSpringRestaurant.model.service.CourierCreationDto;
-import com.example.demoSpringRestaurant.model.service.CourierDto;
+import com.example.demoSpringRestaurant.model.controller.Courier;
 import com.example.demoSpringRestaurant.model.service.CourierUpdateDto;
 import com.example.demoSpringRestaurant.service.CourierService;
 import jakarta.validation.Valid;
@@ -27,40 +28,45 @@ import java.util.List;
 public class GraphqlCourierController {
     private final CourierService courierService;
     private final OrderCourierFacade orderCourierFacade;
+    private final CourierControllerMapper courierControllerMapper;
 
     @QueryMapping("couriers")
-    public List<CourierDto> getCouriers() {
+    public List<Courier> getCouriers() {
         log.debug("Requested all couriers");
-        var courierList = courierService.getCouriers();
+        var courierList = courierService.getCouriers().stream()
+                .map(courierControllerMapper::fromCourierDtoToCourier).toList();
         log.debug("Couriers returned successfully");
         return courierList;
     }
 
     @QueryMapping("courier")
-    public CourierDto getCourier(@Argument String id) {
+    public Courier getCourier(@Argument String id) {
         try {
             log.debug("Requested all couriers");
-            var courierList = courierService.getCourier(id);
+            var courierDto = courierService.getCourier(id);
+            var courier = courierControllerMapper.fromCourierDtoToCourier(courierDto);
             log.debug("Couriers returned successfully");
-            return courierList;
+            return courier;
         } catch (CourierDocumentNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
     }
 
     @MutationMapping("createCourier")
-    public CourierDto createCourier(@Argument @Valid @RequestBody CourierCreationDto courier, @Argument String id) {
-        log.debug("Creating a courier"); //TODO
+    public Courier createCourier(@Argument @Valid @RequestBody CourierCreationDto courier, @Argument String id) {
+        log.debug("Creating a courier");//todo
         var courierDto = courierService.createCourier(courier);
+        var courierResponse = courierControllerMapper.fromCourierDtoToCourier(courierDto);
         log.debug("Created a courier successfully");
-        return courierDto;
+        return courierResponse;
     }
 
     @MutationMapping("deleteCourier")
-    public CourierDto deleteCourier(@Argument String id) {
+    public Courier deleteCourier(@Argument String id) {
         try {
             log.debug("Deleting a courier");
-            var courier = orderCourierFacade.deleteCourier(id);
+            var courierDto = orderCourierFacade.deleteCourier(id);
+            var courier = courierControllerMapper.fromCourierDtoToCourier(courierDto);
             log.debug("Courier with ID: " + id + " deleted successfully");
             return courier;
         } catch (DocumentNotFoundException e) {
@@ -70,12 +76,13 @@ public class GraphqlCourierController {
     }
 
     @MutationMapping("updateCourier")
-    public CourierDto updateCourier(@Argument String id, @Valid @RequestBody @Argument CourierUpdateDto courier) {
+    public Courier updateCourier(@Argument String id, @Valid @RequestBody @Argument CourierUpdateDto courier) {
         try {
             log.debug("Updating courier with ID: " + id);
             var courierDto = courierService.updateCourier(id, courier);
+            var courierResponse = courierControllerMapper.fromCourierDtoToCourier(courierDto);
             log.debug("Updating courier with ID: " + id + " was successful");
-            return courierDto;
+            return courierResponse;
         } catch (DocumentNotFoundException e) {
             log.warn("Updating a courier was unsuccessful due to: " + e.getMessage());
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
@@ -83,10 +90,11 @@ public class GraphqlCourierController {
     }
 
     @MutationMapping("addOrderToCourier")
-    public CourierDto addOrderToCourier(@Argument String courierId, @Argument String orderId) {
+    public Courier addOrderToCourier(@Argument String courierId, @Argument String orderId) {
         try {
             log.debug("Adding an order to a courier");
-            var courier =  orderCourierFacade.addOrderToCourier(courierId, orderId);
+            var courierDto =  orderCourierFacade.addOrderToCourier(courierId, orderId);
+            var courier = courierControllerMapper.fromCourierDtoToCourier(courierDto);
             log.debug("Order added to a courier successfully");
             return courier;
         } catch (CourierDocumentNotFoundException | OrderDocumentNotFoundException e) {
@@ -95,15 +103,15 @@ public class GraphqlCourierController {
     }
 
     @MutationMapping("setOrderActive")
-    public CourierDto setOrderActive(@Argument String courierId, @Argument String orderId) {
+    public Courier setOrderActive(@Argument String courierId, @Argument String orderId) {
         try {
             log.debug("Setting an order active in a courier");
-            var courier = orderCourierFacade.setOrderActive(courierId, orderId);
+            var courierDto = orderCourierFacade.setOrderActive(courierId, orderId);
+            var courier = courierControllerMapper.fromCourierDtoToCourier(courierDto);
             log.debug("CAn order with ID: " + courierId + " set in a courier successfully");
             return courier;
         } catch (CourierDocumentNotFoundException | OrderDocumentNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
     }
-
 }

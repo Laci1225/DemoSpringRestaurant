@@ -1,9 +1,9 @@
 package com.example.demoSpringRestaurant.unit.mapper;
 
-import com.example.demoSpringRestaurant.fixtures.OrderFixture;
+import com.example.demoSpringRestaurant.fixtures.service.OrderFixture;
 import com.example.demoSpringRestaurant.mapper.service.OrderMapper;
-import com.example.demoSpringRestaurant.mapper.OrderMapperImpl;
-import com.example.demoSpringRestaurant.mapper.RestaurantWithoutOrderMapperImpl;
+import com.example.demoSpringRestaurant.mapper.service.OrderMapperImpl;
+import com.example.demoSpringRestaurant.mapper.service.RestaurantWithoutOrderMapperImpl;
 import com.example.demoSpringRestaurant.model.service.OrderCreationDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

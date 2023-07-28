@@ -2,6 +2,8 @@ package com.example.demoSpringRestaurant.controller.rest;
 
 import com.example.demoSpringRestaurant.exception.RestaurantDocumentNotFoundException;
 import com.example.demoSpringRestaurant.facade.RestaurantOrderFacade;
+import com.example.demoSpringRestaurant.mapper.controller.RestaurantControllerMapper;
+import com.example.demoSpringRestaurant.model.controller.Restaurant;
 import com.example.demoSpringRestaurant.model.service.RestaurantCreationDto;
 import com.example.demoSpringRestaurant.model.service.RestaurantDto;
 import com.example.demoSpringRestaurant.model.service.RestaurantUpdateDto;
@@ -35,6 +37,8 @@ public class RestaurantController {
 
     private final RestaurantService restaurantService;
     private final RestaurantOrderFacade restaurantOrderFacade;
+    private final RestaurantControllerMapper restaurantControllerMapper;
+
 
     /**
      * Returns a list of orders by restaurant ID.
@@ -46,14 +50,15 @@ public class RestaurantController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "All restaurant found",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            array = @ArraySchema(schema = @Schema(implementation = RestaurantDto.class)))),
+                            array = @ArraySchema(schema = @Schema(implementation = Restaurant.class)))),
             @ApiResponse(responseCode = "500", description = "Server error",
                     content = @Content)})
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
-    public List<RestaurantDto> getRestaurants() {
+    public List<Restaurant> getRestaurants() {
         log.debug("Requested all restaurant");
-        var restaurantList = restaurantService.getRestaurants();
+        var restaurantList = restaurantService.getRestaurants().stream()
+                .map(restaurantControllerMapper::fromRestaurantDtoToRestaurant).toList();
         log.debug("Restaurants returned successfully");
         return restaurantList;
     }
@@ -63,14 +68,15 @@ public class RestaurantController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "A restaurant found",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = RestaurantDto.class))),
+                            schema = @Schema(implementation = Restaurant.class))),
             @ApiResponse(responseCode = "500", description = "Server error",
                     content = @Content)})
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(path = "{restaurantId}")
-    public RestaurantDto getRestaurant(@PathVariable("restaurantId") String id) {
+    public Restaurant getRestaurant(@PathVariable("restaurantId") String id) {
         log.debug("Requested a restaurant");
-        var restaurant = restaurantService.getRestaurant(id);
+        var restaurantDto = restaurantService.getRestaurant(id);
+        var restaurant = restaurantControllerMapper.fromRestaurantDtoToRestaurant(restaurantDto);
         log.debug("Restaurants returned successfully");
         return restaurant;
     }
@@ -86,16 +92,17 @@ public class RestaurantController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "A restaurant created",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = RestaurantDto.class))),
+                            schema = @Schema(implementation = Restaurant.class))),
             @ApiResponse(responseCode = "400", description = "Invalid request body",
                     content = @Content),
             @ApiResponse(responseCode = "500", description = "Server error",
                     content = @Content)})
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public RestaurantDto createRestaurant(@Valid @RequestBody RestaurantCreationDto restaurantCreationDto) {
+    public Restaurant createRestaurant(@Valid @RequestBody RestaurantCreationDto restaurantCreationDto) {
         log.debug("Creating a restaurant");
-        var restaurant = restaurantService.createRestaurant(restaurantCreationDto);
+        var restaurantDto = restaurantService.createRestaurant(restaurantCreationDto);
+        var restaurant = restaurantControllerMapper.fromRestaurantDtoToRestaurant(restaurantDto);
         log.debug("Created a restaurant successfully");
         return restaurant;
     }
@@ -112,17 +119,18 @@ public class RestaurantController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "202", description = "A restaurant deleted",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = RestaurantDto.class))),
+                            schema = @Schema(implementation = Restaurant.class))),
             @ApiResponse(responseCode = "404", description = "Restaurant not found",
                     content = @Content),
             @ApiResponse(responseCode = "500", description = "Server error",
                     content = @Content)})
     @ResponseStatus(HttpStatus.ACCEPTED)
     @DeleteMapping(path = "{restaurantId}")
-    public RestaurantDto deleteRestaurant(@PathVariable("restaurantId") String restaurantId) {
+    public Restaurant deleteRestaurant(@PathVariable("restaurantId") String restaurantId) {
         try {
             log.debug("Deleting a restaurant");
-            var restaurant = restaurantOrderFacade.deleteRestaurant(restaurantId);
+            var restaurantDto = restaurantOrderFacade.deleteRestaurant(restaurantId);
+            var restaurant = restaurantControllerMapper.fromRestaurantDtoToRestaurant(restaurantDto);
             log.debug("Restaurant with ID: " + restaurantId + " deleted successfully");
             return restaurant;
         } catch (RestaurantDocumentNotFoundException e) {
@@ -144,7 +152,7 @@ public class RestaurantController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "A restaurant updated",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = RestaurantDto.class))),
+                            schema = @Schema(implementation = Restaurant.class))),
             @ApiResponse(responseCode = "400", description = "Invalid request body",
                     content = @Content),
             @ApiResponse(responseCode = "404", description = "Restaurant not found",
@@ -153,12 +161,13 @@ public class RestaurantController {
                     content = @Content)})
     @ResponseStatus(HttpStatus.OK)
     @PutMapping(path = "{restaurantId}")
-    public RestaurantDto updateRestaurant(
+    public Restaurant updateRestaurant(
             @PathVariable("restaurantId") String restaurantId,
             @Valid @RequestBody RestaurantUpdateDto restaurantUpdateDto) {
         try {
             log.debug("Updating restaurant with ID: " + restaurantId);
-            var restaurant = restaurantService.updateRestaurant(restaurantId, restaurantUpdateDto);
+            var restaurantDto = restaurantService.updateRestaurant(restaurantId, restaurantUpdateDto);
+            var restaurant = restaurantControllerMapper.fromRestaurantDtoToRestaurant(restaurantDto);
             log.debug("Updating restaurant with ID: " + restaurantId + " was successful");
             return restaurant;
         } catch (RestaurantDocumentNotFoundException e) {
@@ -176,11 +185,12 @@ public class RestaurantController {
      * @throws ResponseStatusException If the {@link RestaurantDocument} is not found with 404 status code
      *                                 or if there is a server error with 500 status code.
      */
+
     @Operation(summary = "Updates a parameter in a restaurant")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "A restaurant parameter is  updated",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = RestaurantDto.class))),
+                            schema = @Schema(implementation = Restaurant.class))),
             @ApiResponse(responseCode = "400", description = "Invalid request body",
                     content = @Content),
             @ApiResponse(responseCode = "404", description = "Restaurant not found",
@@ -189,12 +199,13 @@ public class RestaurantController {
                     content = @Content)})
     @ResponseStatus(HttpStatus.OK)
     @PatchMapping(path = "{restaurantId}")
-    public RestaurantDto updateParametersInRestaurant(
+    public Restaurant updateParametersInRestaurant(
             @PathVariable("restaurantId") String restaurantId,
             @Valid @RequestBody RestaurantUpdateDto restaurantUpdateDto) {
         try {
             log.debug("Updating restaurant's parameter with ID: " + restaurantId);
-            var restaurant = restaurantService.updateParametersInRestaurant(restaurantId, restaurantUpdateDto);
+            var restaurantDto = restaurantService.updateParametersInRestaurant(restaurantId, restaurantUpdateDto);
+            var restaurant = restaurantControllerMapper.fromRestaurantDtoToRestaurant(restaurantDto);
             log.debug("Updating restaurant's parameter with ID: " + restaurantId + " was successful");
             return restaurant;
         } catch (RestaurantDocumentNotFoundException e) {
@@ -213,14 +224,16 @@ public class RestaurantController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "All vegan restaurant found",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            array = @ArraySchema(schema = @Schema(implementation = RestaurantDto.class)))),
+                            array = @ArraySchema(schema = @Schema(implementation = Restaurant.class)))),
             @ApiResponse(responseCode = "500", description = "Server error",
                     content = @Content)})
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("vegan")
-    public List<RestaurantDto> getVeganRestaurants() {
+    public List<Restaurant> getVeganRestaurants() {
         log.debug("Requested all vegan restaurant");
-        var restaurantList = restaurantService.getVeganRestaurant();
+        var restaurantList = restaurantService.getVeganRestaurant()
+                .stream()
+                .map(restaurantControllerMapper::fromRestaurantDtoToRestaurant).toList();
         log.debug("Vegan restaurants returned successfully");
         return restaurantList;
     }

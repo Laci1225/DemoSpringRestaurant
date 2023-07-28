@@ -3,7 +3,7 @@ package com.example.demoSpringRestaurant.unit.service;
 import com.example.demoSpringRestaurant.constant.OrderStatus;
 import com.example.demoSpringRestaurant.exception.OrderDocumentNotFoundException;
 import com.example.demoSpringRestaurant.exception.DocumentNotFoundException;
-import com.example.demoSpringRestaurant.fixtures.OrderFixture;
+import com.example.demoSpringRestaurant.fixtures.service.OrderFixture;
 import com.example.demoSpringRestaurant.mapper.service.OrderMapper;
 import com.example.demoSpringRestaurant.model.service.OrderDto;
 import com.example.demoSpringRestaurant.model.service.OrderUpdateDto;

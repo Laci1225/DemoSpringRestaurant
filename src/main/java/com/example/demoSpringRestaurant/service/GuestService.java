@@ -25,7 +25,7 @@ public class GuestService {
                 .map(guestMapper::fromDocumentToGuestDto).toList();
     }
     public GuestDto getGuest(String id) throws GuestDocumentNotFoundException {
-        log.trace("All guests listed");
+        log.trace("A guests listed");
         return guestRepository.findById(id)
                 .map(guestMapper::fromDocumentToGuestDto)
                 .orElseThrow(() -> new GuestDocumentNotFoundException("Guest not found"));

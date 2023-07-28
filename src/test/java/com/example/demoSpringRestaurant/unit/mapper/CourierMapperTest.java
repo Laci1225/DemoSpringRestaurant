@@ -1,10 +1,10 @@
 package com.example.demoSpringRestaurant.unit.mapper;
 
-import com.example.demoSpringRestaurant.fixtures.CourierFixture;
+import com.example.demoSpringRestaurant.fixtures.service.CourierFixture;
 import com.example.demoSpringRestaurant.mapper.service.CourierMapper;
-import com.example.demoSpringRestaurant.mapper.CourierMapperImpl;
-import com.example.demoSpringRestaurant.mapper.OrderMapperImpl;
-import com.example.demoSpringRestaurant.mapper.RestaurantWithoutOrderMapperImpl;
+import com.example.demoSpringRestaurant.mapper.service.CourierMapperImpl;
+import com.example.demoSpringRestaurant.mapper.service.OrderMapperImpl;
+import com.example.demoSpringRestaurant.mapper.service.RestaurantWithoutOrderMapperImpl;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

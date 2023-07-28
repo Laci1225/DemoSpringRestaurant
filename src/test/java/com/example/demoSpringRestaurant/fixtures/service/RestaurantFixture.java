@@ -1,4 +1,4 @@
-package com.example.demoSpringRestaurant.fixtures;
+package com.example.demoSpringRestaurant.fixtures.service;
 
 import com.example.demoSpringRestaurant.model.service.OrderDto;
 import com.example.demoSpringRestaurant.model.service.RestaurantCreationDto;
@@ -17,8 +17,8 @@ public class RestaurantFixture {
     private static final String NAME = "John's restaurant";
     private static final String OWNER = "John";
     private static final String ADDRESS = "Budapest xy street 6.";
-    private static final List<OrderDocument> orders = null;
-    private static final List<OrderDto> ordersDto = null;
+    private static final List<OrderDocument> ORDERS_DOCUMENT = OrderFixture.getOrderDocumentList();
+    private static final List<OrderDto> ORDER_DTO_LISTS =  OrderFixture.getOrderDtoList();
     @Email
     private static final String EMAIL = "asd@dsa.com";
     private static final String PHONE_NUMBER = "PhoneNumber";
@@ -83,13 +83,13 @@ public class RestaurantFixture {
                 .isOnWolt(IS_ON_WOLT)
                 .build();
         if (withId)
-            restaurantDocument.setId("1L");
+            restaurantDocument.setId("1234");
         return restaurantDocument;
     }
 
     public static RestaurantDto getRestaurantDto() {
         return RestaurantDto.builder()
-                .id("1L")
+                .id("1234")
                 .name(NAME)
                 .owner(OWNER)
                 .address(ADDRESS)
@@ -120,7 +120,7 @@ public class RestaurantFixture {
     public static List<RestaurantDocument> getRestaurantDocumentList() {
         var list = new ArrayList<RestaurantDocument>();
         list.add(RestaurantDocument.builder()
-                .id("1L")
+                .id("1234")
                 .name(NAME)
                 .owner(OWNER)
                 .address(ADDRESS)
@@ -137,7 +137,7 @@ public class RestaurantFixture {
     public static List<RestaurantDto> getRestaurantDtoList() {
         var list = new ArrayList<RestaurantDto>();
         list.add(RestaurantDto.builder()
-                .id("1L")
+                .id("1234")
                 .name(NAME)
                 .owner(OWNER)
                 .address(ADDRESS)
@@ -179,7 +179,7 @@ public class RestaurantFixture {
                 .isOnWolt(IS_ON_WOLT)
                 .build();
         if (withId)
-            restaurantDocument.setId("1L");
+            restaurantDocument.setId("1234");
         return restaurantDocument;
     }
 }

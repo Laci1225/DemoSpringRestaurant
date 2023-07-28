@@ -8,8 +8,11 @@ import com.example.demoSpringRestaurant.facade.OrderCourierFacade;
 import com.example.demoSpringRestaurant.facade.OrderGuestCourierFacade;
 import com.example.demoSpringRestaurant.facade.RestaurantOrderFacade;
 import com.example.demoSpringRestaurant.facade.RestaurantOrderGuestCourierFacade;
-import com.example.demoSpringRestaurant.fixtures.OrderFixture;
+import com.example.demoSpringRestaurant.fixtures.controller.OrderControllerFixture;
+import com.example.demoSpringRestaurant.fixtures.service.OrderFixture;
+import com.example.demoSpringRestaurant.mapper.controller.OrderControllerMapper;
 import com.example.demoSpringRestaurant.model.service.OrderCreationDto;
+import com.example.demoSpringRestaurant.model.service.OrderDto;
 import com.example.demoSpringRestaurant.model.service.OrderUpdateDto;
 import com.example.demoSpringRestaurant.service.OrderService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -44,32 +47,30 @@ public class OrderControllerTest {
     @MockBean
     private OrderCourierFacade orderCourierFacade;
 
+    @MockBean
+    private OrderControllerMapper orderControllerMapper;
 
     @Test
     void createOrderShouldReturnCreatedOrder() throws Exception {
-        //given
+        when(orderControllerMapper.fromOrderDtoToOrder(any(OrderDto.class)))
+                .thenReturn(OrderControllerFixture.getOrder(true));
         when(orderOrderGuestCourierFacade.createOrder(any(OrderCreationDto.class), anyString()))
                 .thenReturn(OrderFixture.getOrderDto());
 
-        //when
-        //then
         this.mockMvc.perform(
                 post("/orders/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(OrderFixture.getOrderCreationDto()))
         ).andExpect(status().isCreated()).andExpect(content()
-                .json(objectMapper.writeValueAsString(OrderFixture.getOrderDto()))
+                .json(objectMapper.writeValueAsString(OrderControllerFixture.getOrder(true)))
         );
     }
 
     @Test
     void createOrderShouldThrowOrderDocumentNotFoundExceptionWith400() throws Exception {
-
-        //given
         when(orderOrderGuestCourierFacade.createOrder(any(OrderCreationDto.class), anyString()))
                 .thenThrow(RestaurantDocumentNotFoundException.class);
-        //when
-        //then
+
         this.mockMvc.perform(
                 post("/orders/1")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -79,11 +80,9 @@ public class OrderControllerTest {
 
     @Test
     void createOrderShouldThrowOrderDocumentNotFoundExceptionWith404() throws Exception {
-        //given
         when(orderOrderGuestCourierFacade.createOrder(any(OrderCreationDto.class), anyString()))
                 .thenThrow(RestaurantDocumentNotFoundException.class);
-        //when
-        //then
+
         this.mockMvc.perform(
                 post("/orders/1")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -91,30 +90,26 @@ public class OrderControllerTest {
         ).andExpect(status().isNotFound());
     }
 
-
     @Test
     void getOrdersByRestaurantIdShouldReturnAllOrder() throws Exception {
-        //given
+        when(orderControllerMapper.fromOrderDtoToOrder(any(OrderDto.class)))
+                .thenReturn(OrderControllerFixture.getOrder(true));
         when(orderOrderFacade.getOrdersByRestaurantId(anyString()))
                 .thenReturn(OrderFixture.getOrderDtoList());
 
-        //when
-        //then
         this.mockMvc.perform(
                 get("/orders/1")
                         .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isOk()).andExpect(content()
-                .json(objectMapper.writeValueAsString(OrderFixture.getOrderDtoList()))
+                .json(objectMapper.writeValueAsString(OrderControllerFixture.getOrderList()))
         );
     }
 
     @Test
     void getOrdersByRestaurantIdShouldThrowOrderDocumentNotFoundExceptionWith404() throws Exception {
-        //given
         when(orderOrderFacade.getOrdersByRestaurantId(anyString()))
                 .thenThrow(RestaurantDocumentNotFoundException.class);
-        //when
-        //then
+
         this.mockMvc.perform(
                 get("/orders/1")
         ).andExpect(status().isNotFound());
@@ -122,26 +117,24 @@ public class OrderControllerTest {
 
     @Test
     void deleteOrderShouldRemoveOneOrder() throws Exception {
-        //given
+        when(orderControllerMapper.fromOrderDtoToOrder(any(OrderDto.class)))
+                .thenReturn(OrderControllerFixture.getOrder(true));
         when(orderGuestCourierFacade.deleteOrder(anyString()))
                 .thenReturn(OrderFixture.getOrderDto());
-        //when
-        //then
+
         this.mockMvc.perform(
                 delete("/orders/1")
                         .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isAccepted()).andExpect(content()
-                .json(objectMapper.writeValueAsString(OrderFixture.getOrderDto()))
+                .json(objectMapper.writeValueAsString(OrderControllerFixture.getOrder(true)))
         );
     }
 
     @Test
     void deleteOrderShouldThrowOrderDocumentNotFoundExceptionWith404() throws Exception {
-        //given
         when(orderGuestCourierFacade.deleteOrder(anyString()))
                 .thenThrow(OrderDocumentNotFoundException.class);
-        //when
-        //then
+
         this.mockMvc.perform(
                 delete("/orders/1")
         ).andExpect(status().isNotFound());
@@ -150,42 +143,45 @@ public class OrderControllerTest {
     @Test
     void setNextStateShouldSetToTheNextStateFromSENTTOAPPROVED() throws Exception {
         OrderStatus orderStatus = OrderStatus.SENT;
+        when(orderControllerMapper.fromOrderDtoToOrder(any(OrderDto.class)))
+                .thenReturn(OrderControllerFixture.getOrder(true));
         when(orderService.setNextState(anyString()))
                 .thenReturn(OrderFixture.getOrderDtoGetNextStatus(orderStatus));
-        //when
-        //then
+
         this.mockMvc.perform(
                 post("/orders/1/next-state")
         ).andExpect(status().isOk()).andExpect(content()
-                .json(objectMapper.writeValueAsString(OrderFixture.getOrderDtoGetNextStatus(orderStatus)))
+                .json(objectMapper.writeValueAsString(OrderControllerFixture.getOrderGetNextStatus(orderStatus)))
         );
     }
 
     @Test
     void setNextStateShouldSetToTheNextStateFromAPPROVEDToSHIPPING() throws Exception {
         OrderStatus orderStatus = OrderStatus.APPROVED;
+        when(orderControllerMapper.fromOrderDtoToOrder(any(OrderDto.class)))
+                .thenReturn(OrderControllerFixture.getOrder(true));
         when(orderService.setNextState(anyString()))
                 .thenReturn(OrderFixture.getOrderDtoGetNextStatus(orderStatus));
-        //when
-        //then
+
         this.mockMvc.perform(
                 post("/orders/1/next-state")
         ).andExpect(status().isOk()).andExpect(content()
-                .json(objectMapper.writeValueAsString(OrderFixture.getOrderDtoGetNextStatus(orderStatus)))
+                .json(objectMapper.writeValueAsString(OrderControllerFixture.getOrderGetNextStatus(orderStatus)))
         );
     }
 
     @Test
     void setNextStateShouldSetToTheNextStateFromSHIPPINGToSHIPPED() throws Exception {
         OrderStatus orderStatus = OrderStatus.SHIPPING;
+        when(orderControllerMapper.fromOrderDtoToOrder(any(OrderDto.class)))
+                .thenReturn(OrderControllerFixture.getOrder(true));
         when(orderService.setNextState(anyString()))
                 .thenReturn(OrderFixture.getOrderDtoGetNextStatus(orderStatus));
-        //when
-        //then
+
         this.mockMvc.perform(
                 post("/orders/1/next-state")
         ).andExpect(status().isOk()).andExpect(content()
-                .json(objectMapper.writeValueAsString(OrderFixture.getOrderDtoGetNextStatus(orderStatus)))
+                .json(objectMapper.writeValueAsString(OrderControllerFixture.getOrderGetNextStatus(orderStatus)))
         );
     }
 
@@ -193,8 +189,7 @@ public class OrderControllerTest {
     void setNextStateShouldThrowResponseStatusException() throws Exception {
         when(orderService.setNextState(anyString()))
                 .thenThrow(UnsupportedOperationException.class);
-        //when
-        //then
+
         this.mockMvc.perform(
                 post("/orders/1/next-state")
         ).andExpect(status().isBadRequest());
@@ -204,8 +199,7 @@ public class OrderControllerTest {
     void setNextStateShouldThrowDocumentNotFoundExceptionWith404() throws Exception {
         when(orderService.setNextState(anyString()))
                 .thenThrow(OrderDocumentNotFoundException.class);
-        //when
-        //then
+
         this.mockMvc.perform(
                 post("/orders/1/next-state")
         ).andExpect(status().isNotFound());
@@ -213,6 +207,8 @@ public class OrderControllerTest {
 
     @Test
     void updateOrderShouldUpdateOneOrder() throws Exception {
+        when(orderControllerMapper.fromOrderDtoToOrder(any(OrderDto.class)))
+                .thenReturn(OrderControllerFixture.getOrder(true));
         when(orderService.updateOrder(anyString(), any(OrderUpdateDto.class)))
                 .thenReturn(OrderFixture.getOrderDto());
 
@@ -221,7 +217,7 @@ public class OrderControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(OrderFixture.getOrderUpdateDto()))
         ).andExpect(status().isOk()).andExpect(content()
-                .json(objectMapper.writeValueAsString(OrderFixture.getOrderDto()))
+                .json(objectMapper.writeValueAsString(OrderControllerFixture.getOrder(true)))
         );
     }
 
@@ -252,6 +248,8 @@ public class OrderControllerTest {
 
     @Test
     void getOrderShouldReturnOneOrder() throws Exception {
+        when(orderControllerMapper.fromOrderDtoToOrder(any(OrderDto.class)))
+                .thenReturn(OrderControllerFixture.getOrder(true));
         when(orderService.getOrderById(anyString()))
                 .thenReturn(OrderFixture.getOrderDto());
 
@@ -259,7 +257,7 @@ public class OrderControllerTest {
                 get("/orders/order/1")
                         .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isOk()).andExpect(content()
-                .json(objectMapper.writeValueAsString(OrderFixture.getOrderDto()))
+                .json(objectMapper.writeValueAsString(OrderControllerFixture.getOrder(true)))
         );
     }
 
@@ -276,6 +274,8 @@ public class OrderControllerTest {
 
     @Test
     void setCourierToOrderShouldSetACourierToAnOrder() throws Exception {
+        when(orderControllerMapper.fromOrderDtoToOrder(any(OrderDto.class)))
+                .thenReturn(OrderControllerFixture.getOrder(true));
         when(orderCourierFacade.setCourierToOrder(anyString(),anyString()))
                 .thenReturn(OrderFixture.getOrderDto());
 
@@ -283,9 +283,10 @@ public class OrderControllerTest {
                 post("/orders/set/1/1")
                         .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isOk()).andExpect(content()
-                .json(objectMapper.writeValueAsString(OrderFixture.getOrderDto()))
+                .json(objectMapper.writeValueAsString(OrderControllerFixture.getOrder(true)))
         );
     }
+
     @Test
     void setCourierToOrderShouldThrowOrderDocumentNotFoundExceptionWith400() throws Exception {
         when(orderCourierFacade.setCourierToOrder(anyString(),anyString()))

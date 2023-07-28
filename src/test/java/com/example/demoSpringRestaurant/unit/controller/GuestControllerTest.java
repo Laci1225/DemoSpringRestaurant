@@ -4,8 +4,11 @@ import com.example.demoSpringRestaurant.controller.rest.GuestController;
 import com.example.demoSpringRestaurant.exception.GuestDocumentNotFoundException;
 import com.example.demoSpringRestaurant.exception.OrderDocumentNotFoundException;
 import com.example.demoSpringRestaurant.facade.OrderGuestFacade;
-import com.example.demoSpringRestaurant.fixtures.GuestFixture;
+import com.example.demoSpringRestaurant.fixtures.controller.GuestControllerFixture;
+import com.example.demoSpringRestaurant.fixtures.service.GuestFixture;
+import com.example.demoSpringRestaurant.mapper.controller.GuestControllerMapper;
 import com.example.demoSpringRestaurant.model.service.GuestCreationDto;
+import com.example.demoSpringRestaurant.model.service.GuestDto;
 import com.example.demoSpringRestaurant.model.service.GuestUpdateDto;
 import com.example.demoSpringRestaurant.service.GuestService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -36,8 +39,13 @@ public class GuestControllerTest {
     @MockBean
     private OrderGuestFacade orderGuestFacade;
 
+    @MockBean
+    private GuestControllerMapper guestControllerMapper;
+
     @Test
     void updateGuestShouldUpdateOneGuest() throws Exception {
+        when(guestControllerMapper.fromGuestDtoToGuest(any(GuestDto.class)))
+                .thenReturn(GuestControllerFixture.getGuest(true));
         when(guestService.updateGuest(anyString(), any(GuestUpdateDto.class)))
                 .thenReturn(GuestFixture.getGuestDto());
 
@@ -46,9 +54,10 @@ public class GuestControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(GuestFixture.getGuestUpdateDto()))
         ).andExpect(status().isOk()).andExpect(content()
-                .json(objectMapper.writeValueAsString(GuestFixture.getGuestDto()))
+                .json(objectMapper.writeValueAsString(GuestControllerFixture.getGuest(true)))
         );
     }
+
     @Test
     void updateGuestShouldThrowGuestEntityNotFoundExceptionWith404() throws Exception {
         when(guestService.updateGuest(anyString(), any(GuestUpdateDto.class)))
@@ -61,6 +70,7 @@ public class GuestControllerTest {
 
         ).andExpect(status().isNotFound());
     }
+
     @Test
     void updateGuestShouldThrowGuestEntityNotFoundExceptionWith400() throws Exception {
         when(guestService.updateGuest(anyString(), any(GuestUpdateDto.class)))
@@ -69,12 +79,14 @@ public class GuestControllerTest {
         this.mockMvc.perform(
                 put("/guests/1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(GuestFixture.getGuestDocumentList()))
+                        .content(objectMapper.writeValueAsString(GuestFixture.getGuestDtoList()))
         ).andExpect(status().isBadRequest());
     }
 
     @Test
     void deleteGuestShouldRemoveOneGuest() throws Exception {
+        when(guestControllerMapper.fromGuestDtoToGuest(any(GuestDto.class)))
+                .thenReturn(GuestControllerFixture.getGuest(true));
         when(orderGuestFacade.deleteGuest(anyString()))
                 .thenReturn(GuestFixture.getGuestDto());
 
@@ -82,17 +94,15 @@ public class GuestControllerTest {
                 delete("/guests/1")
                         .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isAccepted()).andExpect(content()
-                .json(objectMapper.writeValueAsString(GuestFixture.getGuestCreationDto()))
+                .json(objectMapper.writeValueAsString(GuestControllerFixture.getGuest(true)))
         );
     }
 
     @Test
     void deleteGuestShouldThrowGuestEntityNotFoundExceptionWith404() throws Exception {
-        //given
         when(orderGuestFacade.deleteGuest(anyString()))
                 .thenThrow(GuestDocumentNotFoundException.class);
-        //when
-        //then
+
         this.mockMvc.perform(
                 delete("/guests/1")
         ).andExpect(status().isNotFound());
@@ -100,7 +110,9 @@ public class GuestControllerTest {
 
     @Test
     void createGuestShouldReturnCreatedGuest() throws Exception {
-        when(orderGuestFacade.createGuest(any(GuestCreationDto.class),anyString()))
+        when(guestControllerMapper.fromGuestDtoToGuest(any(GuestDto.class)))
+                .thenReturn(GuestControllerFixture.getGuest(true));
+        when(orderGuestFacade.createGuest(any(GuestCreationDto.class), anyString()))
                 .thenReturn(GuestFixture.getGuestDto());
 
         this.mockMvc.perform(
@@ -108,12 +120,13 @@ public class GuestControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(GuestFixture.getGuestCreationDto()))
         ).andExpect(status().isCreated()).andExpect(content()
-                .json(objectMapper.writeValueAsString(GuestFixture.getGuestCreationDto()))
+                .json(objectMapper.writeValueAsString(GuestControllerFixture.getGuest(true)))
         );
     }
+
     @Test
     void createGuestShouldThrowGuestEntityNotFoundExceptionWith404() throws Exception {
-        when(orderGuestFacade.createGuest(any(GuestCreationDto.class),anyString()))
+        when(orderGuestFacade.createGuest(any(GuestCreationDto.class), anyString()))
                 .thenThrow(OrderDocumentNotFoundException.class);
 
         this.mockMvc.perform(
@@ -125,6 +138,8 @@ public class GuestControllerTest {
 
     @Test
     void getGuestShouldReturnOneGuest() throws Exception {
+        when(guestControllerMapper.fromGuestDtoToGuest(any(GuestDto.class)))
+                .thenReturn(GuestControllerFixture.getGuest(true));
         when(guestService.getGuest(anyString()))
                 .thenReturn(GuestFixture.getGuestDto());
 
@@ -132,12 +147,14 @@ public class GuestControllerTest {
                 get("/guests/guest/1")
                         .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isOk()).andExpect(content()
-                .json(objectMapper.writeValueAsString(GuestFixture.getGuestDto()))
+                .json(objectMapper.writeValueAsString(GuestControllerFixture.getGuest(true)))
         );
     }
 
     @Test
     void getGuestsShouldReturnAllGuest() throws Exception {
+        when(guestControllerMapper.fromGuestDtoToGuest(any(GuestDto.class)))
+                .thenReturn(GuestControllerFixture.getGuest(true));
         when(guestService.getGuests())
                 .thenReturn(GuestFixture.getGuestDtoList());
 
@@ -145,8 +162,7 @@ public class GuestControllerTest {
                 get("/guests")
                         .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isOk()).andExpect(content()
-                .json(objectMapper.writeValueAsString(GuestFixture.getGuestDtoList()))
+                .json(objectMapper.writeValueAsString(GuestControllerFixture.getGuestList()))
         );
-
     }
 }

@@ -1,4 +1,4 @@
-package com.example.demoSpringRestaurant.fixtures;
+package com.example.demoSpringRestaurant.fixtures.service;
 
 import com.example.demoSpringRestaurant.constant.DrinkType;
 import com.example.demoSpringRestaurant.constant.MealType;

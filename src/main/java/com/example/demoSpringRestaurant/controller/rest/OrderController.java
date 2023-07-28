@@ -8,6 +8,8 @@ import com.example.demoSpringRestaurant.facade.OrderCourierFacade;
 import com.example.demoSpringRestaurant.facade.OrderGuestCourierFacade;
 import com.example.demoSpringRestaurant.facade.RestaurantOrderFacade;
 import com.example.demoSpringRestaurant.facade.RestaurantOrderGuestCourierFacade;
+import com.example.demoSpringRestaurant.mapper.controller.OrderControllerMapper;
+import com.example.demoSpringRestaurant.model.controller.Order;
 import com.example.demoSpringRestaurant.model.service.OrderCreationDto;
 import com.example.demoSpringRestaurant.model.service.OrderDto;
 import com.example.demoSpringRestaurant.model.service.OrderUpdateDto;
@@ -43,6 +45,7 @@ public class OrderController {
     private final RestaurantOrderGuestCourierFacade restaurantOrderGuestCourierFacade;
     private final OrderGuestCourierFacade orderGuestCourierFacade;
     private final OrderCourierFacade orderCourierFacade;
+    private final OrderControllerMapper orderControllerMapper;
 
     /**
      * Returns a list of orders by restaurant ID.
@@ -56,17 +59,18 @@ public class OrderController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "All order in a restaurant found",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            array = @ArraySchema(schema = @Schema(implementation = OrderDto.class)))),
+                            array = @ArraySchema(schema = @Schema(implementation = Order.class)))),
             @ApiResponse(responseCode = "404", description = "Restaurant not found",
                     content = @Content),
             @ApiResponse(responseCode = "500", description = "Server error",
                     content = @Content)})
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(path = "{restaurantId}")
-    public List<OrderDto> getOrdersByRestaurantId(@PathVariable("restaurantId") String restaurantId) {
+    public List<Order> getOrdersByRestaurantId(@PathVariable("restaurantId") String restaurantId) {
         try {
             log.debug("Requested all order");
-            var orderList = restaurantOrderFacade.getOrdersByRestaurantId(restaurantId);
+            var orderList = restaurantOrderFacade.getOrdersByRestaurantId(restaurantId).stream()
+                    .map(orderControllerMapper::fromOrderDtoToOrder).toList();
             log.debug("Orders returned successfully");
             return orderList;
         } catch (RestaurantDocumentNotFoundException e) {
@@ -79,17 +83,18 @@ public class OrderController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "An order in a restaurant found",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = OrderDto.class))),
+                            schema = @Schema(implementation = Order.class))),
             @ApiResponse(responseCode = "404", description = "Restaurant not found",
                     content = @Content),
             @ApiResponse(responseCode = "500", description = "Server error",
                     content = @Content)})
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(path = "order/{orderId}")
-    public OrderDto getOrder(@PathVariable("orderId") String orderId) {
+    public Order getOrder(@PathVariable("orderId") String orderId) {
         try {
             log.debug("Requested an order");
-            var order = orderService.getOrderById(orderId);
+            var orderDto = orderService.getOrderById(orderId);
+            var order = orderControllerMapper.fromOrderDtoToOrder(orderDto);
             log.debug("An order returned successfully");
             return order;
         } catch (OrderDocumentNotFoundException e) {
@@ -97,6 +102,7 @@ public class OrderController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
     }
+
     /**
      * Creates a new order for a given restaurant.
      * <p>
@@ -111,7 +117,7 @@ public class OrderController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "An order in a restaurant is created",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = OrderDto.class))),
+                            schema = @Schema(implementation = Order.class))),
             @ApiResponse(responseCode = "400", description = "Invalid request body",
                     content = @Content),
             @ApiResponse(responseCode = "404", description = "Restaurant not found",
@@ -120,12 +126,12 @@ public class OrderController {
                     content = @Content)})
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(path = "{restaurantId}")
-    public OrderDto createOrder(@RequestBody OrderCreationDto orderCreationDto,
-                                @PathVariable("restaurantId") String restaurantId) {
+    public Order createOrder(@Valid @RequestBody OrderCreationDto orderCreationDto,
+                             @PathVariable("restaurantId") String restaurantId) {
         try {
             log.debug("Creating an order");
-            var order = restaurantOrderGuestCourierFacade.createOrder(
-                    orderCreationDto, restaurantId);
+            var orderDto = restaurantOrderGuestCourierFacade.createOrder(orderCreationDto, restaurantId);
+            var order = orderControllerMapper.fromOrderDtoToOrder(orderDto);
             log.debug("Created an order successfully");
             return order;
         } catch (DocumentNotFoundException e) {
@@ -133,6 +139,7 @@ public class OrderController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
     }
+
 
     /**
      * Deletes an order from a restaurant by its ID.
@@ -153,10 +160,11 @@ public class OrderController {
                     content = @Content)})
     @ResponseStatus(HttpStatus.ACCEPTED)
     @DeleteMapping(path = "{orderId}")
-    public OrderDto deleteOrder(@PathVariable("orderId") String orderId) {
+    public Order deleteOrder(@PathVariable("orderId") String orderId) {
         try {
             log.debug("Deleting an order");
-            var order = orderGuestCourierFacade.deleteOrder(orderId);
+            var orderDto = orderGuestCourierFacade.deleteOrder(orderId);
+            var order = orderControllerMapper.fromOrderDtoToOrder(orderDto);
             log.debug("Order with ID: " + orderId + " deleted successfully");
             return order;
         } catch (DocumentNotFoundException e) {
@@ -186,10 +194,11 @@ public class OrderController {
                     content = @Content)})
     @ResponseStatus(HttpStatus.OK)
     @PostMapping(path = "{orderId}/next-state")
-    public OrderDto setNextState(@PathVariable("orderId") String orderId) {
+    public Order setNextState(@PathVariable("orderId") String orderId) {
         try {
             log.debug("Setting order with ID: " + orderId + " to the next status");
-            var order = orderService.setNextState(orderId);
+            var orderDto = orderService.setNextState(orderId);
+            var order = orderControllerMapper.fromOrderDtoToOrder(orderDto);
             log.debug("Setting order with ID: " + orderId + " was successful");
             return order;
         } catch (OrderDocumentNotFoundException e) {
@@ -202,12 +211,13 @@ public class OrderController {
 
     @ResponseStatus(HttpStatus.OK)
     @PutMapping(path = "{orderId}")
-    public OrderDto updateOrder(
+    public Order updateOrder(
             @PathVariable("orderId") String orderId,
             @Valid @RequestBody OrderUpdateDto orderUpdateDto) {
         try {
             log.debug("Updating order with ID: " + orderId);
-            var order = orderService.updateOrder(orderId, orderUpdateDto);
+            var orderDto = orderService.updateOrder(orderId, orderUpdateDto);
+            var order = orderControllerMapper.fromOrderDtoToOrder(orderDto);
             log.debug("Updating order with ID: " + orderId + " was successful");
             return order;
         } catch (OrderDocumentNotFoundException e) {
@@ -215,11 +225,16 @@ public class OrderController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
     }
+
     @PostMapping("set/{orderId}/{courierId}")
-    public OrderDto setCourierToOrder(@PathVariable(value = "orderId") String orderId,
-                                      @PathVariable(value = "courierId") String courierId){
+    public Order setCourierToOrder(@PathVariable(value = "orderId") String orderId,
+                                   @PathVariable(value = "courierId") String courierId) {
         try {
-            return orderCourierFacade.setCourierToOrder(orderId,courierId);
+            log.debug("Setting a courier to an order with ID: " + orderId);
+            var orderDto = orderCourierFacade.setCourierToOrder(orderId, courierId);
+            var order = orderControllerMapper.fromOrderDtoToOrder(orderDto);
+            log.debug("Courier set to an order with ID: " + orderId + " successfully");
+            return order;
         } catch (CourierDocumentNotFoundException | OrderDocumentNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
 

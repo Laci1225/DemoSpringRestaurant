@@ -1,6 +1,5 @@
 package com.example.demoSpringRestaurant.model.controller;
 
-import com.example.demoSpringRestaurant.model.service.OrderDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,7 +16,7 @@ import java.time.LocalDateTime;
 public class Guest {
     @Id
     private String id;
-    private OrderDto activeOrder;
+    private Order activeOrder;
     private boolean payed;
 
     @CreatedDate

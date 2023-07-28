@@ -1,8 +1,10 @@
 package com.example.demoSpringRestaurant.unit.mapper;
 
-import com.example.demoSpringRestaurant.fixtures.GuestFixture;
-import com.example.demoSpringRestaurant.mapper.*;
+import com.example.demoSpringRestaurant.fixtures.service.GuestFixture;
 import com.example.demoSpringRestaurant.mapper.service.GuestMapper;
+import com.example.demoSpringRestaurant.mapper.service.GuestMapperImpl;
+import com.example.demoSpringRestaurant.mapper.service.OrderMapperImpl;
+import com.example.demoSpringRestaurant.mapper.service.RestaurantWithoutOrderMapperImpl;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 @ExtendWith(SpringExtension.class)
-@SpringBootTest(classes = {GuestMapperImpl.class,OrderMapperImpl.class, RestaurantWithoutOrderMapperImpl.class})
+@SpringBootTest(classes = {GuestMapperImpl.class, OrderMapperImpl.class, RestaurantWithoutOrderMapperImpl.class})
 public class GuestMapperTest {
 
     @Autowired

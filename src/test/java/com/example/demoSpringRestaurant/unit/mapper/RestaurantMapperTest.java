@@ -1,6 +1,6 @@
 package com.example.demoSpringRestaurant.unit.mapper;
 
-import com.example.demoSpringRestaurant.fixtures.RestaurantFixture;
+import com.example.demoSpringRestaurant.fixtures.service.RestaurantFixture;
 import com.example.demoSpringRestaurant.mapper.service.RestaurantMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

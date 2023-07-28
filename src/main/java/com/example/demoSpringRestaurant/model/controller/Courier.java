@@ -22,8 +22,8 @@ public class Courier {
     private String id;
     private String name;
     private boolean active;
-    private List<OrderDto> orders;
-    private OrderDto activeOrder;
+    private List<Order> orders;
+    private Order activeOrder;
     private double paymentPerOrder;
     private Vehicle vehicle;
 

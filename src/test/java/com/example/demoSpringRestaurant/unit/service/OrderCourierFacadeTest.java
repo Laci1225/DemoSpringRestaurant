@@ -4,8 +4,8 @@ import com.example.demoSpringRestaurant.exception.CourierDocumentNotFoundExcepti
 import com.example.demoSpringRestaurant.exception.DocumentNotFoundException;
 import com.example.demoSpringRestaurant.exception.OrderDocumentNotFoundException;
 import com.example.demoSpringRestaurant.facade.OrderCourierFacade;
-import com.example.demoSpringRestaurant.fixtures.CourierFixture;
-import com.example.demoSpringRestaurant.fixtures.OrderFixture;
+import com.example.demoSpringRestaurant.fixtures.service.CourierFixture;
+import com.example.demoSpringRestaurant.fixtures.service.OrderFixture;
 import com.example.demoSpringRestaurant.service.CourierService;
 import com.example.demoSpringRestaurant.service.OrderService;
 import org.junit.jupiter.api.Test;
@@ -94,7 +94,7 @@ public class OrderCourierFacadeTest {
         var orderDto = orderCourierFacade.setCourierToOrder("1234", "1234");
 
         var expected = OrderFixture.getOrderDto();
-        expected.setCourierDto(CourierFixture.getCourierDto()); //TODO Ez jó?
+        expected.setCourier(CourierFixture.getCourierDto()); //TODO Ez jó?
 
         assertThat(orderDto).usingRecursiveComparison().isEqualTo(expected);
         verify(orderService, times(1)).findOrderById(anyString());

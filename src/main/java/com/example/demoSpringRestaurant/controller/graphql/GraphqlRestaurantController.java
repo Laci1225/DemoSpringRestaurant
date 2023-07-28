@@ -2,8 +2,9 @@ package com.example.demoSpringRestaurant.controller.graphql;
 
 import com.example.demoSpringRestaurant.exception.RestaurantDocumentNotFoundException;
 import com.example.demoSpringRestaurant.facade.RestaurantOrderFacade;
+import com.example.demoSpringRestaurant.mapper.controller.RestaurantControllerMapper;
 import com.example.demoSpringRestaurant.model.service.RestaurantCreationDto;
-import com.example.demoSpringRestaurant.model.service.RestaurantDto;
+import com.example.demoSpringRestaurant.model.controller.Restaurant;
 import com.example.demoSpringRestaurant.model.service.RestaurantUpdateDto;
 import com.example.demoSpringRestaurant.service.RestaurantService;
 import jakarta.validation.Valid;
@@ -18,79 +19,83 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
-    @Controller
-    @AllArgsConstructor
-    public class GraphqlRestaurantController {
+@Controller
+@AllArgsConstructor
+public class GraphqlRestaurantController {
 
-        private final RestaurantService restaurantService;
-        private final RestaurantOrderFacade restaurantOrderFacade;
+    private final RestaurantService restaurantService;
+    private final RestaurantOrderFacade restaurantOrderFacade;
+    private final RestaurantControllerMapper restaurantControllerMapper;
 
-        @QueryMapping("restaurants")
-        public List<RestaurantDto> getRestaurants() {
-            // Logging
-            System.out.println("Requested all restaurants");
-            var restaurantList = restaurantService.getRestaurants();
-            System.out.println("Restaurants returned successfully");
-            return restaurantList;
-        }
-        /*@QueryMapping("restaurant") //TODO model.graphql.GraphqlRestaurantDto
-            // TODO mapper.graphql.GraphqlRestaurantMapper
-            public RestaurantDto getRestaurantById(@Argument String id) {
-                var restaurant = restaurantService.getRestaurant(id);
-                return restaurant;
-                //TODO hibakezelés rossz idra graphql hiba máshogy nézzen ki + default szépen nem kell teszt
-                // springboot error handling
-            }*/
-        @QueryMapping("restaurant")
-        public RestaurantDto getRestaurantById(@Argument String id) {
-            // Logging
-            System.out.println("Requested restaurant with ID: " + id);
+    @QueryMapping("restaurants")
+    public List<Restaurant> getRestaurants() {
+        System.out.println("Requested all restaurants");
+        var restaurantList = restaurantService.getRestaurants().stream()
+                .map(restaurantControllerMapper::fromRestaurantDtoToRestaurant).toList();
+        System.out.println("Restaurants returned successfully");
+        return restaurantList;
+    }
+
+    /*
+        @QueryMapping("restaurant") //TODO model.graphql.GraphqlRestaurantDto
+        // TODO mapper.graphql.GraphqlRestaurantMapper
+        public Restaurant getRestaurantById(@Argument String id) {
             var restaurant = restaurantService.getRestaurant(id);
-            System.out.println("Restaurant with ID: " + id + " returned successfully");
             return restaurant;
+            //TODO hibakezelés rossz idra graphql hiba máshogy nézzen ki + default szépen nem kell teszt
+            // springboot error handling
         }
+    */
+    @QueryMapping("restaurant")
+    public Restaurant getRestaurantById(@Argument String id) {
+        System.out.println("Requested restaurant with ID: " + id);
+        var restaurantDto = restaurantService.getRestaurant(id);
+        var restaurant = restaurantControllerMapper.fromRestaurantDtoToRestaurant(restaurantDto);
+        System.out.println("Restaurant with ID: " + id + " returned successfully");
+        return restaurant;
+    }
 
-        @MutationMapping("createRestaurant")
-        public RestaurantDto createRestaurant(@Valid @RequestBody @Argument RestaurantCreationDto restaurant) {
-            // Logging
-            System.out.println("Creating a new restaurant");
-            var restaurantDto = restaurantService.createRestaurant(restaurant);
-            System.out.println("New restaurant created successfully");
-            return restaurantDto;
-        }
+    @MutationMapping("createRestaurant")
+    public Restaurant createRestaurant(@Valid @RequestBody @Argument RestaurantCreationDto restaurant) {
+        System.out.println("Creating a new restaurant");
+        var restaurantDto = restaurantService.createRestaurant(restaurant);
+        var restaurantResponse = restaurantControllerMapper.fromRestaurantDtoToRestaurant(restaurantDto);
+        System.out.println("New restaurant created successfully");
+        return restaurantResponse;
+    }
 
-        @MutationMapping("deleteRestaurant")
-        public RestaurantDto deleteRestaurant(@Argument String id) {
-            try {
-                // Logging
-                System.out.println("Deleting a restaurant with ID: " + id);
-                var restaurantDto = restaurantOrderFacade.deleteRestaurant(id);
-                System.out.println("Restaurant with ID: " + id + " deleted successfully");
-                return restaurantDto;
-            } catch (RestaurantDocumentNotFoundException e) {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
-            }
-        }
-
-        @MutationMapping("updateRestaurant")
-        public RestaurantDto updateRestaurant(@Argument String id, @Valid @RequestBody @Argument RestaurantUpdateDto restaurant) {
-            try {
-                // Logging
-                System.out.println("Updating restaurant with ID: " + id);
-                var restaurantUpdate = restaurantService.updateRestaurant(id, restaurant);
-                System.out.println("Restaurant with ID: " + id + " updated successfully");
-                return restaurantUpdate;
-            } catch (RestaurantDocumentNotFoundException e) {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
-            }
-        }
-
-        @QueryMapping("vegan")
-        public List<RestaurantDto> getVeganRestaurants() {
-            // Logging
-            System.out.println("Requested vegan restaurants");
-            var restaurantDto = restaurantService.getVeganRestaurant();
-            System.out.println("Vegan restaurants returned successfully");
-            return restaurantDto;
+    @MutationMapping("deleteRestaurant")
+    public Restaurant deleteRestaurant(@Argument String id) {
+        try {
+            System.out.println("Deleting a restaurant with ID: " + id);
+            var restaurantDto = restaurantOrderFacade.deleteRestaurant(id);
+            var restaurant = restaurantControllerMapper.fromRestaurantDtoToRestaurant(restaurantDto);
+            System.out.println("Restaurant with ID: " + id + " deleted successfully");
+            return restaurant;
+        } catch (RestaurantDocumentNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
     }
+
+    @MutationMapping("updateRestaurant")
+    public Restaurant updateRestaurant(@Argument String id, @Valid @RequestBody @Argument RestaurantUpdateDto restaurant) {
+        try {
+            System.out.println("Updating restaurant with ID: " + id);
+            var restaurantDto = restaurantService.updateRestaurant(id, restaurant);
+            var restaurantResponse = restaurantControllerMapper.fromRestaurantDtoToRestaurant(restaurantDto);
+            System.out.println("Restaurant with ID: " + id + " updated successfully");
+            return restaurantResponse;
+        } catch (RestaurantDocumentNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        }
+    }
+
+    @QueryMapping("vegan")
+    public List<Restaurant> getVeganRestaurants() {
+        System.out.println("Requested vegan restaurants");
+        var restaurantDto = restaurantService.getVeganRestaurant().stream()
+                .map(restaurantControllerMapper::fromRestaurantDtoToRestaurant).toList();
+        System.out.println("Vegan restaurants returned successfully");
+        return restaurantDto;
+    }
+}
