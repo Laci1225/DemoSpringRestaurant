@@ -94,7 +94,7 @@ public class OrderCourierFacadeTest {
         var orderDto = orderCourierFacade.setCourierToOrder("1234", "1234");
 
         var expected = OrderFixture.getOrderDto();
-        expected.setCourier(CourierFixture.getCourierDto()); //TODO Ez jó?
+        expected.setCourier(CourierFixture.getCourierDto());
 
         assertThat(orderDto).usingRecursiveComparison().isEqualTo(expected);
         verify(orderService, times(1)).findOrderById(anyString());

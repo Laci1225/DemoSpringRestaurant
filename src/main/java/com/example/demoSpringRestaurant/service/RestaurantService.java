@@ -29,10 +29,10 @@ public class RestaurantService {
 
     //todo másik modell pl restaurant postfix nélkül contollerbe dto reposiotryban document
     //todo minden réteg közé Restaurant
-    public RestaurantDto getRestaurant(String id) {
+    public RestaurantDto getRestaurant(String id) throws RestaurantDocumentNotFoundException {
         log.trace("A restaurant ");
         return restaurantRepository.findById(id).map(restaurantMapper::fromDocumentToRestaurantDto)
-                .orElseThrow();
+                .orElseThrow(() -> new RestaurantDocumentNotFoundException("Restaurant not found"));
     }
 
     public RestaurantDto createRestaurant(RestaurantCreationDto restaurantCreationDto) {

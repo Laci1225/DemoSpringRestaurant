@@ -36,24 +36,20 @@ public class GraphqlRestaurantController {
         return restaurantList;
     }
 
-    /*
-        @QueryMapping("restaurant") //TODO model.graphql.GraphqlRestaurantDto
-        // TODO mapper.graphql.GraphqlRestaurantMapper
-        public Restaurant getRestaurantById(@Argument String id) {
-            var restaurant = restaurantService.getRestaurant(id);
-            return restaurant;
-            //TODO hibakezelés rossz idra graphql hiba máshogy nézzen ki + default szépen nem kell teszt
-            // springboot error handling
-        }
-    */
     @QueryMapping("restaurant")
     public Restaurant getRestaurantById(@Argument String id) {
-        System.out.println("Requested restaurant with ID: " + id);
-        var restaurantDto = restaurantService.getRestaurant(id);
-        var restaurant = restaurantControllerMapper.fromRestaurantDtoToRestaurant(restaurantDto);
-        System.out.println("Restaurant with ID: " + id + " returned successfully");
-        return restaurant;
+
+        try {
+            System.out.println("Requested restaurant with ID: " + id);
+            var restaurantDto = restaurantService.getRestaurant(id);
+            var restaurant = restaurantControllerMapper.fromRestaurantDtoToRestaurant(restaurantDto);
+            System.out.println("Restaurant with ID: " + id + " returned successfully");
+            return restaurant;
+        } catch (RestaurantDocumentNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        }
     }
+
 
     @MutationMapping("createRestaurant")
     public Restaurant createRestaurant(@Valid @RequestBody @Argument RestaurantCreationDto restaurant) {

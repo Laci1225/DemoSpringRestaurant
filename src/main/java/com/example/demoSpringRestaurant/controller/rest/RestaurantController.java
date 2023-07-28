@@ -74,11 +74,15 @@ public class RestaurantController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(path = "{restaurantId}")
     public Restaurant getRestaurant(@PathVariable("restaurantId") String id) {
-        log.debug("Requested a restaurant");
-        var restaurantDto = restaurantService.getRestaurant(id);
-        var restaurant = restaurantControllerMapper.fromRestaurantDtoToRestaurant(restaurantDto);
-        log.debug("Restaurants returned successfully");
-        return restaurant;
+        try {
+            log.debug("Requested a restaurant");
+            var restaurantDto = restaurantService.getRestaurant(id);
+            var restaurant = restaurantControllerMapper.fromRestaurantDtoToRestaurant(restaurantDto);
+            log.debug("Restaurants returned successfully");
+            return restaurant;
+        } catch (RestaurantDocumentNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
