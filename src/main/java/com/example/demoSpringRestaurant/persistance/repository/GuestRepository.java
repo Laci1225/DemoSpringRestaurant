@@ -8,5 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface GuestRepository extends MongoRepository<GuestDocument, String> {
-    Optional<GuestDocument> findGuestDocumentByActiveOrder_Id(String activeOrder_id);
+    Optional<GuestDocument> findGuestDocumentByActiveOrder(String activeOrder_id);
 }

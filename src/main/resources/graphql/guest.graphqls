@@ -1,0 +1,19 @@
+type Guest{
+    id:ID!
+    activeOrder: String
+    payed: Boolean!
+    createdDate: LocalDateTime
+    modifiedDate: LocalDateTime
+}
+input GuestInput{
+    payed: Boolean!
+}
+extend type Query {
+   guests: [Guest!]!
+   guest(id:ID!): Guest!
+}
+extend type Mutation {
+    createGuest(guest:GuestInput!,id:String!):Guest!
+    deleteGuest(id: ID!):Guest!
+    updateGuest(id:String!,guest:GuestInput!):Guest!
+}

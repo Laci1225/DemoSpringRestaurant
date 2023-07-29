@@ -3,12 +3,12 @@ package com.example.demoSpringRestaurant.unit.service;
 import com.example.demoSpringRestaurant.exception.DocumentNotFoundException;
 import com.example.demoSpringRestaurant.exception.OrderDocumentNotFoundException;
 import com.example.demoSpringRestaurant.facade.OrderGuestFacade;
-import com.example.demoSpringRestaurant.fixtures.GuestFixture;
-import com.example.demoSpringRestaurant.fixtures.OrderFixture;
-import com.example.demoSpringRestaurant.mapper.GuestMapper;
-import com.example.demoSpringRestaurant.model.GuestCreationDto;
-import com.example.demoSpringRestaurant.model.GuestDto;
-import com.example.demoSpringRestaurant.model.OrderDto;
+import com.example.demoSpringRestaurant.fixtures.service.GuestFixture;
+import com.example.demoSpringRestaurant.fixtures.service.OrderFixture;
+import com.example.demoSpringRestaurant.mapper.service.GuestMapper;
+import com.example.demoSpringRestaurant.model.service.GuestCreationDto;
+import com.example.demoSpringRestaurant.model.service.GuestDto;
+import com.example.demoSpringRestaurant.model.service.OrderDto;
 import com.example.demoSpringRestaurant.service.GuestService;
 import com.example.demoSpringRestaurant.service.OrderService;
 import org.junit.jupiter.api.Test;
@@ -47,23 +47,27 @@ public class OrderGuestFacadeTest {
                 .thenReturn(OrderFixture.getOrderDto());
 
         var guest = orderGuestFacade.createGuest(GuestFixture.getGuestCreationDto(), "1234");
+        var expectedGuest = GuestFixture.getGuestDto();
+        expectedGuest.setActiveOrder("1234");
 
-        assertThat(guest).usingRecursiveComparison().isEqualTo(GuestFixture.getGuestDto());
+        assertThat(guest).usingRecursiveComparison().isEqualTo(expectedGuest);
         verify(orderService, times(1)).findOrderById(anyString());
-        verify(guestService, times(1)).saveGuest(any(GuestDto.class));
+        verify(guestService, times(2)).saveGuest(any(GuestDto.class));
         verifyNoMoreInteractions(orderService, guestService);
     }
 
     @Test
     void deleteGuest() throws DocumentNotFoundException {
         when(guestService.findGuestById(anyString()))
-                .thenReturn(GuestFixture.getGuestDto());
+                .thenReturn(GuestFixture.getGuestDtoWithActiveOrder());
         doNothing().when(orderService).deleteById(anyString());
         doNothing().when(guestService).deleteById(anyString());
 
         var guest = orderGuestFacade.deleteGuest("1234");
+        var expectedResult= GuestFixture.getGuestDto();
+        expectedResult.setActiveOrder("4321");
 
-        assertThat(guest).usingRecursiveComparison().isEqualTo(GuestFixture.getGuestDto());
+        assertThat(guest).usingRecursiveComparison().isEqualTo(expectedResult);
         verify(guestService, times(1)).findGuestById(anyString());
         verify(guestService, times(1)).deleteById(anyString());
         verify(orderService, times(1)).deleteById(anyString());

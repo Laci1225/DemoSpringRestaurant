@@ -1,11 +1,14 @@
 package com.example.demoSpringRestaurant.unit.controller;
 
-import com.example.demoSpringRestaurant.controller.RestaurantController;
+import com.example.demoSpringRestaurant.controller.rest.RestaurantController;
 import com.example.demoSpringRestaurant.exception.RestaurantDocumentNotFoundException;
 import com.example.demoSpringRestaurant.facade.RestaurantOrderFacade;
-import com.example.demoSpringRestaurant.fixtures.RestaurantFixture;
-import com.example.demoSpringRestaurant.model.RestaurantCreationDto;
-import com.example.demoSpringRestaurant.model.RestaurantUpdateDto;
+import com.example.demoSpringRestaurant.fixtures.controller.RestaurantControllerFixture;
+import com.example.demoSpringRestaurant.fixtures.service.RestaurantFixture;
+import com.example.demoSpringRestaurant.mapper.controller.RestaurantControllerMapper;
+import com.example.demoSpringRestaurant.model.service.RestaurantCreationDto;
+import com.example.demoSpringRestaurant.model.service.RestaurantDto;
+import com.example.demoSpringRestaurant.model.service.RestaurantUpdateDto;
 import com.example.demoSpringRestaurant.service.RestaurantService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -36,8 +39,13 @@ public class RestaurantControllerTest {
     private RestaurantOrderFacade restaurantOrderFacade;
 
 
+    @MockBean
+    private RestaurantControllerMapper restaurantControllerMapper;
+
     @Test
     void getRestaurantsShouldReturnAllRestaurant() throws Exception {
+        when(restaurantControllerMapper.fromRestaurantDtoToRestaurant(any(RestaurantDto.class)))
+                .thenReturn(RestaurantControllerFixture.getRestaurant(true));
         when(restaurantService.getRestaurants())
                 .thenReturn(RestaurantFixture.getRestaurantDtoList());
 
@@ -45,12 +53,14 @@ public class RestaurantControllerTest {
                 get("/restaurants")
                         .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isOk()).andExpect(content()
-                .json(objectMapper.writeValueAsString(RestaurantFixture.getRestaurantDtoList()))
+                .json(objectMapper.writeValueAsString(RestaurantControllerFixture.getRestaurantList()))
         );
     }
 
     @Test
     void getRestaurantShouldReturnOneRestaurant() throws Exception {
+        when(restaurantControllerMapper.fromRestaurantDtoToRestaurant(any(RestaurantDto.class)))
+                .thenReturn(RestaurantControllerFixture.getRestaurant(true));
         when(restaurantService.getRestaurant(anyString()))
                 .thenReturn(RestaurantFixture.getRestaurantDto());
 
@@ -58,12 +68,14 @@ public class RestaurantControllerTest {
                 get("/restaurants/1")
                         .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isOk()).andExpect(content()
-                .json(objectMapper.writeValueAsString(RestaurantFixture.getRestaurantDto()))
+                .json(objectMapper.writeValueAsString(RestaurantControllerFixture.getRestaurant(true)))
         );
     }
 
     @Test
     void createRestaurantShouldReturnCreatedRestaurant() throws Exception {
+        when(restaurantControllerMapper.fromRestaurantDtoToRestaurant(any(RestaurantDto.class)))
+                .thenReturn(RestaurantControllerFixture.getRestaurant(true));
         when(restaurantService.createRestaurant(any(RestaurantCreationDto.class)))
                 .thenReturn(RestaurantFixture.getRestaurantDto());
 
@@ -72,12 +84,14 @@ public class RestaurantControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(RestaurantFixture.getRestaurantCreationDto()))
         ).andExpect(status().isCreated()).andExpect(content()
-                .json(objectMapper.writeValueAsString(RestaurantFixture.getRestaurantCreationDto()))
+                .json(objectMapper.writeValueAsString(RestaurantControllerFixture.getRestaurant(true)))
         );
     }
 
     @Test
     void deleteRestaurantShouldRemoveOneRestaurant() throws Exception {
+        when(restaurantControllerMapper.fromRestaurantDtoToRestaurant(any(RestaurantDto.class)))
+                .thenReturn(RestaurantControllerFixture.getRestaurant(true));
         when(restaurantOrderFacade.deleteRestaurant(anyString()))
                 .thenReturn(RestaurantFixture.getRestaurantDto());
 
@@ -85,23 +99,24 @@ public class RestaurantControllerTest {
                 delete("/restaurants/1")
                         .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isAccepted()).andExpect(content()
-                .json(objectMapper.writeValueAsString(RestaurantFixture.getRestaurantCreationDto()))
+                .json(objectMapper.writeValueAsString(RestaurantControllerFixture.getRestaurant(true)))
         );
     }
 
     @Test
     void deleteRestaurantShouldThrowOrderEntityNotFoundExceptionWith404() throws Exception {
-        //given
         when(restaurantOrderFacade.deleteRestaurant(anyString()))
                 .thenThrow(RestaurantDocumentNotFoundException.class);
-        //when
-        //then
+
         this.mockMvc.perform(
                 delete("/restaurants/1")
         ).andExpect(status().isNotFound());
     }
+
     @Test
     void updateRestaurantShouldUpdateOneRestaurant() throws Exception {
+        when(restaurantControllerMapper.fromRestaurantDtoToRestaurant(any(RestaurantDto.class)))
+                .thenReturn(RestaurantControllerFixture.getRestaurant(true));
         when(restaurantService.updateRestaurant(anyString(), any(RestaurantUpdateDto.class)))
                 .thenReturn(RestaurantFixture.getRestaurantDto());
 
@@ -110,7 +125,7 @@ public class RestaurantControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(RestaurantFixture.getRestaurantUpdateDto()))
         ).andExpect(status().isOk()).andExpect(content()
-                .json(objectMapper.writeValueAsString(RestaurantFixture.getRestaurantDto()))
+                .json(objectMapper.writeValueAsString(RestaurantControllerFixture.getRestaurant(true)))
         );
     }
 
@@ -141,6 +156,8 @@ public class RestaurantControllerTest {
 
     @Test
     void updateParametersInRestaurantShouldUpdateOneRestaurantsParameter() throws Exception {
+        when(restaurantControllerMapper.fromRestaurantDtoToRestaurant(any(RestaurantDto.class)))
+                .thenReturn(RestaurantControllerFixture.getRestaurant(true));
         when(restaurantService.updateParametersInRestaurant(anyString(), any(RestaurantUpdateDto.class)))
                 .thenReturn(RestaurantFixture.getRestaurantDto());
 
@@ -149,7 +166,7 @@ public class RestaurantControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(RestaurantFixture.getRestaurantUpdateDto()))
         ).andExpect(status().isOk()).andExpect(content()
-                .json(objectMapper.writeValueAsString(RestaurantFixture.getRestaurantDto()))
+                .json(objectMapper.writeValueAsString(RestaurantControllerFixture.getRestaurant(true)))
         );
     }
 
@@ -180,13 +197,15 @@ public class RestaurantControllerTest {
 
     @Test
     void getVeganRestaurants() throws Exception {
+        when(restaurantControllerMapper.fromRestaurantDtoToRestaurant(any(RestaurantDto.class)))
+                .thenReturn(RestaurantControllerFixture.getRestaurant(true));
         when(restaurantService.getVeganRestaurant())
                 .thenReturn(RestaurantFixture.getRestaurantDtoList());
         this.mockMvc.perform(
                 get("/restaurants/vegan")
                         .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isOk()).andExpect(content()
-                .json(objectMapper.writeValueAsString(RestaurantFixture.getRestaurantDtoList()))
+                .json(objectMapper.writeValueAsString(RestaurantControllerFixture.getRestaurantList()))
         );
     }
 }

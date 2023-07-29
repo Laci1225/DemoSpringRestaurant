@@ -2,11 +2,11 @@ package com.example.demoSpringRestaurant.unit.service;
 
 import com.example.demoSpringRestaurant.exception.DocumentNotFoundException;
 import com.example.demoSpringRestaurant.exception.GuestDocumentNotFoundException;
-import com.example.demoSpringRestaurant.fixtures.CourierFixture;
-import com.example.demoSpringRestaurant.fixtures.GuestFixture;
-import com.example.demoSpringRestaurant.mapper.GuestMapper;
-import com.example.demoSpringRestaurant.model.GuestDto;
-import com.example.demoSpringRestaurant.model.GuestUpdateDto;
+import com.example.demoSpringRestaurant.fixtures.service.CourierFixture;
+import com.example.demoSpringRestaurant.fixtures.service.GuestFixture;
+import com.example.demoSpringRestaurant.mapper.service.GuestMapper;
+import com.example.demoSpringRestaurant.model.service.GuestDto;
+import com.example.demoSpringRestaurant.model.service.GuestUpdateDto;
 import com.example.demoSpringRestaurant.persistance.document.GuestDocument;
 import com.example.demoSpringRestaurant.persistance.repository.GuestRepository;
 import com.example.demoSpringRestaurant.service.GuestService;
@@ -129,7 +129,7 @@ public class GuestServiceTest {
 
     @Test
     void findGuestDocumentByActiveOrder_Id() throws GuestDocumentNotFoundException {
-        when(guestRepository.findGuestDocumentByActiveOrder_Id(anyString())).
+        when(guestRepository.findGuestDocumentByActiveOrder(anyString())).
                 thenReturn(Optional.of(GuestFixture.getGuestDocument(true)));
         when(guestMapper.fromDocumentToGuestDto(any(GuestDocument.class)))
                 .thenReturn(GuestFixture.getGuestDto());
@@ -138,7 +138,7 @@ public class GuestServiceTest {
                 "1234");
 
         assertThat(guestDto).usingRecursiveComparison().isEqualTo(GuestFixture.getGuestDto());
-        verify(guestRepository, times(1)).findGuestDocumentByActiveOrder_Id(anyString());
+        verify(guestRepository, times(1)).findGuestDocumentByActiveOrder(anyString());
         verifyNoMoreInteractions(guestRepository);
     }
 

@@ -1,11 +1,14 @@
 package com.example.demoSpringRestaurant.unit.controller;
 
-import com.example.demoSpringRestaurant.controller.CourierController;
+import com.example.demoSpringRestaurant.controller.rest.CourierController;
 import com.example.demoSpringRestaurant.exception.CourierDocumentNotFoundException;
 import com.example.demoSpringRestaurant.facade.OrderCourierFacade;
-import com.example.demoSpringRestaurant.fixtures.CourierFixture;
-import com.example.demoSpringRestaurant.model.CourierCreationDto;
-import com.example.demoSpringRestaurant.model.CourierUpdateDto;
+import com.example.demoSpringRestaurant.fixtures.controller.CourierControllerFixture;
+import com.example.demoSpringRestaurant.fixtures.service.CourierFixture;
+import com.example.demoSpringRestaurant.mapper.controller.CourierControllerMapper;
+import com.example.demoSpringRestaurant.model.service.CourierCreationDto;
+import com.example.demoSpringRestaurant.model.service.CourierDto;
+import com.example.demoSpringRestaurant.model.service.CourierUpdateDto;
 import com.example.demoSpringRestaurant.service.CourierService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -33,9 +36,13 @@ public class CourierControllerTest {
     private CourierService courierService;
     @MockBean
     private OrderCourierFacade orderCourierFacade;
+    @MockBean
+    private CourierControllerMapper courierControllerMapper;
 
     @Test
     void updateCourierShouldUpdateOneCourier() throws Exception {
+        when(courierControllerMapper.fromCourierDtoToCourier(any(CourierDto.class)))
+                .thenReturn(CourierControllerFixture.getCourier(true));
         when(courierService.updateCourier(anyString(), any(CourierUpdateDto.class)))
                 .thenReturn(CourierFixture.getCourierDto());
 
@@ -44,7 +51,7 @@ public class CourierControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(CourierFixture.getCourierUpdateDto()))
         ).andExpect(status().isOk()).andExpect(content()
-                .json(objectMapper.writeValueAsString(CourierFixture.getCourierDto()))
+                .json(objectMapper.writeValueAsString(CourierControllerFixture.getCourier(true)))
         );
     }
 
@@ -75,6 +82,8 @@ public class CourierControllerTest {
 
     @Test
     void addOrderToCourierShouldSetAnOrderToACourier() throws Exception {
+        when(courierControllerMapper.fromCourierDtoToCourier(any(CourierDto.class)))
+                .thenReturn(CourierControllerFixture.getCourier(true));
         when(orderCourierFacade.addOrderToCourier(anyString(), anyString()))
                 .thenReturn(CourierFixture.getCourierDto());
 
@@ -82,7 +91,7 @@ public class CourierControllerTest {
                 post("/couriers/add/1/1")
                         .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isOk()).andExpect(content()
-                .json(objectMapper.writeValueAsString(CourierFixture.getCourierDto()))
+                .json(objectMapper.writeValueAsString(CourierControllerFixture.getCourier(true)))
         );
     }
 
@@ -99,6 +108,8 @@ public class CourierControllerTest {
 
     @Test
     void setOrderActiveShouldSetACouriersActiveOrder() throws Exception {
+        when(courierControllerMapper.fromCourierDtoToCourier(any(CourierDto.class)))
+                .thenReturn(CourierControllerFixture.getCourier(true));
         when(orderCourierFacade.setOrderActive(anyString(), anyString()))
                 .thenReturn(CourierFixture.getCourierDto());
 
@@ -106,7 +117,7 @@ public class CourierControllerTest {
                 post("/couriers/set/1/1")
                         .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isOk()).andExpect(content()
-                .json(objectMapper.writeValueAsString(CourierFixture.getCourierDto()))
+                .json(objectMapper.writeValueAsString(CourierControllerFixture.getCourier(true)))
         );
     }
     @Test
@@ -122,6 +133,8 @@ public class CourierControllerTest {
 
     @Test
     void getCourierShouldReturnOneCourier() throws Exception {
+        when(courierControllerMapper.fromCourierDtoToCourier(any(CourierDto.class)))
+                .thenReturn(CourierControllerFixture.getCourier(true));
         when(courierService.getCourier(anyString()))
                 .thenReturn(CourierFixture.getCourierDto());
 
@@ -129,12 +142,14 @@ public class CourierControllerTest {
                 get("/couriers/1")
                         .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isOk()).andExpect(content()
-                .json(objectMapper.writeValueAsString(CourierFixture.getCourierDto()))
+                .json(objectMapper.writeValueAsString(CourierControllerFixture.getCourier(true)))
         );
     }
 
     @Test
     void createCourierShouldReturnCreatedCourier() throws Exception {
+        when(courierControllerMapper.fromCourierDtoToCourier(any(CourierDto.class)))
+                .thenReturn(CourierControllerFixture.getCourier(true));
         when(courierService.createCourier(any(CourierCreationDto.class)))
                 .thenReturn(CourierFixture.getCourierDto());
 
@@ -143,12 +158,14 @@ public class CourierControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(CourierFixture.getCourierCreationDto()))
         ).andExpect(status().isCreated()).andExpect(content()
-                .json(objectMapper.writeValueAsString(CourierFixture.getCourierCreationDto()))
+                .json(objectMapper.writeValueAsString(CourierControllerFixture.getCourier(true)))
         );
     }
 
     @Test
     void getCouriersShouldReturnAllCourier() throws Exception {
+        when(courierControllerMapper.fromCourierDtoToCourier(any(CourierDto.class)))
+                .thenReturn(CourierControllerFixture.getCourier(true));
         when(courierService.getCouriers())
                 .thenReturn(CourierFixture.getCourierDtoList());
 
@@ -156,13 +173,15 @@ public class CourierControllerTest {
                 get("/couriers")
                         .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isOk()).andExpect(content()
-                .json(objectMapper.writeValueAsString(CourierFixture.getCourierDtoList()))
+                .json(objectMapper.writeValueAsString(CourierControllerFixture.getCourierList()))
         );
 
     }
 
     @Test
     void deleteCourierShouldRemoveOneCourier() throws Exception {
+        when(courierControllerMapper.fromCourierDtoToCourier(any(CourierDto.class)))
+                .thenReturn(CourierControllerFixture.getCourier(true));
         when(orderCourierFacade.deleteCourier(anyString()))
                 .thenReturn(CourierFixture.getCourierDto());
 
@@ -170,7 +189,7 @@ public class CourierControllerTest {
                 delete("/couriers/1")
                         .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isAccepted()).andExpect(content()
-                .json(objectMapper.writeValueAsString(CourierFixture.getCourierCreationDto()))
+                .json(objectMapper.writeValueAsString(CourierControllerFixture.getCourier(true)))
         );
     }
 

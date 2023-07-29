@@ -1,10 +1,10 @@
 package com.example.demoSpringRestaurant.facade;
 
 import com.example.demoSpringRestaurant.exception.RestaurantDocumentNotFoundException;
-import com.example.demoSpringRestaurant.mapper.OrderMapper;
-import com.example.demoSpringRestaurant.mapper.RestaurantMapper;
-import com.example.demoSpringRestaurant.model.OrderDto;
-import com.example.demoSpringRestaurant.model.RestaurantDto;
+import com.example.demoSpringRestaurant.mapper.service.OrderMapper;
+import com.example.demoSpringRestaurant.mapper.service.RestaurantMapper;
+import com.example.demoSpringRestaurant.model.service.OrderDto;
+import com.example.demoSpringRestaurant.model.service.RestaurantDto;
 import com.example.demoSpringRestaurant.service.OrderService;
 import com.example.demoSpringRestaurant.service.RestaurantService;
 import lombok.RequiredArgsConstructor;

@@ -33,13 +33,13 @@ public class OrderDocument {
     private boolean isDelivery;
     private String deliveryAddress;
     @DocumentReference
-    private CourierDocument courierDocument;
+    private CourierDocument courier;
     private OrderStatus orderStatus = OrderStatus.SENT;
 
     @DateTimeFormat(pattern = "HH:mm:ss")
     private LocalTime estimatedPreparationTime;
     @DocumentReference
-    private GuestDocument guestDocument;
+    private GuestDocument guest;
 
     @CreatedDate
     private LocalDateTime createdDate;

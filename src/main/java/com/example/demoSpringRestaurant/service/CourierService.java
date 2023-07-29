@@ -1,10 +1,10 @@
 package com.example.demoSpringRestaurant.service;
 
 import com.example.demoSpringRestaurant.exception.CourierDocumentNotFoundException;
-import com.example.demoSpringRestaurant.mapper.CourierMapper;
-import com.example.demoSpringRestaurant.model.CourierCreationDto;
-import com.example.demoSpringRestaurant.model.CourierDto;
-import com.example.demoSpringRestaurant.model.CourierUpdateDto;
+import com.example.demoSpringRestaurant.mapper.service.CourierMapper;
+import com.example.demoSpringRestaurant.model.service.CourierCreationDto;
+import com.example.demoSpringRestaurant.model.service.CourierDto;
+import com.example.demoSpringRestaurant.model.service.CourierUpdateDto;
 import com.example.demoSpringRestaurant.persistance.repository.CourierRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

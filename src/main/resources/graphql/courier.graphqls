@@ -1,0 +1,31 @@
+type Courier{
+    id:ID!
+    name: String!
+    isActive:Boolean!
+    orders: [Order]
+    activeOrder: Order
+    paymentPerOrder: Int
+    vehicle: Vehicle!
+    createdDate: LocalDateTime
+    modifiedDate: LocalDateTime
+}
+input CourierInput{
+    name: String!
+    isActive:Boolean!
+    orders: [OrderInput]
+    activeOrder: OrderInput
+    paymentPerOrder: Int
+    vehicle: Vehicle!
+}
+extend type Query {
+    couriers: [Courier!]!
+    courier(id:ID!): Courier!
+}
+extend type Mutation {
+    createCourier(courier:CourierInput!):Courier!
+    deleteCourier(id: ID!):Courier!
+    updateCourier(id:String!,courier:CourierInput!):Courier!
+    setOrderActive(courierId: ID!,orderId: ID!): Courier!
+    addOrderToCourier(courierId: ID!,orderId: ID!): Courier!
+}
+

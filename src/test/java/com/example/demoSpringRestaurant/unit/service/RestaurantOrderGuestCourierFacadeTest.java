@@ -2,17 +2,17 @@ package com.example.demoSpringRestaurant.unit.service;
 
 import com.example.demoSpringRestaurant.exception.DocumentNotFoundException;
 import com.example.demoSpringRestaurant.facade.RestaurantOrderGuestCourierFacade;
-import com.example.demoSpringRestaurant.fixtures.CourierFixture;
-import com.example.demoSpringRestaurant.fixtures.GuestFixture;
-import com.example.demoSpringRestaurant.fixtures.OrderFixture;
-import com.example.demoSpringRestaurant.fixtures.RestaurantFixture;
-import com.example.demoSpringRestaurant.mapper.CourierMapper;
-import com.example.demoSpringRestaurant.mapper.GuestMapper;
-import com.example.demoSpringRestaurant.mapper.OrderMapper;
-import com.example.demoSpringRestaurant.model.CourierDto;
-import com.example.demoSpringRestaurant.model.GuestDto;
-import com.example.demoSpringRestaurant.model.OrderCreationDto;
-import com.example.demoSpringRestaurant.model.OrderDto;
+import com.example.demoSpringRestaurant.fixtures.service.CourierFixture;
+import com.example.demoSpringRestaurant.fixtures.service.GuestFixture;
+import com.example.demoSpringRestaurant.fixtures.service.OrderFixture;
+import com.example.demoSpringRestaurant.fixtures.service.RestaurantFixture;
+import com.example.demoSpringRestaurant.mapper.service.CourierMapper;
+import com.example.demoSpringRestaurant.mapper.service.GuestMapper;
+import com.example.demoSpringRestaurant.mapper.service.OrderMapper;
+import com.example.demoSpringRestaurant.model.service.CourierDto;
+import com.example.demoSpringRestaurant.model.service.GuestDto;
+import com.example.demoSpringRestaurant.model.service.OrderCreationDto;
+import com.example.demoSpringRestaurant.model.service.OrderDto;
 import com.example.demoSpringRestaurant.persistance.document.OrderDocument;
 import com.example.demoSpringRestaurant.service.CourierService;
 import com.example.demoSpringRestaurant.service.GuestService;
@@ -65,10 +65,6 @@ public class RestaurantOrderGuestCourierFacadeTest {
                 .thenReturn(OrderFixture.getOrderDocument(true));
         when(orderMapper.fromDocumentToOrderDto(any(OrderDocument.class)))
                 .thenReturn(OrderFixture.getOrderDto());
-        when(courierMapper.fromCourierDtoToDocument(any(CourierDto.class)))
-                .thenReturn(CourierFixture.getCourierDocument(true));
-        when(guestMapper.fromGuestDtoToDocument(any(GuestDto.class)))
-                .thenReturn(GuestFixture.getGuestDocument(true));
         when(orderService.saveOrder(any(OrderDto.class)))
                 .thenReturn(OrderFixture.getOrderDto());
 

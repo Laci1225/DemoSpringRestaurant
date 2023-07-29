@@ -1,10 +1,10 @@
 package com.example.demoSpringRestaurant.unit.mapper;
 
-import com.example.demoSpringRestaurant.fixtures.OrderFixture;
-import com.example.demoSpringRestaurant.mapper.OrderMapper;
-import com.example.demoSpringRestaurant.mapper.OrderMapperImpl;
-import com.example.demoSpringRestaurant.mapper.RestaurantWithoutOrderMapperImpl;
-import com.example.demoSpringRestaurant.model.OrderCreationDto;
+import com.example.demoSpringRestaurant.fixtures.service.OrderFixture;
+import com.example.demoSpringRestaurant.mapper.service.OrderMapper;
+import com.example.demoSpringRestaurant.mapper.service.OrderMapperImpl;
+import com.example.demoSpringRestaurant.mapper.service.RestaurantWithoutOrderMapperImpl;
+import com.example.demoSpringRestaurant.model.service.OrderCreationDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +15,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 
-//TODO a módosítás miatt nem jó
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = {OrderMapperImpl.class, RestaurantWithoutOrderMapperImpl.class})
 public class OrderMapperTest {
@@ -71,8 +70,8 @@ public class OrderMapperTest {
     public void fromOrderCreationDtoToDocument() {
         var result = orderMapper
                 .fromOrderCreationDtoToDto(OrderFixture.getOrderCreationDto(),
-                        OrderFixture.getOrderDto().getCourierDto(),
-                        OrderFixture.getOrderDto().getGuestDto());
+                        OrderFixture.getOrderDto().getCourier(),
+                        OrderFixture.getOrderDto().getGuest());
 
         assertEquals(result, OrderFixture.getOrderDtoWithoutId() );
     }
@@ -111,6 +110,6 @@ public class OrderMapperTest {
         var result = orderMapper
                 .fromOrderUpdateDtoToDocument(null);
 
-        assertNull(result);  //TODO isActive false lesz valahogy
+        assertNull(result);
     }
 }
