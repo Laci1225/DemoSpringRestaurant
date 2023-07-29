@@ -27,8 +27,6 @@ public class RestaurantService {
                 .map(restaurantMapper::fromDocumentToRestaurantDto).toList();
     }
 
-    //todo másik modell pl restaurant postfix nélkül contollerbe dto reposiotryban document
-    //todo minden réteg közé Restaurant
     public RestaurantDto getRestaurant(String id) throws RestaurantDocumentNotFoundException {
         log.trace("A restaurant ");
         return restaurantRepository.findById(id).map(restaurantMapper::fromDocumentToRestaurantDto)

@@ -1,6 +1,6 @@
 type Guest{
     id:ID!
-    activeOrder: Order
+    activeOrder: String
     payed: Boolean!
     createdDate: LocalDateTime
     modifiedDate: LocalDateTime

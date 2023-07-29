@@ -12,7 +12,7 @@ public interface OrderControllerMapper {
     Order fromOrderDtoToOrder(OrderDto orderDto);
 
 
-    OrderDto fromOrderToOrderDto(Order orderDocument);
+    OrderDto fromOrderToOrderDto(Order order);
 
 
     /*@Mapping(target = "orderDocument.courier", ignore = true)

@@ -15,6 +15,7 @@ import com.example.demoSpringRestaurant.model.service.OrderUpdateDto;
 import com.example.demoSpringRestaurant.service.OrderService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
@@ -26,7 +27,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 @Controller
-@AllArgsConstructor
+@AllArgsConstructor@Slf4j
 public class GraphqlOrderController {
     private final OrderService orderService;
     private final RestaurantOrderFacade restaurantOrderFacade;
@@ -38,10 +39,10 @@ public class GraphqlOrderController {
     @QueryMapping("orders")
     public List<Order> getOrders(@Argument String id) {
         try {
-            System.out.println("Requested orders for restaurant with ID: " + id);
+            log.debug("Requested orders for restaurant with ID: " + id);
             var orders = restaurantOrderFacade.getOrdersByRestaurantId(id).stream()
                     .map(orderControllerMapper::fromOrderDtoToOrder).toList();
-            System.out.println("Orders for restaurant with ID: " + id + " returned successfully");
+            log.debug("Orders for restaurant with ID: " + id + " returned successfully");
             return orders;
         } catch (RestaurantDocumentNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
@@ -51,10 +52,10 @@ public class GraphqlOrderController {
     @QueryMapping("order")
     public Order getOrder(@Argument String id) {
         try {
-            System.out.println("Requested order with ID: " + id);
+            log.debug("Requested order with ID: " + id);
             var orderDto = orderService.getOrderById(id);
             var order = orderControllerMapper.fromOrderDtoToOrder(orderDto);
-            System.out.println("Order with ID: " + id + " returned successfully");
+            log.debug("Order with ID: " + id + " returned successfully");
             return order;
         } catch (OrderDocumentNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
@@ -64,10 +65,10 @@ public class GraphqlOrderController {
     @MutationMapping("createOrder")
     public Order createOrder(@Argument @Valid @RequestBody OrderCreationDto order, @Argument String id) {
         try {
-            System.out.println("Creating an order for restaurant with ID: " + id);
+            log.debug("Creating an order for restaurant with ID: " + id);
             var orderDto = restaurantOrderGuestCourierFacade.createOrder(order, id);
             var orderResponse = orderControllerMapper.fromOrderDtoToOrder(orderDto);
-            System.out.println("Order created successfully");
+            log.debug("Order created successfully");
             return orderResponse;
         } catch (DocumentNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
@@ -77,10 +78,10 @@ public class GraphqlOrderController {
     @MutationMapping("deleteOrder")
     public Order deleteOrder(@Argument String id) {
         try {
-            System.out.println("Deleting an order with ID: " + id);
+            log.debug("Deleting an order with ID: " + id);
             var orderDto = orderGuestCourierFacade.deleteOrder(id);
             var order = orderControllerMapper.fromOrderDtoToOrder(orderDto);
-            System.out.println("Order with ID: " + id + " deleted successfully");
+            log.debug("Order with ID: " + id + " deleted successfully");
             return order;
         } catch (DocumentNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
@@ -90,10 +91,10 @@ public class GraphqlOrderController {
     @MutationMapping("updateOrder")
     public Order updateOrder(@Argument String id, @Valid @RequestBody @Argument OrderUpdateDto order) {
         try {
-            System.out.println("Updating order with ID: " + id);
+            log.debug("Updating order with ID: " + id);
             var orderDto = orderService.updateOrder(id, order);
             var orderResponse = orderControllerMapper.fromOrderDtoToOrder(orderDto);
-            System.out.println("Order with ID: " + id + " updated successfully");
+            log.debug("Order with ID: " + id + " updated successfully");
             return orderResponse;
         } catch (OrderDocumentNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
@@ -103,10 +104,10 @@ public class GraphqlOrderController {
     @MutationMapping("setNextStage")
     public Order setNextState(@Argument String id) {
         try {
-            System.out.println("Setting next stage for order with ID: " + id);
+            log.debug("Setting next stage for order with ID: " + id);
             var orderDto = orderService.setNextState(id);
             var order = orderControllerMapper.fromOrderDtoToOrder(orderDto);
-            System.out.println("Next stage set successfully");
+            log.debug("Next stage set successfully");
             return order;
         } catch (OrderDocumentNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
@@ -116,10 +117,10 @@ public class GraphqlOrderController {
     @MutationMapping("setCourierToOrder")
     public Order setCourierToOrder(@Argument String orderId, @Argument String courierId) {
         try {
-            System.out.println("Setting courier with ID: " + courierId + " to order with ID: " + orderId);
+            log.debug("Setting courier with ID: " + courierId + " to order with ID: " + orderId);
             var orderDto = orderCourierFacade.setCourierToOrder(orderId, courierId);
             var order = orderControllerMapper.fromOrderDtoToOrder(orderDto);
-            System.out.println("Courier with ID: " + courierId + " set to order with ID: " + orderId + " successfully");
+            log.debug("Courier with ID: " + courierId + " set to order with ID: " + orderId + " successfully");
             return order;
         } catch (CourierDocumentNotFoundException | OrderDocumentNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);

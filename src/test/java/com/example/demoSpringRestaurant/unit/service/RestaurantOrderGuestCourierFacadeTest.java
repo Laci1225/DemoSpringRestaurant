@@ -65,10 +65,6 @@ public class RestaurantOrderGuestCourierFacadeTest {
                 .thenReturn(OrderFixture.getOrderDocument(true));
         when(orderMapper.fromDocumentToOrderDto(any(OrderDocument.class)))
                 .thenReturn(OrderFixture.getOrderDto());
-        when(courierMapper.fromCourierDtoToDocument(any(CourierDto.class)))
-                .thenReturn(CourierFixture.getCourierDocument(true));
-        when(guestMapper.fromGuestDtoToDocument(any(GuestDto.class)))
-                .thenReturn(GuestFixture.getGuestDocument(true));
         when(orderService.saveOrder(any(OrderDto.class)))
                 .thenReturn(OrderFixture.getOrderDto());
 

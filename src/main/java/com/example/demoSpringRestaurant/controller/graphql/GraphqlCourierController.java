@@ -53,8 +53,8 @@ public class GraphqlCourierController {
     }
 
     @MutationMapping("createCourier")
-    public Courier createCourier(@Argument @Valid @RequestBody CourierCreationDto courier, @Argument String id) {
-        log.debug("Creating a courier");//todo
+    public Courier createCourier(@Argument @Valid @RequestBody CourierCreationDto courier) {
+        log.debug("Creating a courier");
         var courierDto = courierService.createCourier(courier);
         var courierResponse = courierControllerMapper.fromCourierDtoToCourier(courierDto);
         log.debug("Created a courier successfully");

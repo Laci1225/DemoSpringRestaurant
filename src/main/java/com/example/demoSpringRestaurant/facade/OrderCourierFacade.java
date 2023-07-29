@@ -24,8 +24,7 @@ public class OrderCourierFacade {
 
     public CourierDto deleteCourier(String courierId) throws DocumentNotFoundException {
         var courier = courierService.findCourierById(courierId);
-        var order = orderService.findOrderById(courier.getActiveOrder().getId());
-        order.setCourier(null);
+        courier.getActiveOrder().setCourier(null);
         var orders = courier.getOrders();
         orders.forEach(orderDto -> orderDto.setCourier(null));
         courierService.deleteById(courier.getId());

@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 public class GuestCreationDto {
-    private OrderDto activeOrder;
+    private String activeOrder;
     private boolean payed;
     @CreatedDate
     private LocalDateTime createdDate;

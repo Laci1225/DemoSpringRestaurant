@@ -10,6 +10,7 @@ import com.example.demoSpringRestaurant.model.service.GuestUpdateDto;
 import com.example.demoSpringRestaurant.service.GuestService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
@@ -21,6 +22,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 @Controller
+@Slf4j
 @AllArgsConstructor
 public class GraphqlGuestController {
     private final GuestService guestService;
@@ -29,20 +31,20 @@ public class GraphqlGuestController {
 
     @QueryMapping("guests")
     public List<Guest> getGuests() {
-        System.out.println("Requested all guests");
+        log.debug("Requested all guests");
         var guests = guestService.getGuests().stream()
                 .map(guestControllerMapper::fromGuestDtoToGuest).toList();
-        System.out.println("Guests returned successfully");
+        log.debug("Guests returned successfully");
         return guests;
     }
 
     @QueryMapping("guest")
     public Guest getGuest(@Argument String id) {
         try {
-            System.out.println("Requested guest with ID: " + id);
+            log.debug("Requested guest with ID: " + id);
             var guestDto = guestService.getGuest(id);
             var guest = guestControllerMapper.fromGuestDtoToGuest(guestDto);
-            System.out.println("Guest with ID: " + id + " returned successfully");
+            log.debug("Guest with ID: " + id + " returned successfully");
             return guest;
         } catch (GuestDocumentNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
@@ -52,10 +54,10 @@ public class GraphqlGuestController {
     @MutationMapping("createGuest")
     public Guest createGuest(@Argument @Valid @RequestBody GuestCreationDto guest, @Argument String id) {
         try {
-            System.out.println("Creating a guest");
+            log.debug("Creating a guest");
             var guestDto = orderGuestFacade.createGuest(guest, id);
             var guestResponse = guestControllerMapper.fromGuestDtoToGuest(guestDto);
-            System.out.println("Guest created successfully");
+            log.debug("Guest created successfully");
             return guestResponse;
         } catch (DocumentNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
@@ -65,10 +67,10 @@ public class GraphqlGuestController {
     @MutationMapping("deleteGuest")
     public Guest deleteGuest(@Argument String id) {
         try {
-            System.out.println("Deleting a guest with ID: " + id);
+            log.debug("Deleting a guest with ID: " + id);
             var guestDto = orderGuestFacade.deleteGuest(id);
             var guest = guestControllerMapper.fromGuestDtoToGuest(guestDto);
-            System.out.println("Guest with ID: " + id + " deleted successfully");
+            log.debug("Guest with ID: " + id + " deleted successfully");
             return guest;
         } catch (DocumentNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
@@ -78,10 +80,10 @@ public class GraphqlGuestController {
     @MutationMapping("updateGuest")
     public Guest updateGuest(@Argument String id, @Valid @RequestBody @Argument GuestUpdateDto guest) {
         try {
-            System.out.println("Updating guest with ID: " + id);
+            log.debug("Updating guest with ID: " + id);
             var guestDto = guestService.updateGuest(id, guest);
             var guestResponse = guestControllerMapper.fromGuestDtoToGuest(guestDto);
-            System.out.println("Guest with ID: " + id + " updated successfully");
+            log.debug("Guest with ID: " + id + " updated successfully");
             return guestResponse;
         } catch (GuestDocumentNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);

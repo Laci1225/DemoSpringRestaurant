@@ -8,7 +8,7 @@ type Order {
     deliveryAddress: String
     #courierDto: Courier
     orderStatus: OrderStatus
-        guestDto: Guest
+    guest: Guest
     createdDate: LocalDateTime
     modifiedDate: LocalDateTime
 }
@@ -26,7 +26,7 @@ input OrderInput {
     isDelivery: Boolean
     deliveryAddress: String
     #courierDto: CourierDto
-    guestDto: GuestInput
+    guest: GuestInput
 }
 
 extend type Query {

@@ -3,9 +3,7 @@ package com.example.demoSpringRestaurant.fixtures.service;
 import com.example.demoSpringRestaurant.model.service.GuestCreationDto;
 import com.example.demoSpringRestaurant.model.service.GuestDto;
 import com.example.demoSpringRestaurant.model.service.GuestUpdateDto;
-import com.example.demoSpringRestaurant.model.service.OrderDto;
 import com.example.demoSpringRestaurant.persistance.document.GuestDocument;
-import com.example.demoSpringRestaurant.persistance.document.OrderDocument;
 import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -16,8 +14,8 @@ import java.util.List;
 
 @Data
 public class GuestFixture {
-    private static final OrderDocument ACTIVE_ORDER = OrderFixture.getOrderDocument(true);
-    private static final OrderDto ACTIVE_ORDER_DTO = OrderFixture.getOrderDto();
+    private static final String ACTIVE_ORDER = null;//OrderFixture.getOrderDocument(true);
+    private static final String ACTIVE_ORDER_DTO = null;//OrderFixture.getOrderDto();
     private static final boolean PAYED = true;
     @CreatedDate
     private static final LocalDateTime CREATED_DATE = LocalDateTime.now();
@@ -42,14 +40,6 @@ public class GuestFixture {
                 .build();
     }
 
-    public static GuestUpdateDto getGuestUpdateDtoSetEverythingToNull() {
-        return GuestUpdateDto.builder()
-                .activeOrder(ACTIVE_ORDER_DTO)
-                .payed(PAYED)
-                .createdDate(CREATED_DATE)
-                .modifiedDate(MODIFIED_DATE)
-                .build();
-    }
 
     public static GuestDocument getGuestDocument(boolean withId) {
         var restaurantDocument = GuestDocument.builder()
@@ -68,6 +58,15 @@ public class GuestFixture {
         return GuestDto.builder()
                 .id("1234")
                 .activeOrder(ACTIVE_ORDER_DTO)
+                .payed(PAYED)
+                .createdDate(CREATED_DATE)
+                .modifiedDate(MODIFIED_DATE)
+                .build();
+    }
+    public static GuestDto getGuestDtoWithActiveOrder() {
+        return GuestDto.builder()
+                .id("1234")
+                .activeOrder("4321")
                 .payed(PAYED)
                 .createdDate(CREATED_DATE)
                 .modifiedDate(MODIFIED_DATE)

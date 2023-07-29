@@ -59,6 +59,22 @@ public class OrderControllerFixture {
             order.setId("1234");
         return order;
     }
+    public static Order getOrder( OrderStatus status) {
+        return Order.builder()
+                .id("1234")
+                .restaurant(RESTAURANT)
+                .mealType(MEAL_TYPE)
+                .drinkType(DRINK_TYPE)
+                .price(PRICE)
+                .deliveryAddress(DELIVERY_ADDRESS)
+                .orderStatus(status)
+                .estimatedPreparationTime(ESTIMATED_DELIVERY_TIME)
+                .guest(GUEST)
+                .courier(COURIER)
+                .createdDate(CREATED_DATE)
+                .modifiedDate(MODIFIED_DATE)
+                .build();
+    }
 
     public static List<Order> getOrderList() {
         var list = new ArrayList<Order>();

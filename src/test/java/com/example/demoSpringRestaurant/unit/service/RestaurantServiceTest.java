@@ -69,7 +69,7 @@ public class RestaurantServiceTest {
     }
 
     @Test
-    void getRestaurantShouldGetARestaurant() {
+    void getRestaurantShouldGetARestaurant() throws RestaurantDocumentNotFoundException {
         when(restaurantMapper.fromDocumentToRestaurantDto(any(RestaurantDocument.class)))
                 .thenReturn(RestaurantFixture.getRestaurantDto());
         when(restaurantRepository.findById(anyString()))

@@ -6,7 +6,7 @@ import com.example.demoSpringRestaurant.model.service.CourierUpdateDto;
 import com.example.demoSpringRestaurant.persistance.document.CourierDocument;
 import org.mapstruct.Mapper;
 
-@Mapper(componentModel = "spring", uses = {OrderMapper.class})
+@Mapper(componentModel = "spring", uses = {OrderWithoutReferencesMapper.class})
 public interface CourierMapper {
 
     CourierDocument fromCourierDtoToDocument(CourierDto courierDto);

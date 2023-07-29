@@ -144,7 +144,7 @@ public class OrderControllerTest {
     void setNextStateShouldSetToTheNextStateFromSENTTOAPPROVED() throws Exception {
         OrderStatus orderStatus = OrderStatus.SENT;
         when(orderControllerMapper.fromOrderDtoToOrder(any(OrderDto.class)))
-                .thenReturn(OrderControllerFixture.getOrder(true));
+                .thenReturn(OrderControllerFixture.getOrder(orderStatus.getNextStatus()));
         when(orderService.setNextState(anyString()))
                 .thenReturn(OrderFixture.getOrderDtoGetNextStatus(orderStatus));
 
@@ -159,7 +159,7 @@ public class OrderControllerTest {
     void setNextStateShouldSetToTheNextStateFromAPPROVEDToSHIPPING() throws Exception {
         OrderStatus orderStatus = OrderStatus.APPROVED;
         when(orderControllerMapper.fromOrderDtoToOrder(any(OrderDto.class)))
-                .thenReturn(OrderControllerFixture.getOrder(true));
+                .thenReturn(OrderControllerFixture.getOrder(orderStatus.getNextStatus()));
         when(orderService.setNextState(anyString()))
                 .thenReturn(OrderFixture.getOrderDtoGetNextStatus(orderStatus));
 
@@ -174,7 +174,7 @@ public class OrderControllerTest {
     void setNextStateShouldSetToTheNextStateFromSHIPPINGToSHIPPED() throws Exception {
         OrderStatus orderStatus = OrderStatus.SHIPPING;
         when(orderControllerMapper.fromOrderDtoToOrder(any(OrderDto.class)))
-                .thenReturn(OrderControllerFixture.getOrder(true));
+                .thenReturn(OrderControllerFixture.getOrder(orderStatus.getNextStatus()));
         when(orderService.setNextState(anyString()))
                 .thenReturn(OrderFixture.getOrderDtoGetNextStatus(orderStatus));
 

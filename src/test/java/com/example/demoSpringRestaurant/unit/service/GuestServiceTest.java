@@ -129,7 +129,7 @@ public class GuestServiceTest {
 
     @Test
     void findGuestDocumentByActiveOrder_Id() throws GuestDocumentNotFoundException {
-        when(guestRepository.findGuestDocumentByActiveOrder_Id(anyString())).
+        when(guestRepository.findGuestDocumentByActiveOrder(anyString())).
                 thenReturn(Optional.of(GuestFixture.getGuestDocument(true)));
         when(guestMapper.fromDocumentToGuestDto(any(GuestDocument.class)))
                 .thenReturn(GuestFixture.getGuestDto());
@@ -138,7 +138,7 @@ public class GuestServiceTest {
                 "1234");
 
         assertThat(guestDto).usingRecursiveComparison().isEqualTo(GuestFixture.getGuestDto());
-        verify(guestRepository, times(1)).findGuestDocumentByActiveOrder_Id(anyString());
+        verify(guestRepository, times(1)).findGuestDocumentByActiveOrder(anyString());
         verifyNoMoreInteractions(guestRepository);
     }
 

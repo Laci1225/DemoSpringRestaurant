@@ -18,7 +18,7 @@ public class GuestDto {
 
     @Id
     private String id;
-    private OrderDto activeOrder;
+    private String activeOrder;
     private boolean payed;
 
     @CreatedDate

@@ -15,8 +15,8 @@ import java.util.List;
 public class CourierControllerFixture {
     private static final String NAME = "Sam";
     private static final boolean ACTIVE = true;
-    private static final List<Order> ORDERS = OrderControllerFixture.getOrderList();
-    private static final Order ACTIVE_ORDER = OrderControllerFixture.getOrder(true);
+    private static final List<Order> ORDERS = null;//OrderControllerFixture.getOrderList();
+    private static final Order ACTIVE_ORDER = null;//OrderControllerFixture.getOrder(true);
     private static final double PAYMENT_PER_ORDER = 12.0;
     private static final Vehicle VEHICLE = Vehicle.CAR;
     @CreatedDate

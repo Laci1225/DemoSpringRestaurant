@@ -20,10 +20,10 @@ import java.util.Optional;
 public class CourierFixture {
     private static final String NAME = "Sam";
     private static final boolean ACTIVE = true;
-    private static final List<OrderDocument> ORDERS = OrderFixture.getOrderDocumentList();
-    private static final List<OrderDto> ORDERS_DTO = OrderFixture.getOrderDtoList();
-    private static final OrderDocument ACTIVE_ORDER = OrderFixture.getOrderDocument(true);
-    private static final OrderDto ACTIVE_ORDER_DTO = OrderFixture.getOrderDto();
+    private static final List<OrderDocument> ORDERS = null;// OrderFixture.getOrderDocumentList();
+    private static final List<OrderDto> ORDERS_DTO = null;//OrderFixture.getOrderDtoList();
+    private static final OrderDocument ACTIVE_ORDER = null;// OrderFixture.getOrderDocument(true);
+    private static final OrderDto ACTIVE_ORDER_DTO = null;//OrderFixture.getOrderDto();
     private static final double PAYMENT_PER_ORDER = 12.0;
     private static final Vehicle VEHICLE = Vehicle.CAR;
     @CreatedDate
@@ -94,6 +94,19 @@ public class CourierFixture {
                 .active(ACTIVE)
                 .orders(ORDERS_DTO)
                 .activeOrder(ACTIVE_ORDER_DTO)
+                .paymentPerOrder(PAYMENT_PER_ORDER)
+                .vehicle(VEHICLE)
+                .createdDate(CREATED_DATE)
+                .modifiedDate(MODIFIED_DATE)
+                .build();
+    }
+    public static CourierDto getCourierDtoWithOrders() {
+        return CourierDto.builder()
+                .id("1234")
+                .name(NAME)
+                .active(ACTIVE)
+                .orders(OrderFixture.getOrderDtoList())
+                .activeOrder(OrderFixture.getOrderDto())
                 .paymentPerOrder(PAYMENT_PER_ORDER)
                 .vehicle(VEHICLE)
                 .createdDate(CREATED_DATE)

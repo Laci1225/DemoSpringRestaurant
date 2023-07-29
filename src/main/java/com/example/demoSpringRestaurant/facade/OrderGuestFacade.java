@@ -24,24 +24,25 @@ public class OrderGuestFacade {
 
     public GuestDto createGuest(GuestCreationDto guestCreationDto, String orderId) throws OrderDocumentNotFoundException {
         log.trace("Creating Guest " + guestCreationDto);
+
         var guestDto = guestMapper.fromCreationDtoToDto(guestCreationDto);
         var orderDto = orderService.findOrderById(orderId);
 
-
         var guest = guestService.saveGuest(guestDto);
-        orderDto.setGuest(guest);
-        var order = orderService.saveOrder(orderDto);
-        //guest.setActiveOrder(order);  todo
-        //  guestService.saveGuest(guest);
+        guest.setActiveOrder(orderId);
+        var guestWithActiveOrderId = guestService.saveGuest(guest);
+        orderDto.setGuest(guestWithActiveOrderId);
+        orderService.saveOrder(orderDto);
 
         log.trace("Guest created with ID:" + guestDto.getId());
-        return guest;
+
+        return guestWithActiveOrderId;
     }
 
     public GuestDto deleteGuest(String guestId) throws DocumentNotFoundException {
         var guestDto = guestService.findGuestById(guestId);
-        var order = guestDto.getActiveOrder();
-        orderService.deleteById(order.getId());
+        var orderId = guestDto.getActiveOrder();
+        orderService.deleteById(orderId);
         guestService.deleteById(guestDto.getId());
         return guestDto;
     }

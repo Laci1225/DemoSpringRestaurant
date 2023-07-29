@@ -45,7 +45,7 @@ public class GuestService {
 
 
     public GuestDto findGuestDtoByActiveOrder_Id(String id) throws GuestDocumentNotFoundException {
-       var guest =  guestRepository.findGuestDocumentByActiveOrder_Id(id).
+       var guest =  guestRepository.findGuestDocumentByActiveOrder(id).
                orElseThrow(() -> new GuestDocumentNotFoundException("Guest not found"));
         return guestMapper.fromDocumentToGuestDto(guest);
     }

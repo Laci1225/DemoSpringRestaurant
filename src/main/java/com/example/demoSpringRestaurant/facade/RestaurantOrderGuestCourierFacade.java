@@ -44,20 +44,16 @@ public class RestaurantOrderGuestCourierFacade {
         if (orderCreationDto.getCourierId() != null) {
             courier = courierService.findCourierById(orderCreationDto.getCourierId());
         }
-        var courierDocument = courierMapper.fromCourierDtoToDocument(courier);
         if (orderCreationDto.getGuestId() != null) {
             guest = guestService.findGuestById(orderCreationDto.getGuestId());
         }
-        var guestDocument = guestMapper.fromGuestDtoToDocument(guest);
 
         var orderDto = orderMapper.fromOrderCreationDtoToDto(orderCreationDto
                 , courier, guest);
         var orderDocument = orderMapper.fromOrderDtoToDocument(orderDto);
-        //if (orderDocument.isDelivery())
-        orderDocument.setCourier(courierDocument);
-        orderDocument.setGuest(guestDocument);
+
         var orderDto2 = orderService.saveOrder(orderMapper.fromDocumentToOrderDto(orderDocument));
-         log.trace("Order" + orderDto2 + " with Restaurant ID: " + orderDto2.getId() + " created");
+        log.trace("Order" + orderDto2 + " with Restaurant ID: " + orderDto2.getId() + " created");
         return orderDto2;
     }
 }

@@ -47,23 +47,27 @@ public class OrderGuestFacadeTest {
                 .thenReturn(OrderFixture.getOrderDto());
 
         var guest = orderGuestFacade.createGuest(GuestFixture.getGuestCreationDto(), "1234");
+        var expectedGuest = GuestFixture.getGuestDto();
+        expectedGuest.setActiveOrder("1234");
 
-        assertThat(guest).usingRecursiveComparison().isEqualTo(GuestFixture.getGuestDto());
+        assertThat(guest).usingRecursiveComparison().isEqualTo(expectedGuest);
         verify(orderService, times(1)).findOrderById(anyString());
-        verify(guestService, times(1)).saveGuest(any(GuestDto.class));
+        verify(guestService, times(2)).saveGuest(any(GuestDto.class));
         verifyNoMoreInteractions(orderService, guestService);
     }
 
     @Test
     void deleteGuest() throws DocumentNotFoundException {
         when(guestService.findGuestById(anyString()))
-                .thenReturn(GuestFixture.getGuestDto());
+                .thenReturn(GuestFixture.getGuestDtoWithActiveOrder());
         doNothing().when(orderService).deleteById(anyString());
         doNothing().when(guestService).deleteById(anyString());
 
         var guest = orderGuestFacade.deleteGuest("1234");
+        var expectedResult= GuestFixture.getGuestDto();
+        expectedResult.setActiveOrder("4321");
 
-        assertThat(guest).usingRecursiveComparison().isEqualTo(GuestFixture.getGuestDto());
+        assertThat(guest).usingRecursiveComparison().isEqualTo(expectedResult);
         verify(guestService, times(1)).findGuestById(anyString());
         verify(guestService, times(1)).deleteById(anyString());
         verify(orderService, times(1)).deleteById(anyString());

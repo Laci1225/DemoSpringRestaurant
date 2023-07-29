@@ -1,7 +1,6 @@
 package com.example.demoSpringRestaurant.fixtures.controller;
 
 import com.example.demoSpringRestaurant.model.controller.Guest;
-import com.example.demoSpringRestaurant.model.controller.Order;
 import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -12,7 +11,7 @@ import java.util.List;
 
 @Data
 public class GuestControllerFixture {
-    private static final Order ACTIVE_ORDER = OrderControllerFixture.getOrder(true);
+    private static final String ACTIVE_ORDER = null;// OrderControllerFixture.getOrder(true);
     private static final boolean PAYED = true;
     @CreatedDate
     private static final LocalDateTime CREATED_DATE = LocalDateTime.now();

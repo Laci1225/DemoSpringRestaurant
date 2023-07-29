@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 public class Guest {
     @Id
     private String id;
-    private Order activeOrder;
+    private String activeOrder;
     private boolean payed;
 
     @CreatedDate

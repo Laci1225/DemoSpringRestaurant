@@ -22,7 +22,7 @@ extend type Query {
     courier(id:ID!): Courier!
 }
 extend type Mutation {
-    createCourier(courier:CourierInput!,id:String!):Courier!
+    createCourier(courier:CourierInput!):Courier!
     deleteCourier(id: ID!):Courier!
     updateCourier(id:String!,courier:CourierInput!):Courier!
     setOrderActive(courierId: ID!,orderId: ID!): Courier!
